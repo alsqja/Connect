@@ -1,4 +1,4 @@
-package com.example.connect.global.Enum;
+package com.example.connect.global.enums;
 
 public enum Gender {
     MAN,
