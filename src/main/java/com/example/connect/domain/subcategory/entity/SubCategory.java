@@ -1,6 +1,7 @@
 package com.example.connect.domain.subcategory.entity;
 
 import com.example.connect.domain.category.entity.Category;
+import com.example.connect.domain.schedulesubcategory.entity.ScheduleSubCategory;
 import com.example.connect.global.common.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -16,6 +17,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -39,7 +41,7 @@ public class SubCategory extends BaseEntity {
     private Category category;
 
     @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SubCategory> subCategoryList;
+    private List<ScheduleSubCategory> scheduleSubCategories = new ArrayList<>();
 
     public SubCategory(String name, String profileUrl, Category category) {
         this.name = name;

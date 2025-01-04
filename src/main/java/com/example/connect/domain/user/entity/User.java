@@ -2,7 +2,7 @@ package com.example.connect.domain.user.entity;
 
 import com.example.connect.domain.address.entity.Address;
 import com.example.connect.domain.couponuser.entity.CouponUser;
-import com.example.connect.domain.match.entity.Match;
+import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.point.entity.Point;
 import com.example.connect.domain.report.entity.Report;
 import com.example.connect.domain.schedule.entity.Schedule;
@@ -82,10 +82,10 @@ public class User extends BaseEntity {
     List<Schedule> schedules = new ArrayList<>();
 
     @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Match> sentMatches = new ArrayList<>();
+    private List<Matching> sentMatchings = new ArrayList<>();
 
     @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Match> receivedMatch = new ArrayList<>();
+    private List<Matching> receivedMatchings = new ArrayList<>();
 
     @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> sentReports = new ArrayList<>();

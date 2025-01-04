@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,8 +38,15 @@ public class Membership extends BaseEntity {
     @Column(name = "expired_at", nullable = false)
     private LocalDateTime expiredAt;
 
-    @Column(name = "deleted_at", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isDeleted;
+
+    @PrePersist
+    public void prePersist() {
+        if (isDeleted == null) {
+            isDeleted = false;
+        }
+    }
 
     public Membership(MembershipType type, LocalDateTime expiredAt) {
         this.type = type;

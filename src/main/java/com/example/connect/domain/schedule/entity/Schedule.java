@@ -1,6 +1,6 @@
 package com.example.connect.domain.schedule.entity;
 
-import com.example.connect.domain.match.entity.Match;
+import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.schedulesubcategory.entity.ScheduleSubCategory;
 import com.example.connect.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
@@ -45,7 +45,7 @@ public class Schedule {
     private User user;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Match> matches = new ArrayList<>();
+    private List<Matching> matchings = new ArrayList<>();
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleSubCategory> scheduleContents = new ArrayList<>();

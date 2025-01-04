@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -27,12 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "match")
+@Table(name = "matching")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE match SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
-public class Match extends BaseEntity {
+public class Matching extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,10 +58,17 @@ public class Match extends BaseEntity {
     @JoinColumn(name = "to_id")
     private User toUser;
 
-    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "matching", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reports = new ArrayList<>();
 
-    public Match(MatchStatus status, Schedule schedule, User fromUser, User toUser) {
+    @PrePersist
+    public void prePersist() {
+        if (isDeleted == null) {
+            isDeleted = false;
+        }
+    }
+
+    public Matching(MatchStatus status, Schedule schedule, User fromUser, User toUser) {
         this.status = status;
         this.schedule = schedule;
         this.fromUser = fromUser;

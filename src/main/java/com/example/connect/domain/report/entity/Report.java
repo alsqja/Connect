@@ -1,6 +1,6 @@
 package com.example.connect.domain.report.entity;
 
-import com.example.connect.domain.match.entity.Match;
+import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.global.common.BaseEntity;
 import jakarta.persistence.Column;
@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,7 +38,7 @@ public class Report extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "match_id")
-    private Match match;
+    private Matching matching;
 
     @ManyToOne
     @JoinColumn(name = "from_id")
@@ -47,9 +48,16 @@ public class Report extends BaseEntity {
     @JoinColumn(name = "to_id")
     private User toUser;
 
-    public Report(String content, Match match, User fromUser, User toUser) {
+    @PrePersist
+    public void prePersist() {
+        if (isDeleted == null) {
+            isDeleted = false;
+        }
+    }
+
+    public Report(String content, Matching matching, User fromUser, User toUser) {
         this.content = content;
-        this.match = match;
+        this.matching = matching;
         this.fromUser = fromUser;
         this.toUser = toUser;
     }

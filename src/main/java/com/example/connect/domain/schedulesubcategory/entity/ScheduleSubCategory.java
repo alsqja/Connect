@@ -35,4 +35,10 @@ public class ScheduleSubCategory extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "sub_category_id")
     private SubCategory subCategory;
+
+    public ScheduleSubCategory(String description, Schedule schedule, SubCategory subCategory) {
+        this.description = description;
+        this.schedule = schedule;
+        this.subCategory = subCategory;
+    }
 }

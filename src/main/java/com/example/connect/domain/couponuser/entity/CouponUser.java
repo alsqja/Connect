@@ -6,11 +6,14 @@ import com.example.connect.global.common.BaseEntity;
 import com.example.connect.global.enums.CouponUserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,6 +39,7 @@ public class CouponUser extends BaseEntity {
     private LocalDateTime expiredDate;
 
     @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private CouponUserStatus status;
 
     @Column(name = "is_deleted", nullable = false)
@@ -48,6 +52,13 @@ public class CouponUser extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "coupon_id")
     private Coupon coupon;
+
+    @PrePersist
+    public void prePersist() {
+        if (isDeleted == null) {
+            isDeleted = false;
+        }
+    }
 
     public CouponUser(LocalDateTime expiredDate, CouponUserStatus status, User user, Coupon coupon) {
         this.expiredDate = expiredDate;
