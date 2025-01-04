@@ -36,10 +36,14 @@ public class Address {
     @Column(name = "longitude", nullable = false)
     private Double longitude;
 
-    public Address(User user, String address, Double latitude, Double longitude) {
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
+    public Address(User user, String address, Double latitude, Double longitude, Boolean isActive) {
         this.user = user;
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.isActive = isActive;
     }
 }

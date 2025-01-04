@@ -88,7 +88,7 @@ public class DataInitializer {
         Point point = new Point(BigDecimal.valueOf(10000), user1);
         pointRepository.save(point);
 
-        Address address = new Address(savedUser1, "충청북도 청주시 서원구 월평로 24", 36.6, 127.5);
+        Address address = new Address(savedUser1, "충청북도 청주시 서원구 월평로 24", 36.6, 127.5, true);
         addressRepository.save(address);
 
         Membership membership = new Membership(MembershipType.PREMIUM, LocalDateTime.now().plusYears(1));
