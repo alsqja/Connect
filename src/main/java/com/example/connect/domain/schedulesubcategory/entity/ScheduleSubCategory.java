@@ -1,4 +1,4 @@
-package com.example.connect.domain.schedulecontent.entity;
+package com.example.connect.domain.schedulesubcategory.entity;
 
 import com.example.connect.domain.schedule.entity.Schedule;
 import com.example.connect.domain.subcategory.entity.SubCategory;
