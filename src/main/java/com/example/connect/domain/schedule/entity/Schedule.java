@@ -1,7 +1,7 @@
 package com.example.connect.domain.schedule.entity;
 
 import com.example.connect.domain.match.entity.Match;
-import com.example.connect.domain.schedulecontent.entity.ScheduleSubCategory;
+import com.example.connect.domain.schedulesubcategory.entity.ScheduleSubCategory;
 import com.example.connect.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
