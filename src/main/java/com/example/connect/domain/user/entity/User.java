@@ -106,7 +106,7 @@ public class User extends BaseEntity {
         }
     }
 
-    public User(String email, String password, String name, String birth, Gender gender, String profileUrl, Boolean isActiveMatching, UserStatus status, UserRole role) {
+    public User(String email, String password, String name, String birth, Gender gender, String profileUrl, Boolean isActiveMatching, UserRole role) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -114,7 +114,6 @@ public class User extends BaseEntity {
         this.gender = gender;
         this.profileUrl = profileUrl;
         this.isActiveMatching = isActiveMatching;
-        this.status = status;
         this.role = role;
     }
 }

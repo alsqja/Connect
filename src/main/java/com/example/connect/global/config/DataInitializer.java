@@ -31,7 +31,6 @@ import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.MatchStatus;
 import com.example.connect.global.enums.MembershipType;
 import com.example.connect.global.enums.UserRole;
-import com.example.connect.global.enums.UserStatus;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -67,7 +66,6 @@ public class DataInitializer {
                 Gender.WOMAN,
                 "https://ca.slack-edge.com/T06B9PCLY1E-U07KRNHKXUM-4ddfb9e4780d-512",
                 true,
-                UserStatus.NORMAL,
                 UserRole.USER
         );
         User savedUser1 = userRepository.save(user1);
@@ -80,7 +78,6 @@ public class DataInitializer {
                 Gender.MAN,
                 "https://eshop.parkland.co.kr/upload/tip_guide2/g_20241121105659536.jpg",
                 true,
-                UserStatus.NORMAL,
                 UserRole.USER
         );
         User savedUser2 = userRepository.save(user2);
