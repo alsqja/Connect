@@ -26,7 +26,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
     private final AddressRepository addressRepository;
-
+    
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
@@ -66,5 +66,16 @@ public class AuthService {
         );
 
         return jwtProvider.generateToken(authentication);
+    }
+
+    public TokenDto refresh(String refreshToken) {
+
+        String email = jwtProvider.getUsername(refreshToken);
+
+        if (!jwtProvider.validRefreshToken(refreshToken, email)) {
+            throw new UnAuthorizedException(ErrorCode.EXPIRED_TOKEN);
+        }
+
+        return jwtProvider.generateToken(email);
     }
 }
