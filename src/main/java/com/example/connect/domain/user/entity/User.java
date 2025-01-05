@@ -116,4 +116,8 @@ public class User extends BaseEntity {
         this.isActiveMatching = isActiveMatching;
         this.role = role;
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }
