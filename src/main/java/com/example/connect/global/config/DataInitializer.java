@@ -85,7 +85,7 @@ public class DataInitializer {
         Point point = new Point(BigDecimal.valueOf(10000), user1);
         pointRepository.save(point);
 
-        Membership membership = new Membership(MembershipType.PREMIUM, LocalDateTime.now().plusYears(1));
+        Membership membership = new Membership(MembershipType.PREMIUM, LocalDateTime.now().plusYears(1), user1);
         membershipRepository.save(membership);
 
         Banner banner = new Banner("ad", "ad", LocalDateTime.now().plusYears(1));
@@ -103,13 +103,16 @@ public class DataInitializer {
         CouponUser couponUser = new CouponUser(LocalDateTime.now().plusMonths(1), CouponUserStatus.UNUSED, savedUser1, savedCoupon);
         couponUserRepository.save(couponUser);
 
-        Schedule schedule = new Schedule(LocalDate.of(2025, 1, 30), "운동", "3대 200 입니다", "충청북도 청주시 서원구 월평로 24", 36.6, 127.5, user1);
-        Schedule savedSchedule = scheduleRepository.save(schedule);
+        Schedule schedule1 = new Schedule(LocalDate.of(2025, 1, 30), "운동", "3대 200 입니다", "충청북도 청주시 서원구 월평로 24", 36.6, 127.5, user1);
+        Schedule savedSchedule1 = scheduleRepository.save(schedule1);
 
-        ScheduleSubCategory scheduleSubCategory = new ScheduleSubCategory("헬스하자", savedSchedule, savedSubCategory);
+        Schedule schedule2 = new Schedule(LocalDate.of(2025, 1, 30), "운동", "3대 200 입니다", "충청북도 청주시 서원구 월평로 24", 36.6, 127.5, user1);
+        Schedule savedSchedule2 = scheduleRepository.save(schedule2);
+
+        ScheduleSubCategory scheduleSubCategory = new ScheduleSubCategory("헬스하자", savedSchedule1, savedSubCategory);
         scheduleSubCategoryRepository.save(scheduleSubCategory);
 
-        Matching matching = new Matching(MatchStatus.ACCEPTED, savedSchedule, user1, user2);
+        Matching matching = new Matching(1, MatchStatus.ACCEPTED, savedSchedule1, savedSchedule2);
         Matching savedMatching = matchRepository.save(matching);
 
         Report report = new Report("잠수탐", savedMatching, user1, user2);
