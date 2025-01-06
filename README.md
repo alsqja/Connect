@@ -13,7 +13,7 @@
 ## 🍨 Team 97s
 |                                      Backend & Frontend                                       |                                      Backend                                       |
 |:----------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------:|
-| ![](https://cdn-static.zep.us/static/assets/baked-avartar-images/12-14-15-398.png)  | ![](https://cdn-static.zep.us/static/assets/baked-avartar-images/10-58-53-336.png) |
+| ![](https://cdn-static.zep.us/static/assets/baked-avartar-images/12-14-15-398.png)  | ![](https://cdn-static.zep.us/static/assets/baked-avartar-images/1-18-20-677.png) |
 |                        [김민범](https://github.com/alsqja)                         |                        [이경섭](https://github.com/gyungsubLee)                         |
 |                             유저, 매칭, CI/CD, 일정                              |                                   채팅, 알림                                    |
 | ![](https://cdn-static.zep.us/static/assets/baked-avartar-images/8-284-26-332.png) | ![](https://cdn-static.zep.us/static/assets/baked-avartar-images/2-199-39-91.png) |
