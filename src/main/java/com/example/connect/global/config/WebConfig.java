@@ -17,6 +17,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -32,7 +34,7 @@ public class WebConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(AbstractHttpConfigurer::disable)
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(WHITE_LIST).permitAll()
@@ -57,5 +59,18 @@ public class WebConfig {
     public RoleHierarchy roleHierarchy() {
 
         return RoleHierarchyImpl.fromHierarchy("ROLE_ADMIN > ROLE_USER");
+    }
+
+    @Bean
+    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOriginPattern("*"); // 모든 Origin 허용
+        config.addAllowedMethod("*"); // 모든 HTTP Method 허용
+        config.addAllowedHeader("*"); // 모든 Header 허용
+        config.setAllowCredentials(true); // 인증 정보 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }
