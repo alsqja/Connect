@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class TokenDto {
+public class TokenDto implements BaseDtoType {
 
     private final String accessToken;
     private final String refreshToken;

@@ -4,6 +4,7 @@ import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class UserReqDto {
 
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$",
-            message = "INVALID_PASSWORD"
+            message = "비밀번호는 대소문자 포함 영문 + 숫자 + 특수문자를 최소 1글자씩 포함해야 합니다."
     )
     @NotBlank(message = "비밀번호를 입력해 주세요.")
     private final String password;
@@ -31,19 +32,19 @@ public class UserReqDto {
     @Pattern(regexp = "^\\d{4}\\d{2}\\d{2}$", message = "생년월일을 확인해 주세요.")
     private final String birth;
 
-    @NotBlank(message = "성별을 입력해 주세요.")
+    @NotNull(message = "성별을 입력해 주세요.")
     private final Gender gender;
 
     @NotBlank(message = "주소를 입력해 주세요.")
     private final String address;
 
-    @NotBlank(message = "주소를 입력해 주세요.")
+    @NotNull(message = "주소를 입력해 주세요.")
     private final Double latitude;
 
-    @NotBlank(message = "주소를 입력해 주세요.")
+    @NotNull(message = "주소를 입력해 주세요.")
     private final Double longitude;
 
-    @NotBlank(message = "매칭 가능 여부를 입력해 주세요.")
+    @NotNull(message = "매칭 가능 여부를 입력해 주세요.")
     private final Boolean isActiveMatching;
 
     @NotBlank(message = "프로필 사진을 입력해 주세요.")
