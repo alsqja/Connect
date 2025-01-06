@@ -57,9 +57,10 @@ public class Coupon extends BaseEntity {
         }
     }
 
-    public Coupon(String name, String description, Integer count) {
+    public Coupon(String name, String description, Integer count, Integer amount) {
         this.name = name;
         this.description = description;
         this.count = count;
+        this.amount = amount;
     }
 }

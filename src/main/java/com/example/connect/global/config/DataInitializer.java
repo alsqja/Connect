@@ -97,7 +97,7 @@ public class DataInitializer {
         SubCategory subCategory = new SubCategory("운동", "", savedCategory);
         SubCategory savedSubCategory = subCategoryRepository.save(subCategory);
 
-        Coupon coupon = new Coupon("coupon", "couponDescription", 100);
+        Coupon coupon = new Coupon("coupon", "couponDescription", 100, 5);
         Coupon savedCoupon = couponRepository.save(coupon);
 
         CouponUser couponUser = new CouponUser(LocalDateTime.now().plusMonths(1), CouponUserStatus.UNUSED, savedUser1, savedCoupon);
