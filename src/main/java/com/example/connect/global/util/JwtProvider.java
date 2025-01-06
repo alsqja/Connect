@@ -1,6 +1,7 @@
 package com.example.connect.global.util;
 
 import com.example.connect.domain.user.entity.User;
+import com.example.connect.domain.user.repository.RefreshTokenRepository;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.common.dto.TokenDto;
 import com.example.connect.global.error.errorcode.ErrorCode;
@@ -42,10 +43,19 @@ public class JwtProvider {
     private long refreshExpiryMillis;
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public TokenDto generateToken(Authentication authentication) throws EntityNotFoundException {
 
         String email = authentication.getName();
+
+        String accessToken = this.generateTokenBy(email);
+        String refreshToken = this.generateRefreshToken(email);
+
+        return new TokenDto(accessToken, refreshToken);
+    }
+
+    public TokenDto generateToken(String email) throws EntityNotFoundException {
 
         String accessToken = this.generateTokenBy(email);
         String refreshToken = this.generateRefreshToken(email);
@@ -118,18 +128,30 @@ public class JwtProvider {
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + this.refreshExpiryMillis);
 
-        return Jwts.builder()
+        String refreshToken = Jwts.builder()
                 .subject(email)
                 .issuedAt(currentDate)
                 .expiration(expireDate)
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
                 .compact();
+
+        refreshTokenRepository.saveRefreshToken(email, refreshToken, this.refreshExpiryMillis);
+
+        return refreshToken;
     }
 
     // 리프레시 토큰 검증
-    public boolean validRefreshToken(String token) {
+    public boolean validRefreshToken(String token, String email) {
         try {
+            String savedRefreshToken = refreshTokenRepository.getRefreshToken(email);
+
+            if (!savedRefreshToken.equals(token)) {
+                log.error("없는 refresh token");
+                return false;
+            }
+
             Claims claims = this.getClaims(token);
+            
             return claims.getExpiration().after(new Date());
         } catch (JwtException e) {
             log.error("Invalid refresh token: {}", e.getMessage());
