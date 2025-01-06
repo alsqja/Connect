@@ -46,4 +46,15 @@ public class Address {
         this.longitude = longitude;
         this.isActive = isActive;
     }
+
+    public Address(String address, Double latitude, Double longitude, Boolean isActive) {
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.isActive = isActive;
+    }
+
+    public void updateUser(User user) {
+        this.user = user;
+    }
 }

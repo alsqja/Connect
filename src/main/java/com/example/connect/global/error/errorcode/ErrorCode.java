@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // 400 BAD_REQUEST
+    INVALID_EMAIL(HttpStatus.BAD_REQUEST, "존재하는 이메일 입니다."),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청 입니다."),
     INVALID_FILE(HttpStatus.BAD_REQUEST, "지원하지 않는 양식의 파일입니다."),
     LARGE_FILE(HttpStatus.BAD_REQUEST, "파일의 용량은 최대 5MB 입니다."),
