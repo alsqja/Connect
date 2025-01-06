@@ -35,6 +35,9 @@
 - **Framework** : springframework.boot version '3.4.1', Spring Data JPA
   - **대규모 애플리케이션에 적합** : 다양한 비즈니스 요구사항을 처리하는 데 필요한 기능과 도구를 제공하여 대규모 프로젝트에 적합합니다.
   - **확장 가능하고 안정적인 아키텍쳐** : Spring은 장기적인 유지보수와 확장성을 고려한 구조를 만듭니다.
+- **MySQL**
+    - **트랜잭션 및 ACID 준수** : 데이터 무결성을 유지하며 신뢰성을 보장합니다. 
+
 
 </div>
 
@@ -51,8 +54,6 @@
 
 - **Tool**
   - Figma, DBdiagram, Slack, Github & git, Postman, Docker
-  - MySQL
-    - **트랜잭션 및 ACID 준수** : 데이터 무결성을 유지하며 신뢰성을 보장합니다.
   - Redis
     - **초고속 성능** : 인메모리 저장, 캐싱 시스템을 통한 속도 향상
   - WebSocket
