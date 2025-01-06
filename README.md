@@ -33,7 +33,8 @@
 - **IDE** : IntelliJ  
 - **JDK** : openjdk version '17.0.2'
 - **Framework** : springframework.boot version '3.4.1', Spring Data JPA
-  - 선택 이유 : 
+  - **대규모 애플리케이션에 적합** : 다양한 비즈니스 요구사항을 처리하는 데 필요한 기능과 도구를 제공하여 대규모 프로젝트에 적합합니다.
+  - **확장 가능하고 안정적인 아키텍쳐** : Spring은 장기적인 유지보수와 확장성을 고려한 구조를 만듭니다.
 
 </div>
 
@@ -48,7 +49,14 @@
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Notion.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Docker.png?raw=true?raw=true" width="80">
 
-- **Tool** : Figma, DBdiagram, Slack, Github & git, Postman, Docker
+- **Tool**
+  - Figma, DBdiagram, Slack, Github & git, Postman, Docker
+  - MySQL
+    - **트랜잭션 및 ACID 준수** : 데이터 무결성을 유지하며 신뢰성을 보장합니다.
+  - Redis
+    - **초고속 성능** : 인메모리 저장, 캐싱 시스템을 통한 속도 향상
+  - WebSocket
+    - **실시간 양방향 통신** : 연결이 유지된 상태에서 클라이언트와 서버가 데이터를 자유롭게 주고받을 수 있습니다.
 - **Build Tool** : Gradle
 </div>
 
@@ -117,7 +125,7 @@
   
 - 브랜치 기능별로 분리 (feature/login, feature/signup)
 
-- 모두 approve 되면 merge
+- 모두 approve 되면 merge
 
 - 브랜치 규칙
   - main
@@ -132,7 +140,7 @@
 <summary>코드 컨벤션 펼치기</summary>
 
 - 개행, 띄어쓰기
-  - formatter 사용
+  - formatter 사용
   - return 앞에 한 줄 띄우기
 
 - 클래스 명
@@ -143,7 +151,7 @@
 
 - 패키지 구조 : 도메인 형 (ex : domain / global)
 
-- constructor 사용
+- constructor 사용
 
 - Error message -> Enum 관리
 
