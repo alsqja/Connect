@@ -33,6 +33,7 @@ import com.example.connect.global.enums.MembershipType;
 import com.example.connect.global.enums.UserRole;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -55,12 +56,13 @@ public class DataInitializer {
     private final ScheduleRepository scheduleRepository;
     private final ScheduleSubCategoryRepository scheduleSubCategoryRepository;
     private final SubCategoryRepository subCategoryRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
     public void init() {
         User user1 = new User(
                 "email@email.com",
-                "password",
+                passwordEncoder.encode("Password1!"),
                 "eunyoung",
                 "19970714",
                 Gender.WOMAN,
@@ -72,7 +74,7 @@ public class DataInitializer {
 
         User user2 = new User(
                 "email2@email.com",
-                "password",
+                passwordEncoder.encode("Password1!"),
                 "minbeom",
                 "19970814",
                 Gender.MAN,
