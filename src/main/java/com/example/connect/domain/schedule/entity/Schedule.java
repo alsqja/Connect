@@ -53,8 +53,11 @@ public class Schedule {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Matching> matchings = new ArrayList<>();
+    @OneToMany(mappedBy = "fromSchedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Matching> fromMatchings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "toSchedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Matching> toMatchings = new ArrayList<>();
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleSubCategory> scheduleContents = new ArrayList<>();

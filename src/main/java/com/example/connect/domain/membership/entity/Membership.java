@@ -1,14 +1,18 @@
 package com.example.connect.domain.membership.entity;
 
+import com.example.connect.domain.user.entity.User;
 import com.example.connect.global.common.BaseEntity;
 import com.example.connect.global.enums.MembershipType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -38,6 +42,10 @@ public class Membership extends BaseEntity {
     @Column(name = "expired_at", nullable = false)
     private LocalDateTime expiredAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isDeleted;
 
@@ -48,8 +56,9 @@ public class Membership extends BaseEntity {
         }
     }
 
-    public Membership(MembershipType type, LocalDateTime expiredAt) {
+    public Membership(MembershipType type, LocalDateTime expiredAt, User user) {
         this.type = type;
         this.expiredAt = expiredAt;
+        this.user = user;
     }
 }

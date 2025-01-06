@@ -2,7 +2,6 @@ package com.example.connect.domain.match.entity;
 
 import com.example.connect.domain.report.entity.Report;
 import com.example.connect.domain.schedule.entity.Schedule;
-import com.example.connect.domain.user.entity.User;
 import com.example.connect.global.common.BaseEntity;
 import com.example.connect.global.enums.MatchStatus;
 import jakarta.persistence.CascadeType;
@@ -43,20 +42,19 @@ public class Matching extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MatchStatus status;
 
+    @Column(name = "count", nullable = false)
+    private Integer count;
+
     @Column(name = "deleted_at", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isDeleted;
 
     @ManyToOne
-    @JoinColumn(name = "schedule_id")
-    private Schedule schedule;
+    @JoinColumn(name = "schedule_from_id")
+    private Schedule fromSchedule;
 
     @ManyToOne
-    @JoinColumn(name = "from_id")
-    private User fromUser;
-
-    @ManyToOne
-    @JoinColumn(name = "to_id")
-    private User toUser;
+    @JoinColumn(name = "schedule_to_id")
+    private Schedule toSchedule;
 
     @OneToMany(mappedBy = "matching", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Report> reports = new ArrayList<>();
@@ -68,10 +66,10 @@ public class Matching extends BaseEntity {
         }
     }
 
-    public Matching(MatchStatus status, Schedule schedule, User fromUser, User toUser) {
+    public Matching(Integer count, MatchStatus status, Schedule fromSchedule, Schedule toSchedule) {
+        this.count = count;
         this.status = status;
-        this.schedule = schedule;
-        this.fromUser = fromUser;
-        this.toUser = toUser;
+        this.fromSchedule = fromSchedule;
+        this.toSchedule = toSchedule;
     }
 }
