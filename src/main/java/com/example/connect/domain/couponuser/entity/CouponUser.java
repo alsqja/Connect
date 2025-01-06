@@ -35,8 +35,8 @@ public class CouponUser extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "expired_date", nullable = false)
-    private LocalDateTime expiredDate;
+    @Column(name = "expired_at", nullable = false)
+    private LocalDateTime expiredAt;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -60,8 +60,8 @@ public class CouponUser extends BaseEntity {
         }
     }
 
-    public CouponUser(LocalDateTime expiredDate, CouponUserStatus status, User user, Coupon coupon) {
-        this.expiredDate = expiredDate;
+    public CouponUser(LocalDateTime expiredAt, CouponUserStatus status, User user, Coupon coupon) {
+        this.expiredAt = expiredAt;
         this.status = status;
         this.user = user;
         this.coupon = coupon;

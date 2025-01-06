@@ -41,6 +41,9 @@ public class Coupon extends BaseEntity {
     @Column(name = "count", nullable = false)
     private Integer count;
 
+    @Column(name = "amount", nullable = false)
+    private Integer amount;
+
     @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isDeleted;
 

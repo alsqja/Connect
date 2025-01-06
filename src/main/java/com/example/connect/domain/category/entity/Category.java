@@ -30,14 +30,14 @@ public class Category extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "profile_url", nullable = false)
-    private String profileUrl;
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SubCategory> subCategories = new ArrayList<>();
 
-    public Category(String name, String profileUrl) {
+    public Category(String name, String imageUrl) {
         this.name = name;
-        this.profileUrl = profileUrl;
+        this.imageUrl = imageUrl;
     }
 }
