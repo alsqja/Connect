@@ -7,10 +7,14 @@ import com.example.connect.domain.user.dto.UserResDto;
 import com.example.connect.domain.user.service.AuthService;
 import com.example.connect.global.common.dto.CommonResDto;
 import com.example.connect.global.common.dto.TokenDto;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,5 +43,20 @@ public class AuthController {
         TokenDto result = authService.login(loginReqDto.getEmail(), loginReqDto.getPassword());
 
         return new ResponseEntity<>(new CommonResDto<>("로그인 완료", result), HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication
+    ) {
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+            // TODO : refresh token 로직 처리 후 refresh token 삭제 처리
+        }
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
