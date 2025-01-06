@@ -33,8 +33,8 @@ public class SubCategory extends BaseEntity {
     @Column(nullable = false, name = "name")
     private String name;
 
-    @Column(nullable = false, name = "profile_url")
-    private String profileUrl;
+    @Column(nullable = false, name = "image_url")
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -43,9 +43,9 @@ public class SubCategory extends BaseEntity {
     @OneToMany(mappedBy = "subCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleSubCategory> scheduleSubCategories = new ArrayList<>();
 
-    public SubCategory(String name, String profileUrl, Category category) {
+    public SubCategory(String name, String imageUrl, Category category) {
         this.name = name;
-        this.profileUrl = profileUrl;
+        this.imageUrl = imageUrl;
         this.category = category;
     }
 }

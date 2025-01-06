@@ -1,7 +1,5 @@
 package com.example.connect.global.config;
 
-import com.example.connect.domain.address.entity.Address;
-import com.example.connect.domain.address.repository.AddressRepository;
 import com.example.connect.domain.banner.entity.Banner;
 import com.example.connect.domain.banner.repository.BannerRepository;
 import com.example.connect.domain.category.entity.Category;
@@ -37,6 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Component
@@ -44,7 +43,6 @@ import java.time.LocalDateTime;
 public class DataInitializer {
 
     private final UserRepository userRepository;
-    private final AddressRepository addressRepository;
     private final BannerRepository bannerRepository;
     private final CategoryRepository categoryRepository;
     private final CouponRepository couponRepository;
@@ -87,9 +85,6 @@ public class DataInitializer {
         Point point = new Point(BigDecimal.valueOf(10000), user1);
         pointRepository.save(point);
 
-        Address address = new Address(savedUser1, "충청북도 청주시 서원구 월평로 24", 36.6, 127.5, true);
-        addressRepository.save(address);
-
         Membership membership = new Membership(MembershipType.PREMIUM, LocalDateTime.now().plusYears(1));
         membershipRepository.save(membership);
 
@@ -108,7 +103,7 @@ public class DataInitializer {
         CouponUser couponUser = new CouponUser(LocalDateTime.now().plusMonths(1), CouponUserStatus.UNUSED, savedUser1, savedCoupon);
         couponUserRepository.save(couponUser);
 
-        Schedule schedule = new Schedule(LocalDateTime.of(2025, 1, 5, 13, 0, 0), "운동", "3대 200 입니다", user1);
+        Schedule schedule = new Schedule(LocalDate.of(2025, 1, 30), "운동", "3대 200 입니다", "충청북도 청주시 서원구 월평로 24", 36.6, 127.5, user1);
         Schedule savedSchedule = scheduleRepository.save(schedule);
 
         ScheduleSubCategory scheduleSubCategory = new ScheduleSubCategory("헬스하자", savedSchedule, savedSubCategory);

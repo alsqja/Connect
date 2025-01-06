@@ -17,7 +17,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,13 +32,22 @@ public class Schedule {
     private Long id;
 
     @Column(name = "`date`", nullable = false)
-    private LocalDateTime date;
+    private LocalDate date;
 
     @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "details", nullable = false)
     private String details;
+
+    @Column(name = "address", nullable = false)
+    private String address;
+
+    @Column(name = "latitude", nullable = false)
+    private Double latitude;
+
+    @Column(name = "longitude", nullable = false)
+    private Double longitude;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -50,10 +59,13 @@ public class Schedule {
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleSubCategory> scheduleContents = new ArrayList<>();
 
-    public Schedule(LocalDateTime date, String title, String details, User user) {
+    public Schedule(LocalDate date, String title, String details, String address, Double latitude, Double longitude, User user) {
         this.date = date;
         this.title = title;
         this.details = details;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.user = user;
     }
 }

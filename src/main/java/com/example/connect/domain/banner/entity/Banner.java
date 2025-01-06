@@ -30,14 +30,14 @@ public class Banner extends BaseEntity {
     private Long id;
 
     @Column(name = "profile_url", nullable = false)
-    private String profileUrl;
+    private String imageUrl;
 
     @Lob
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "expired_date", nullable = false)
-    private LocalDateTime expiredDate;
+    @Column(name = "expired_at", nullable = false)
+    private LocalDateTime expiredAt;
 
     @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isDeleted;
@@ -50,8 +50,8 @@ public class Banner extends BaseEntity {
     }
 
     public Banner(String profileUrl, String content, LocalDateTime expiredDate) {
-        this.profileUrl = profileUrl;
+        this.imageUrl = profileUrl;
         this.content = content;
-        this.expiredDate = expiredDate;
+        this.expiredAt = expiredDate;
     }
 }
