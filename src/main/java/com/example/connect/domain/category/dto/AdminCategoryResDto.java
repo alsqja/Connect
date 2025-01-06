@@ -25,4 +25,14 @@ public class AdminCategoryResDto implements BaseDtoType {
         this.createdAt = category.getCreatedAt();
         this.updatedAt = category.getUpdatedAt();
     }
+
+    public static AdminCategoryResDto toDto(Category category) {
+        return new AdminCategoryResDto(
+                category.getId(),
+                category.getName(),
+                category.getImageUrl(),
+                category.getCreatedAt(),
+                category.getUpdatedAt()
+        );
+    }
 }
