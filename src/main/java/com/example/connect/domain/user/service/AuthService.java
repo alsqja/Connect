@@ -1,10 +1,8 @@
 package com.example.connect.domain.user.service;
 
-import com.example.connect.domain.address.entity.Address;
-import com.example.connect.domain.address.repository.AddressRepository;
 import com.example.connect.domain.membership.repository.MembershipRepository;
+import com.example.connect.domain.user.dto.SignupResDto;
 import com.example.connect.domain.user.dto.SignupServiceDto;
-import com.example.connect.domain.user.dto.UserResDto;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.common.dto.TokenDto;
@@ -25,13 +23,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
-    private final AddressRepository addressRepository;
-    
+
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
 
-    public UserResDto signup(SignupServiceDto signupServiceDto) {
+    public SignupResDto signup(SignupServiceDto signupServiceDto) {
 
         boolean isExist = userRepository.existsByEmail(signupServiceDto.getEmail()) > 0;
 
@@ -40,17 +37,12 @@ public class AuthService {
         }
 
         User user = signupServiceDto.toUser();
-        Address address = signupServiceDto.toAddress();
 
         user.updatePassword(passwordEncoder.encode(user.getPassword()));
 
         User savedUser = userRepository.save(user);
 
-        address.updateUser(savedUser);
-
-        Address savedAddress = addressRepository.save(address);
-
-        return new UserResDto(savedUser, savedAddress);
+        return new SignupResDto(savedUser);
     }
 
     public TokenDto login(String email, String password) {

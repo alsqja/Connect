@@ -1,6 +1,5 @@
 package com.example.connect.domain.user.dto;
 
-import com.example.connect.domain.address.entity.Address;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.UserRole;
@@ -16,9 +15,6 @@ public class SignupServiceDto {
     private final String name;
     private final String birth;
     private final Gender gender;
-    private final String address;
-    private final Double latitude;
-    private final Double longitude;
     private final Boolean isActiveMatching;
     private final String profileUrl;
     private final UserRole role;
@@ -33,15 +29,6 @@ public class SignupServiceDto {
                 profileUrl,
                 isActiveMatching,
                 role
-        );
-    }
-
-    public Address toAddress() {
-        return new Address(
-                address,
-                latitude,
-                longitude,
-                true
         );
     }
 }

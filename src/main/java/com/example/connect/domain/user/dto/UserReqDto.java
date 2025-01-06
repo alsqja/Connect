@@ -35,15 +35,6 @@ public class UserReqDto {
     @NotNull(message = "성별을 입력해 주세요.")
     private final Gender gender;
 
-    @NotBlank(message = "주소를 입력해 주세요.")
-    private final String address;
-
-    @NotNull(message = "주소를 입력해 주세요.")
-    private final Double latitude;
-
-    @NotNull(message = "주소를 입력해 주세요.")
-    private final Double longitude;
-
     @NotNull(message = "매칭 가능 여부를 입력해 주세요.")
     private final Boolean isActiveMatching;
 
@@ -59,9 +50,6 @@ public class UserReqDto {
                 name,
                 birth,
                 gender,
-                address,
-                latitude,
-                longitude,
                 isActiveMatching,
                 profileUrl,
                 role

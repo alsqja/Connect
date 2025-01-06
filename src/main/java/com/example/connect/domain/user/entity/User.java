@@ -1,6 +1,5 @@
 package com.example.connect.domain.user.entity;
 
-import com.example.connect.domain.address.entity.Address;
 import com.example.connect.domain.couponuser.entity.CouponUser;
 import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.point.entity.Point;
@@ -74,9 +73,6 @@ public class User extends BaseEntity {
 
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Address> addresses = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Schedule> schedules = new ArrayList<>();

@@ -2,9 +2,9 @@ package com.example.connect.domain.user.controller;
 
 import com.example.connect.domain.user.dto.LoginReqDto;
 import com.example.connect.domain.user.dto.RefreshReqDto;
+import com.example.connect.domain.user.dto.SignupResDto;
 import com.example.connect.domain.user.dto.SignupServiceDto;
 import com.example.connect.domain.user.dto.UserReqDto;
-import com.example.connect.domain.user.dto.UserResDto;
 import com.example.connect.domain.user.repository.RefreshTokenRepository;
 import com.example.connect.domain.user.service.AuthService;
 import com.example.connect.global.common.dto.CommonResDto;
@@ -31,11 +31,11 @@ public class AuthController {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @PostMapping("/signup")
-    public ResponseEntity<CommonResDto<UserResDto>> signup(@Valid @RequestBody UserReqDto userReqDto) {
+    public ResponseEntity<CommonResDto<SignupResDto>> signup(@Valid @RequestBody UserReqDto userReqDto) {
 
         SignupServiceDto signupServiceDto = userReqDto.toSignupServiceDto();
 
-        UserResDto result = authService.signup(signupServiceDto);
+        SignupResDto result = authService.signup(signupServiceDto);
 
         return new ResponseEntity<>(new CommonResDto<>("회원가입 완료", result), HttpStatus.CREATED);
     }
