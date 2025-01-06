@@ -30,10 +30,10 @@
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/SpringDataJPA.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Mysql.png?raw=true" width="80">
 
-- **IDE** : IntelliJ
-  - 선택 이유 :  
+- **IDE** : IntelliJ  
 - **JDK** : openjdk version '17.0.2'
 - **Framework** : springframework.boot version '3.4.1', Spring Data JPA
+  - 선택 이유 : 
 
 </div>
 
@@ -48,7 +48,7 @@
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Notion.png?raw=true" width="80">
 <img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Docker.png?raw=true?raw=true" width="80">
 
-- **Tool** : Figma, ERD Cloud, Slack, Github & git, Postman, Docker
+- **Tool** : Figma, DBdiagram, Slack, Github & git, Postman, Docker
 - **Build Tool** : Gradle
 </div>
 
@@ -57,19 +57,19 @@
 ## 프로젝트 구조
 
 ```plaintext
-📦 trello-project
+📦 connect-project
 ├── 📂 src
 │   ├── 📂 main
 │   │   ├── 📂 java
-│   │   │   ├── 📂 board
-│   │   │   ├── 📂 card
-│   │   │   ├── 📂 comment
-│   │   │   ├── 📂 global    # 공통 코드 (ex. config, filter)
-│   │   │   ├── 📂 list
-│   │   │   ├── 📂 member
-│   │   │   ├── 📂 notice
-│   │   │   ├── 📂 user
-│   │   │   └── 📂 workspace
+│   │   │   ├── 📂 
+│   │   │   ├── 📂 
+│   │   │   ├── 📂 
+│   │   │   ├── 📂 global   # 공통 코드 (ex. config, filter)
+│   │   │   ├── 📂 
+│   │   │   ├── 📂 
+│   │   │   ├── 📂 
+│   │   │   ├── 📂 
+│   │   │   └── 📂 
 │   └── 📂 test
 ├── 📄 .gitignore
 ├── 📄 Dockerfile
@@ -80,42 +80,60 @@
 <details>
 <summary>와이어 프레임</summary>
 
-<img src="https://github.com/user-attachments/assets/6d3bd3ce-87de-4de2-8999-7281e7dc2921">
+<img src="">
 
-👉🏻 [와이어 프레임 바로보기](https://www.figma.com/design/yojLnL4papWqljeFPi95jT/Untitled?node-id=0-1&t=RZNg2zPztvl5EarL-1)
+👉🏻 [와이어 프레임 바로보기](https://www.figma.com/design/iMqa9R5iK9aNcW81Xyl2Bi/01-%EC%B5%9C%EC%A2%85-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%99%80%EC%9D%B4%EC%96%B4-%ED%94%84%EB%A0%88%EC%9E%84?node-id=0-1&p=f&t=7h2GcHjh7sLqGqeo-0)
 </details>
 
 <details>
-<summary>ERD</summary>
-<img src="https://github.com/user-attachments/assets/b21cafae-b9f2-40e3-ba01-786651657840">
+<summary>DBdiagram</summary>
+<img src="">
 
-👉🏻 [ERD 바로보기](https://www.erdcloud.com/d/z8s3jowhc7E8ALxH7)
+👉🏻 [DBdiagram 바로보기](https://dbdiagram.io/d/connect-677631885406798ef7139d06)
 
 </details>
 
 <br />
 
 ## 🪧 커밋 컨벤션
-| 작업 타입| 작업 내용|
-|------|-|
-|✨ update|해당 파일에 새로운 기능이 생김|
-|🎉 feat|없던 파일을 생성함, 초기 세팅|
-|🐛 bugfix|버그 수정|
-|♻️ refactor|코드 리팩토링|
-|🩹 fix|코드 수정|
-|🚚 move|파일 옮김/정리|
-|🔥 del|기능/파일을 삭제|
-|🍻 test|테스트 코드를 작성|
-|🙈 gitfix|gitignore 수정|
-|🔨script|package.json 변경(npm 설치 등)|
-|📝 docs|문서 추가
+<details>
+<summary>커밋 컨벤션 펼치기</summary>
+
+- feat : 기능 추가
+
+- fix : 기능 수정
+  
+- hotfix : 기능 급하게 수정
+  
+- test : 테스트 코드 작성
+  
+- refactor : 리팩토링
+  
+- docs : 문서 작업
+  
+- style : 코드 스타일 등 로직 변경 외 처리
+
+- PR 은 이슈당 하나 씩
+  
+- 브랜치 기능별로 분리 (feature/login, feature/signup)
+
+- 모두 approve 되면 merge
+
+- 브랜치 규칙
+  - main
+  - develop
+  - feature/기능
+  - fix/기능
+  - refactor/반영한 부분
+</details>
 
 ## 👔 코드 컨벤션
 <details>
 <summary>코드 컨벤션 펼치기</summary>
 
-- 주석
-  - java doc 사용
+- 개행, 띄어쓰기
+  - formatter 사용
+  - return 앞에 한 줄 띄우기
 
 - 클래스 명
   - PascalCase 사용 (ex : UserAccount)
@@ -123,21 +141,25 @@
 - 변수 명
   - camelCase 사용 (ex : firstName)
 
-- 패키지 구조 : 도메인 형
-  - 도메인 밑에 패키지 없이 작성
-  - Dto만 분리
+- 패키지 구조 : 도메인 형 (ex : domain / global)
 
-- 생성자 → 생성자 패턴
+- constructor 사용
 
-- lombok Setter 사용 금지
+- Error message -> Enum 관리
+
+- import * 규칙
 
 - service interface 없이 class 로 바로 생성
+
+- Lombok
+  - AllArgsConstructor, Setter 사용 금지
+  - 기본 생성자 - protected 선언 
 </details>
 
 ## 🗂️ APIs
 작성한 API는 아래에서 확인할 수 있습니다.
 
-👉🏻 [API 바로보기](https://teamsparta.notion.site/2-1582dc3ef51481ee80ead2738eea31f3)
+👉🏻 [API 바로보기](https://www.notion.so/teamsparta/API-7d191d644a674fbe971141dd2e02c782)
 
 ## 🔧구현 기능
 <details>
@@ -147,39 +169,70 @@
 
 - 회원가입 & 회원 탈퇴
 - 로그인 & 로그아웃
+- 리프레시 토큰 발급
+- 프로필 수정 & 조회
+- 비밀번호 확인
+- 관리자 유저 수정
+- 관리자 유저 전체 조회
 
-### 🪜 워크 스페이스
+### 🪜 카테고리/서브 카테고리
 
-- 워크 스페이스 생성 & 수정 & 삭제
-- 워크 스페이스 전체 조회 & 단건 조회
-- 워크 스페이스 멤버 초대 & 초대 수락
-- 워크 스페이스 멤버 목록 조회
-- 워크 스페이스 유저 권한 수정
+- 카테고리 생성 & 수정 & 삭제
+- 서브 카테고리 생성 & 수정 & 삭제
+- 카테고리, 서브 카테고리 전체 조회
 
-### 🎬 보드 
+### 🎬 배너 
 
-- 보드 생성 & 수정 & 삭제
-- 보드 단건 조회
+- 배너 생성 & 수정
+- 배너 전체 조회 & 단건 조회
 
-### ✅ 리스트
+### ✅ 포인트
 
-- 리스트 생성 & 수정 & 삭제
-- 리스트 순서 변경
+- 포인트 생성 & 수정
+- 포인트 내역 조회
 
-### 📇 카드
+### 📇 쿠폰
 
-- 카드 생성 & 수정 & 삭제
-- 카드 단건 조회
-- 카드 다건 조회 (검색)
+- 쿠폰 생성 & 수정
+- 쿠폰 발급
+- 유저 쿠폰 확인
 
-### 💬 댓글
+### 💬 신고
 
-- 댓글 생성 & 수정 & 삭제
-- 댓글 전체 조회
+- 관리자
+  - 신고 내역 조회
+  - 신고 삭제
+- 사용자
+  - 신고 하기
+  - 신고 취소
+  - 본인 신고 내역 확인
+  - 해당 유저 신고 당한 내역 확인
 
-### ⏰ 알림
+### 💬 채팅
 
-- 특정 동작 수행시 슬랙으로 알림 발송
+- 채팅 보내기 & 받기
+- 채팅방 목록 확인
+- 채팅방 입장
+
+### 🗓️ 일정
+
+- 일정 등록 & 수정 & 삭제
+- 일정 전체 조회 & 단일 조회
+- 월별 일정 조회
+
+### 💸 결제
+
+- 결제 등록
+- 결제 취소
+- 결제 내역
+
+### 👩‍❤️‍👨매칭
+
+- 일정 매칭 생성
+- 매칭 신청
+- 매칭 수정
+- 매칭 전체 조회
+- 단일 일정 매칭 조회
 </details>
 
 
