@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 public class AdminCategoryReqDto {
 
     @NotBlank(message = "이름을 입력해 주세요.")
-    private String name;
+    private final String name;
 
     @NotBlank(message = "Url을 입력해 주세요.")
-    private String imageUrl;
+    private final String imageUrl;
 }

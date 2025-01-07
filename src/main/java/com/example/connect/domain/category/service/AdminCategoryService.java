@@ -5,7 +5,6 @@ import com.example.connect.domain.category.dto.AdminCategoryResDto;
 import com.example.connect.domain.category.entity.Category;
 import com.example.connect.domain.category.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
