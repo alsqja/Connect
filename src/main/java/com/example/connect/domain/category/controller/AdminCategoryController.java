@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +39,14 @@ public class AdminCategoryController {
         AdminCategoryResDto result = adminCategoryService.updateCategory(id, adminCategoryReqDto.getName(), adminCategoryReqDto.getImageUrl());
 
         return new ResponseEntity<>(new CommonResDto<>("카테고리 수정 완료.", result), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+
+        adminCategoryService.deleteCategory(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
 
