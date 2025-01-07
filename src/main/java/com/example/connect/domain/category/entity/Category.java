@@ -40,4 +40,12 @@ public class Category extends BaseEntity {
         this.name = name;
         this.imageUrl = imageUrl;
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }
