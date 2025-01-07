@@ -1,6 +1,6 @@
 package com.example.connect.global.config.auth;
 
-import com.example.connect.domain.user.entity.User;
+import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.global.enums.UserRole;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
-    private final User user;
+    private final RedisUserDto user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

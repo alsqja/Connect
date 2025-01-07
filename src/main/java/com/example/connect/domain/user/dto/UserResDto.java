@@ -1,7 +1,5 @@
 package com.example.connect.domain.user.dto;
 
-import com.example.connect.domain.membership.entity.Membership;
-import com.example.connect.domain.user.entity.User;
 import com.example.connect.global.common.dto.BaseDtoType;
 import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.MembershipType;
@@ -26,7 +24,7 @@ public class UserResDto implements BaseDtoType {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public UserResDto(User user, Membership membership) {
+    public UserResDto(RedisUserDto user) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.name = user.getName();
@@ -34,22 +32,8 @@ public class UserResDto implements BaseDtoType {
         this.gender = user.getGender();
         this.profileUrl = user.getProfileUrl();
         this.isActiveMatching = user.getIsActiveMatching();
-        this.membershipType = membership.getType();
-        this.expiredAt = membership.getExpiredAt();
-        this.createdAt = user.getCreatedAt();
-        this.updatedAt = user.getUpdatedAt();
-    }
-
-    public UserResDto(User user) {
-        this.id = user.getId();
-        this.email = user.getEmail();
-        this.name = user.getName();
-        this.birth = user.getBirth();
-        this.gender = user.getGender();
-        this.profileUrl = user.getProfileUrl();
-        this.isActiveMatching = user.getIsActiveMatching();
-        this.membershipType = null;
-        this.expiredAt = null;
+        this.membershipType = user.getMembershipType();
+        this.expiredAt = user.getExpiredAt();
         this.createdAt = user.getCreatedAt();
         this.updatedAt = user.getUpdatedAt();
     }

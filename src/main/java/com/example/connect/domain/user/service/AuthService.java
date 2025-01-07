@@ -1,9 +1,12 @@
 package com.example.connect.domain.user.service;
 
+import com.example.connect.domain.membership.entity.Membership;
 import com.example.connect.domain.membership.repository.MembershipRepository;
+import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.SignupResDto;
 import com.example.connect.domain.user.dto.SignupServiceDto;
 import com.example.connect.domain.user.entity.User;
+import com.example.connect.domain.user.repository.RedisTokenRepository;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.common.dto.TokenDto;
 import com.example.connect.global.error.errorcode.ErrorCode;
@@ -12,10 +15,10 @@ import com.example.connect.global.error.exception.UnAuthorizedException;
 import com.example.connect.global.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final RedisTokenRepository redisTokenRepository;
 
     public SignupResDto signup(SignupServiceDto signupServiceDto) {
 
@@ -53,21 +57,38 @@ public class AuthService {
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_PASSWORD);
         }
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
-        );
+        Membership membership = membershipRepository.findByUserIdAndExpiredAtAfter(user.getId(), LocalDateTime.now()).orElse(null);
 
-        return jwtProvider.generateToken(authentication);
+        RedisUserDto sessionUser;
+
+        if (membership == null) {
+            sessionUser = new RedisUserDto(user);
+        } else {
+            sessionUser = new RedisUserDto(user, membership);
+        }
+
+        return jwtProvider.generateToken(sessionUser);
     }
 
     public TokenDto refresh(String refreshToken) {
 
         String email = jwtProvider.getUsername(refreshToken);
 
+        User user = userRepository.findByEmailOrElseThrow(email);
+        Membership membership = membershipRepository.findByUserIdAndExpiredAtAfter(user.getId(), LocalDateTime.now()).orElse(null);
+
+        RedisUserDto sessionUser;
+
+        if (membership == null) {
+            sessionUser = new RedisUserDto(user);
+        } else {
+            sessionUser = new RedisUserDto(user, membership);
+        }
+
         if (!jwtProvider.validRefreshToken(refreshToken, email)) {
             throw new UnAuthorizedException(ErrorCode.EXPIRED_TOKEN);
         }
 
-        return jwtProvider.generateToken(email);
+        return jwtProvider.generateToken(sessionUser);
     }
 }
