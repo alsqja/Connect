@@ -39,4 +39,13 @@ public class AdminCategoryService {
 
         return AdminCategoryResDto.toDto(category);
     }
+
+
+    @Transactional
+    public void deleteCategory(Long id) {
+
+        Category category = categoryRepository.findByIdOrElseThrow(id);
+
+        categoryRepository.delete(category);
+    }
 }
