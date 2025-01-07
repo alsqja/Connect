@@ -53,4 +53,13 @@ public class UserService {
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_PASSWORD);
         }
     }
+
+    @Transactional
+    public void deleteUser(RedisUserDto me) {
+
+        redisTokenRepository.deleteUser(me.getEmail());
+        redisTokenRepository.deleteRefreshToken(me.getEmail());
+
+        userRepository.deleteById(me.getId());
+    }
 }

@@ -9,6 +9,8 @@ import com.example.connect.domain.user.service.UserService;
 import com.example.connect.global.common.Const;
 import com.example.connect.global.common.dto.CommonResDto;
 import com.example.connect.global.config.auth.UserDetailsImpl;
+import com.example.connect.global.error.errorcode.ErrorCode;
+import com.example.connect.global.error.exception.UnAuthorizedException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,12 +19,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @RestController
 @RequestMapping("/api/users/my")
@@ -77,6 +82,30 @@ public class UserController {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteMe(
+            @SessionAttribute(name = Const.PASSWORD_CHECK, required = false) Boolean isChecked,
+            Authentication authentication,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+
+        if (isChecked == null) {
+            throw new UnAuthorizedException(ErrorCode.UNCHECKED_PASSWORD);
+        }
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RedisUserDto me = userDetails.getUser();
+
+        userService.deleteUser(me);
+
+        if (authentication.isAuthenticated()) {
+            new SecurityContextLogoutHandler().logout(request, response, authentication);
+        }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
