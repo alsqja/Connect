@@ -24,8 +24,8 @@ public class FileController {
             @RequestBody UrlReqDto dto
     ) {
 
-        String preSignedUrl = fileService.createPreSignedUrl(dto.getFileName());
+        UrlResDto result = fileService.createPreSignedUrl(dto.getFileName());
 
-        return new ResponseEntity<>(new CommonResDto<>("url 생성 완료", new UrlResDto(preSignedUrl)), HttpStatus.CREATED);
+        return new ResponseEntity<>(new CommonResDto<>("url 생성 완료", result), HttpStatus.CREATED);
     }
 }
