@@ -113,4 +113,16 @@ public class User extends BaseEntity {
     public void updatePassword(String password) {
         this.password = password;
     }
+
+    public void updateUserFields(String name, String profileUrl, Boolean isActiveMatching) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (profileUrl != null) {
+            this.profileUrl = profileUrl;
+        }
+        if (isActiveMatching != null) {
+            this.isActiveMatching = isActiveMatching;
+        }
+    }
 }

@@ -1,11 +1,9 @@
 package com.example.connect.global.util;
 
-import com.example.connect.domain.user.entity.User;
-import com.example.connect.domain.user.repository.RefreshTokenRepository;
+import com.example.connect.domain.user.dto.RedisUserDto;
+import com.example.connect.domain.user.repository.RedisTokenRepository;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.common.dto.TokenDto;
-import com.example.connect.global.error.errorcode.ErrorCode;
-import com.example.connect.global.error.exception.NotFoundException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -18,7 +16,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -43,22 +40,14 @@ public class JwtProvider {
     private long refreshExpiryMillis;
 
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisTokenRepository redisTokenRepository;
 
-    public TokenDto generateToken(Authentication authentication) throws EntityNotFoundException {
+    public TokenDto generateToken(RedisUserDto sessionUser) throws EntityNotFoundException {
 
-        String email = authentication.getName();
+        String email = sessionUser.getEmail();
 
-        String accessToken = this.generateTokenBy(email);
-        String refreshToken = this.generateRefreshToken(email);
-
-        return new TokenDto(accessToken, refreshToken);
-    }
-
-    public TokenDto generateToken(String email) throws EntityNotFoundException {
-
-        String accessToken = this.generateTokenBy(email);
-        String refreshToken = this.generateRefreshToken(email);
+        String accessToken = this.generateTokenBy(sessionUser);
+        String refreshToken = this.generateRefreshToken(sessionUser);
 
         return new TokenDto(accessToken, refreshToken);
     }
@@ -82,17 +71,18 @@ public class JwtProvider {
         return false;
     }
 
-    private String generateTokenBy(String email) throws EntityNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
+    private String generateTokenBy(RedisUserDto sessionUser) throws EntityNotFoundException {
+
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + this.expiryMillis);
 
+        redisTokenRepository.saveUser(sessionUser);
+
         return Jwts.builder()
-                .subject(email)
+                .subject(sessionUser.getEmail())
                 .issuedAt(currentDate)
                 .expiration(expireDate)
-                .claim("role", user.getRole())
+                .claim("role", sessionUser.getRole())
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
                 .compact();
     }
@@ -124,18 +114,18 @@ public class JwtProvider {
     }
 
     // 리프레시 토큰 생성
-    public String generateRefreshToken(String email) {
+    public String generateRefreshToken(RedisUserDto sessionUser) {
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + this.refreshExpiryMillis);
 
         String refreshToken = Jwts.builder()
-                .subject(email)
+                .subject(sessionUser.getEmail())
                 .issuedAt(currentDate)
                 .expiration(expireDate)
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
                 .compact();
 
-        refreshTokenRepository.saveRefreshToken(email, refreshToken, this.refreshExpiryMillis);
+        redisTokenRepository.saveRefreshToken(sessionUser.getEmail(), refreshToken, this.refreshExpiryMillis);
 
         return refreshToken;
     }
@@ -143,7 +133,7 @@ public class JwtProvider {
     // 리프레시 토큰 검증
     public boolean validRefreshToken(String token, String email) {
         try {
-            String savedRefreshToken = refreshTokenRepository.getRefreshToken(email);
+            String savedRefreshToken = redisTokenRepository.getRefreshToken(email);
 
             if (!savedRefreshToken.equals(token)) {
                 log.error("없는 refresh token");
@@ -151,7 +141,7 @@ public class JwtProvider {
             }
 
             Claims claims = this.getClaims(token);
-            
+
             return claims.getExpiration().after(new Date());
         } catch (JwtException e) {
             log.error("Invalid refresh token: {}", e.getMessage());

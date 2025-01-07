@@ -5,7 +5,7 @@ import com.example.connect.domain.user.dto.RefreshReqDto;
 import com.example.connect.domain.user.dto.SignupResDto;
 import com.example.connect.domain.user.dto.SignupServiceDto;
 import com.example.connect.domain.user.dto.UserReqDto;
-import com.example.connect.domain.user.repository.RefreshTokenRepository;
+import com.example.connect.domain.user.repository.RedisTokenRepository;
 import com.example.connect.domain.user.service.AuthService;
 import com.example.connect.global.common.dto.CommonResDto;
 import com.example.connect.global.common.dto.TokenDto;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisTokenRepository redisTokenRepository;
 
     @PostMapping("/signup")
     public ResponseEntity<CommonResDto<SignupResDto>> signup(@Valid @RequestBody UserReqDto userReqDto) {
@@ -41,7 +41,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResDto<TokenDto>> login(@Valid @RequestBody LoginReqDto loginReqDto) {
+    public ResponseEntity<CommonResDto<TokenDto>> login(
+            @Valid @RequestBody LoginReqDto loginReqDto
+    ) {
 
         TokenDto result = authService.login(loginReqDto.getEmail(), loginReqDto.getPassword());
 
@@ -57,14 +59,16 @@ public class AuthController {
 
         if (authentication != null && authentication.isAuthenticated()) {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
-            refreshTokenRepository.deleteRefreshToken(authentication.getName());
+            redisTokenRepository.deleteRefreshToken(authentication.getName());
         }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<CommonResDto<TokenDto>> refreshAccessToken(@Valid @RequestBody RefreshReqDto dto) {
+    public ResponseEntity<CommonResDto<TokenDto>> refreshAccessToken(
+            @Valid @RequestBody RefreshReqDto dto
+    ) {
 
         TokenDto result = authService.refresh(dto.getRefreshToken());
 
