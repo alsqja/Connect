@@ -37,7 +37,7 @@ public class Report extends BaseEntity {
     private Boolean isDeleted;
 
     @ManyToOne
-    @JoinColumn(name = "match_id")
+    @JoinColumn(name = "matching_id")
     private Matching matching;
 
     @ManyToOne

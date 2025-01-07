@@ -12,10 +12,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,6 +28,8 @@ import java.util.List;
 @Table(name = "schedule")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE schedule SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 public class Schedule {
 
     @Id
@@ -49,6 +54,9 @@ public class Schedule {
     @Column(name = "longitude", nullable = false)
     private Double longitude;
 
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    private Boolean isDeleted;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -61,6 +69,13 @@ public class Schedule {
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleSubCategory> scheduleContents = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        if (isDeleted == null) {
+            isDeleted = false;
+        }
+    }
 
     public Schedule(LocalDate date, String title, String details, String address, Double latitude, Double longitude, User user) {
         this.date = date;
