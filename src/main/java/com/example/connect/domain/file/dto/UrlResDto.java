@@ -9,4 +9,5 @@ import lombok.RequiredArgsConstructor;
 public class UrlResDto implements BaseDtoType {
 
     private final String url;
+    private final String fileName;
 }

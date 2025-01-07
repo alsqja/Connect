@@ -1,5 +1,6 @@
 package com.example.connect.domain.file.service;
 
+import com.example.connect.domain.file.dto.UrlResDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -32,15 +33,17 @@ public class FileService {
                 .build();
     }
 
-    public String createPreSignedUrl(String fileName) {
+    public UrlResDto createPreSignedUrl(String fileName) {
+
+        String finalFileName = UUID.randomUUID() + "_" + fileName;
 
         PutObjectPresignRequest preSignRequest = PutObjectPresignRequest.builder()
-                .putObjectRequest(req -> req.bucket(bucketName).key(UUID.randomUUID() + "_" + fileName))
+                .putObjectRequest(req -> req.bucket(bucketName).key(finalFileName))
                 .signatureDuration(Duration.ofMinutes(10))
                 .build();
 
         URL preSignedUrl = presigner.presignPutObject(preSignRequest).url();
 
-        return preSignedUrl.toString();
+        return new UrlResDto(preSignedUrl.toString(), finalFileName);
     }
 }
