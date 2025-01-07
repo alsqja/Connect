@@ -30,7 +30,7 @@ import java.util.List;
 @Table(name = "matching")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE match SET is_deleted = true WHERE id = ?")
+@SQLDelete(sql = "UPDATE matching SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
 public class Matching extends BaseEntity {
 
@@ -45,7 +45,7 @@ public class Matching extends BaseEntity {
     @Column(name = "count", nullable = false)
     private Integer count;
 
-    @Column(name = "deleted_at", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isDeleted;
 
     @ManyToOne
