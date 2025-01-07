@@ -18,7 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +57,7 @@ public class AuthService {
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_PASSWORD);
         }
 
-        Membership membership = membershipRepository.findByUserIdAndExpiredAtAfter(user.getId(), LocalDateTime.now()).orElse(null);
+        Membership membership = membershipRepository.findByUserIdAndExpiredDateAfter(user.getId(), LocalDate.now()).orElse(null);
 
         RedisUserDto sessionUser;
 
@@ -75,7 +75,7 @@ public class AuthService {
         String email = jwtProvider.getUsername(refreshToken);
 
         User user = userRepository.findByEmailOrElseThrow(email);
-        Membership membership = membershipRepository.findByUserIdAndExpiredAtAfter(user.getId(), LocalDateTime.now()).orElse(null);
+        Membership membership = membershipRepository.findByUserIdAndExpiredDateAfter(user.getId(), LocalDate.now()).orElse(null);
 
         RedisUserDto sessionUser;
 

@@ -8,6 +8,7 @@ import com.example.connect.global.enums.UserRole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -24,7 +25,7 @@ public class RedisUserDto {
     private Boolean isActiveMatching;
     private UserRole role;
     private MembershipType membershipType;
-    private LocalDateTime expiredAt;
+    private LocalDate expiredDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -39,7 +40,7 @@ public class RedisUserDto {
         this.profileUrl = user.getProfileUrl();
         this.isActiveMatching = user.getIsActiveMatching();
         this.membershipType = membership.getType();
-        this.expiredAt = membership.getExpiredAt();
+        this.expiredDate = membership.getExpiredDate();
         this.createdAt = user.getCreatedAt();
         this.updatedAt = user.getUpdatedAt();
     }
@@ -55,13 +56,13 @@ public class RedisUserDto {
         this.profileUrl = user.getProfileUrl();
         this.isActiveMatching = user.getIsActiveMatching();
         this.membershipType = null;
-        this.expiredAt = null;
+        this.expiredDate = null;
         this.createdAt = user.getCreatedAt();
         this.updatedAt = user.getUpdatedAt();
     }
 
-    public void updateMembership(MembershipType membershipType, LocalDateTime expiredAt) {
+    public void updateMembership(MembershipType membershipType, LocalDate expiredDate) {
         this.membershipType = membershipType;
-        this.expiredAt = expiredAt;
+        this.expiredDate = expiredDate;
     }
 }
