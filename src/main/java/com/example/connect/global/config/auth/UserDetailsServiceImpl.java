@@ -29,9 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         if (sessionUser == null) {
             User user = userRepository.findByEmailOrElseThrow(username);
-            System.out.println("seq user query");
             Membership membership = membershipRepository.findByUserIdAndExpiredAtAfter(user.getId(), LocalDateTime.now()).orElse(null);
-            System.out.println("seq membership query");
 
             if (membership == null) {
                 sessionUser = new RedisUserDto(user);

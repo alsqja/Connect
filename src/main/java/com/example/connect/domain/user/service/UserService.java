@@ -46,4 +46,11 @@ public class UserService {
 
         return new UserResDto(redisUserDto);
     }
+
+    public void checkPassword(RedisUserDto me, String password) {
+
+        if (!passwordEncoder.matches(password, me.getPassword())) {
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_PASSWORD);
+        }
+    }
 }
