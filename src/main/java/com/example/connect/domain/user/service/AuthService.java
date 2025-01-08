@@ -5,6 +5,7 @@ import com.example.connect.domain.membership.repository.MembershipRepository;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.SignupResDto;
 import com.example.connect.domain.user.dto.SignupServiceDto;
+import com.example.connect.domain.user.dto.UserTokenResDto;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.RedisTokenRepository;
 import com.example.connect.domain.user.repository.UserRepository;
@@ -49,7 +50,7 @@ public class AuthService {
         return new SignupResDto(savedUser);
     }
 
-    public TokenDto login(String email, String password) {
+    public UserTokenResDto login(String email, String password) {
 
         User user = userRepository.findByEmailOrElseThrow(email);
 
@@ -67,7 +68,9 @@ public class AuthService {
             sessionUser = new RedisUserDto(user, membership);
         }
 
-        return jwtProvider.generateToken(sessionUser);
+        TokenDto tokens = jwtProvider.generateToken(sessionUser);
+
+        return new UserTokenResDto(sessionUser.getId(), sessionUser.getRole(), sessionUser.getMembershipType(), sessionUser.getExpiredDate(), tokens.getAccessToken(), tokens.getRefreshToken());
     }
 
     public TokenDto refresh(String refreshToken) {

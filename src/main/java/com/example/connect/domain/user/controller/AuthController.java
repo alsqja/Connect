@@ -5,6 +5,7 @@ import com.example.connect.domain.user.dto.RefreshReqDto;
 import com.example.connect.domain.user.dto.SignupResDto;
 import com.example.connect.domain.user.dto.SignupServiceDto;
 import com.example.connect.domain.user.dto.UserReqDto;
+import com.example.connect.domain.user.dto.UserTokenResDto;
 import com.example.connect.domain.user.repository.RedisTokenRepository;
 import com.example.connect.domain.user.service.AuthService;
 import com.example.connect.global.common.dto.CommonResDto;
@@ -41,11 +42,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CommonResDto<TokenDto>> login(
+    public ResponseEntity<CommonResDto<UserTokenResDto>> login(
             @Valid @RequestBody LoginReqDto loginReqDto
     ) {
 
-        TokenDto result = authService.login(loginReqDto.getEmail(), loginReqDto.getPassword());
+        UserTokenResDto result = authService.login(loginReqDto.getEmail(), loginReqDto.getPassword());
 
         return new ResponseEntity<>(new CommonResDto<>("로그인 완료", result), HttpStatus.OK);
     }
