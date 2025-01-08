@@ -27,4 +27,25 @@ public class AdminSubCategoryService {
 
         return AdminSubCategoryResDto.toDto(savedSubCategory);
     }
+
+    @Transactional
+    public AdminSubCategoryResDto updateSubCategory(Long id, String name, String imageUrl, Long categoryId) {
+
+        SubCategory subCategory = subCategoryRepository.findByIdOrElseThrow(id);
+
+        if (name != null && !name.isEmpty()) {
+            subCategory.updateName(name);
+        }
+
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            subCategory.updateImageUrl(imageUrl);
+        }
+
+        if (categoryId != null) {
+            Category category = categoryRepository.findByIdOrElseThrow(categoryId);
+            subCategory.updateCategory(category);
+        }
+
+        return AdminSubCategoryResDto.toDto(subCategory);
+    }
 }

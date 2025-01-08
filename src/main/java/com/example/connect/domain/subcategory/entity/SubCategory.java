@@ -48,4 +48,16 @@ public class SubCategory extends BaseEntity {
         this.imageUrl = imageUrl;
         this.category = category;
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void updateCategory(Category category) {
+        this.category = category;
+    }
 }
