@@ -110,6 +110,18 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
+    public User(UserAdminOnly findUser) {
+        this.id = findUser.getId();
+        this.email = findUser.getEmail();
+        this.name = findUser.getName();
+        this.birth = findUser.getBirth();
+        this.gender = findUser.getGender();
+        this.profileUrl = findUser.getProfileUrl();
+        this.status = findUser.getStatus();
+        this.role = findUser.getRole();
+        this.isDeleted = findUser.getIsDeleted();
+    }
+
     public void updatePassword(String password) {
         this.password = password;
     }

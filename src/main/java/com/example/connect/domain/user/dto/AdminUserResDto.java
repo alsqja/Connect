@@ -28,4 +28,5 @@ public class AdminUserResDto implements BaseDtoType {
     private final LocalDate expiredDate;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private final Boolean isDeleted;
 }

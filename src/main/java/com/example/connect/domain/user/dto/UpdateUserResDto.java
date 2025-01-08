@@ -1,6 +1,6 @@
 package com.example.connect.domain.user.dto;
 
-import com.example.connect.domain.user.entity.User;
+import com.example.connect.domain.user.entity.UserAdminOnly;
 import com.example.connect.global.common.dto.BaseDtoType;
 import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.UserRole;
@@ -23,7 +23,7 @@ public class UpdateUserResDto implements BaseDtoType {
     private final UserRole role;
     private final Boolean isDeleted;
 
-    public UpdateUserResDto(User user) {
+    public UpdateUserResDto(UserAdminOnly user) {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();

@@ -3,7 +3,7 @@ package com.example.connect.domain.user.service;
 import com.example.connect.domain.user.dto.AdminUserListResDto;
 import com.example.connect.domain.user.dto.AdminUserResDto;
 import com.example.connect.domain.user.dto.UpdateUserResDto;
-import com.example.connect.domain.user.entity.User;
+import com.example.connect.domain.user.entity.UserAdminOnly;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.enums.UserRole;
 import com.example.connect.global.enums.UserStatus;
@@ -23,7 +23,7 @@ public class AdminUserService {
     public AdminUserListResDto findAllUser(int page, int size) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<AdminUserResDto> userDetails = userRepository.findAdminUserDetails(pageable);
+        Page<AdminUserResDto> userDetails = userRepository.findQueryAdminUserDetails(pageable);
 
         return new AdminUserListResDto(page, size, userDetails.getTotalElements(), userDetails.getTotalPages(), userDetails.getContent());
     }
@@ -31,7 +31,7 @@ public class AdminUserService {
     @Transactional
     public UpdateUserResDto updateUser(Long id, UserRole role, UserStatus status, Boolean isDeleted) {
 
-        User user = userRepository.findByIdOrElseThrow(id);
+        UserAdminOnly user = userRepository.findByIdWithDeleted(id);
 
         if (role != null) {
             user.updateRole(role);
