@@ -125,4 +125,16 @@ public class User extends BaseEntity {
             this.isActiveMatching = isActiveMatching;
         }
     }
+
+    public void updateRole(UserRole role) {
+        this.role = role;
+    }
+
+    public void updateStatus(UserStatus status) {
+        this.status = status;
+    }
+
+    public void updateIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }
