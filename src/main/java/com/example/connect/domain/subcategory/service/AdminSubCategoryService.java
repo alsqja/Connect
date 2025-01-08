@@ -48,4 +48,12 @@ public class AdminSubCategoryService {
 
         return AdminSubCategoryResDto.toDto(subCategory);
     }
+
+    @Transactional
+    public void deleteSubCategory(Long id) {
+
+        SubCategory subCategory = subCategoryRepository.findByIdOrElseThrow(id);
+
+        subCategoryRepository.delete(subCategory);
+    }
 }
