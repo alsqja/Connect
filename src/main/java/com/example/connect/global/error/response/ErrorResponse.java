@@ -15,13 +15,13 @@ public class ErrorResponse {
     private final int status;
     private final String error;
     private final String code;
-    private final String massage;
+    private final String message;
 
-    public ErrorResponse(int status, String error, String code, String massage) {
+    public ErrorResponse(int status, String error, String code, String message) {
         this.status = status;
         this.error = error;
         this.code = code;
-        this.massage = massage;
+        this.message = message;
     }
 
     public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode) {
