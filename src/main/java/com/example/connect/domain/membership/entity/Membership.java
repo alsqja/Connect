@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "membership")
@@ -39,8 +39,8 @@ public class Membership extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MembershipType type;
 
-    @Column(name = "expired_at", nullable = false)
-    private LocalDateTime expiredAt;
+    @Column(name = "expired_Date", nullable = false)
+    private LocalDate expiredDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -56,9 +56,9 @@ public class Membership extends BaseEntity {
         }
     }
 
-    public Membership(MembershipType type, LocalDateTime expiredAt, User user) {
+    public Membership(MembershipType type, LocalDate expiredDate, User user) {
         this.type = type;
-        this.expiredAt = expiredAt;
+        this.expiredDate = expiredDate;
         this.user = user;
     }
 }

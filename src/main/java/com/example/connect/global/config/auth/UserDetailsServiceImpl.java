@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         if (sessionUser == null) {
             User user = userRepository.findByEmailOrElseThrow(username);
-            Membership membership = membershipRepository.findByUserIdAndExpiredAtAfter(user.getId(), LocalDateTime.now()).orElse(null);
+            Membership membership = membershipRepository.findByUserIdAndExpiredDateAfter(user.getId(), LocalDate.now()).orElse(null);
 
             if (membership == null) {
                 sessionUser = new RedisUserDto(user);

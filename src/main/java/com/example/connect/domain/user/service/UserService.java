@@ -41,7 +41,7 @@ public class UserService {
 
         RedisUserDto redisUserDto = new RedisUserDto(me);
 
-        redisUserDto.updateMembership(serviceDto.getSessionUser().getMembershipType(), serviceDto.getSessionUser().getExpiredAt());
+        redisUserDto.updateMembership(serviceDto.getSessionUser().getMembershipType(), serviceDto.getSessionUser().getExpiredDate());
         redisTokenRepository.saveUser(redisUserDto);
 
         return new UserResDto(redisUserDto);
