@@ -6,8 +6,10 @@ import com.example.connect.domain.subcategory.service.AdminSubCategoryService;
 import com.example.connect.global.common.dto.CommonResDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,5 +44,13 @@ public class AdminSubCategoryController {
                 );
 
         return new ResponseEntity<>(new CommonResDto<>("서브 카테고리 수정 완료.", result), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public  ResponseEntity<Void> deleteSubCategory(@PathVariable Long id) {
+
+        adminSubCategoryService.deleteSubCategory(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
