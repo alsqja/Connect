@@ -1,5 +1,6 @@
 package com.example.connect.domain.point.entity;
 
+import com.example.connect.domain.payment.entity.Payment;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.global.common.BaseEntity;
 import jakarta.persistence.Column;
@@ -33,8 +34,13 @@ public class Point extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Point(BigDecimal amount, User user) {
+    @ManyToOne
+    @JoinColumn(name = "payment_id")
+    private Payment payment;
+
+    public Point(BigDecimal amount, User user, Payment payment) {
         this.amount = amount;
         this.user = user;
+        this.payment = payment;
     }
 }
