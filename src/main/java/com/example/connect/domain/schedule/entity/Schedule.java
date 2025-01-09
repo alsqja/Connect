@@ -3,6 +3,7 @@ package com.example.connect.domain.schedule.entity;
 import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.schedulesubcategory.entity.ScheduleSubCategory;
 import com.example.connect.domain.user.entity.User;
+import com.example.connect.global.common.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +31,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE schedule SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
-public class Schedule {
+public class Schedule extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,6 +85,19 @@ public class Schedule {
         this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.user = user;
+    }
+
+    public Schedule(LocalDate date, String title, String details, String address, Double latitude, Double longitude) {
+        this.date = date;
+        this.title = title;
+        this.details = details;
+        this.address = address;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public void updateUser(User user) {
         this.user = user;
     }
 }

@@ -9,7 +9,7 @@ import com.example.connect.domain.coupon.repository.CouponRepository;
 import com.example.connect.domain.couponuser.entity.CouponUser;
 import com.example.connect.domain.couponuser.repository.CouponUserRepository;
 import com.example.connect.domain.match.entity.Matching;
-import com.example.connect.domain.match.repository.MatchRepository;
+import com.example.connect.domain.match.repository.MatchingRepository;
 import com.example.connect.domain.membership.entity.Membership;
 import com.example.connect.domain.membership.repository.MembershipRepository;
 import com.example.connect.domain.payment.entity.Payment;
@@ -51,7 +51,7 @@ public class DataInitializer {
     private final CategoryRepository categoryRepository;
     private final CouponRepository couponRepository;
     private final CouponUserRepository couponUserRepository;
-    private final MatchRepository matchRepository;
+    private final MatchingRepository matchingRepository;
     private final MembershipRepository membershipRepository;
     private final PointRepository pointRepository;
     private final ReportRepository reportRepository;
@@ -87,6 +87,13 @@ public class DataInitializer {
         );
         User savedUser2 = userRepository.save(user2);
 
+        for (int i = 0; i < 100; i++) {
+            Gender gender = (i % 2 == 0) ? Gender.MAN : Gender.WOMAN;
+            UserRole role = i % 3 == 0 ? UserRole.ADMIN : UserRole.USER;
+            User user = new User("test@email.com" + i, "Password1!", "name" + i, "19970814", gender, "https://eshop.parkland.co.kr/upload/tip_guide2/g_20241121105659536.jpg", i % 2 == 0, role);
+            userRepository.save(user);
+        }
+
         Payment payment1 = new Payment(
                 "pay-1234",
                 "portone-1234",
@@ -107,10 +114,10 @@ public class DataInitializer {
         Banner banner = new Banner("ad", "ad", LocalDateTime.now().plusYears(1));
         bannerRepository.save(banner);
 
-        Category category = new Category("category", "");
+        Category category = new Category("스포츠", "");
         Category savedCategory = categoryRepository.save(category);
 
-        SubCategory subCategory = new SubCategory("운동", "", savedCategory);
+        SubCategory subCategory = new SubCategory("축구", "", savedCategory);
         SubCategory savedSubCategory = subCategoryRepository.save(subCategory);
 
         Coupon coupon = new Coupon("coupon", "couponDescription", 100, 5);
@@ -129,7 +136,7 @@ public class DataInitializer {
         scheduleSubCategoryRepository.save(scheduleSubCategory);
 
         Matching matching = new Matching(1, MatchStatus.ACCEPTED, savedSchedule1, savedSchedule2);
-        Matching savedMatching = matchRepository.save(matching);
+        Matching savedMatching = matchingRepository.save(matching);
 
         Report report = new Report("잠수탐", savedMatching, user1, user2);
         reportRepository.save(report);
