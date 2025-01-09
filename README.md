@@ -11,7 +11,7 @@
 #### ~를 백엔드로 구현하는 프로젝트
 
 ## 🍨 Team 97s
-|                                      Backend & Frontend                                       |                                      Backend                                       |
+|                                                                            |                                                                             |
 |:----------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------:|
 | ![](https://cdn-static.zep.us/static/assets/baked-avartar-images/12-14-15-398.png)  | ![](https://cdn-static.zep.us/static/assets/baked-avartar-images/1-18-20-677.png) |
 |                        [김민범](https://github.com/alsqja)                         |                        [이경섭](https://github.com/gyungsubLee)                         |
