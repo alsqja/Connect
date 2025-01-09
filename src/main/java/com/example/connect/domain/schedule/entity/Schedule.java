@@ -1,12 +1,14 @@
 package com.example.connect.domain.schedule.entity;
 
 import com.example.connect.domain.match.entity.Matching;
+import com.example.connect.domain.schedule.dto.ScheduleUpdateServiceDto;
 import com.example.connect.domain.schedulesubcategory.entity.ScheduleSubCategory;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.global.common.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -58,7 +60,7 @@ public class Schedule extends BaseEntity {
     @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isDeleted;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -99,5 +101,27 @@ public class Schedule extends BaseEntity {
 
     public void updateUser(User user) {
         this.user = user;
+    }
+
+    public void updateField(ScheduleUpdateServiceDto updateServiceDto) {
+
+        if (date != null) {
+            this.date = updateServiceDto.getDate();
+        }
+        if (title != null) {
+            this.title = updateServiceDto.getTitle();
+        }
+        if (details != null) {
+            this.details = updateServiceDto.getDetails();
+        }
+        if (address != null) {
+            this.address = updateServiceDto.getAddress();
+        }
+        if (latitude != null) {
+            this.latitude = updateServiceDto.getLatitude();
+        }
+        if (longitude != null) {
+            this.longitude = updateServiceDto.getLongitude();
+        }
     }
 }
