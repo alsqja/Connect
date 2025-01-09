@@ -45,9 +45,7 @@ public class PaymentController {
     public ResponseEntity<CommonResDto<PaymentResDto>> cancelPayment(
             @RequestBody PaymentCancelReqDto paymentCancelReqDto
     ) {
-        PaymentResDto paymentResDto;
-
-        paymentResDto = paymentService.cancelPayment(paymentCancelReqDto.getPaymentId(), paymentCancelReqDto.getAmount(), paymentCancelReqDto.getReason());
+        PaymentResDto paymentResDto = paymentService.cancelPayment(paymentCancelReqDto.getPaymentId(), paymentCancelReqDto.getAmount(), paymentCancelReqDto.getReason());
 
         return new ResponseEntity<>(new CommonResDto<>("결제 취소 완료.", paymentResDto), HttpStatus.OK);
     }
