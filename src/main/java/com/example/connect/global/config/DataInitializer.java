@@ -12,6 +12,8 @@ import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.match.repository.MatchRepository;
 import com.example.connect.domain.membership.entity.Membership;
 import com.example.connect.domain.membership.repository.MembershipRepository;
+import com.example.connect.domain.payment.entity.Payment;
+import com.example.connect.domain.payment.repository.PaymentRepository;
 import com.example.connect.domain.point.entity.Point;
 import com.example.connect.domain.point.repository.PointRepository;
 import com.example.connect.domain.report.entity.Report;
@@ -28,6 +30,8 @@ import com.example.connect.global.enums.CouponUserStatus;
 import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.MatchStatus;
 import com.example.connect.global.enums.MembershipType;
+import com.example.connect.global.enums.PaymentStatus;
+import com.example.connect.global.enums.PaymentType;
 import com.example.connect.global.enums.UserRole;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +59,7 @@ public class DataInitializer {
     private final ScheduleSubCategoryRepository scheduleSubCategoryRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PaymentRepository paymentRepository;
 
     @PostConstruct
     public void init() {
@@ -82,7 +87,18 @@ public class DataInitializer {
         );
         User savedUser2 = userRepository.save(user2);
 
-        Point point = new Point(BigDecimal.valueOf(10000), user1);
+        Payment payment1 = new Payment(
+                "pay-1234",
+                "portone-1234",
+                BigDecimal.valueOf(1000),
+                PaymentType.POINT,
+                PaymentStatus.PAID,
+                "포인트 1000 결제",
+                user1
+        );
+        Payment savePayment1 = paymentRepository.save(payment1);
+
+        Point point = new Point(BigDecimal.valueOf(10000), user1, payment1);
         pointRepository.save(point);
 
         Membership membership = new Membership(MembershipType.PREMIUM, LocalDate.now().plusYears(1), user1);

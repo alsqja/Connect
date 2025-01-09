@@ -21,6 +21,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {url 'https://jitpack.io'}
 }
 
 dependencies {
@@ -51,6 +52,9 @@ dependencies {
     implementation 'software.amazon.awssdk:s3:2.+'
     
     testImplementation 'com.h2database:h2'
+
+    implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
+
 }
 
 tasks.named('test') {
