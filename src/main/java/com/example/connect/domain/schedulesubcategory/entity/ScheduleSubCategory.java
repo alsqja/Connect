@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "schedule_content")
+@Table(name = "schedule_sub_category")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScheduleSubCategory extends BaseEntity {
@@ -39,6 +39,15 @@ public class ScheduleSubCategory extends BaseEntity {
     public ScheduleSubCategory(String description, Schedule schedule, SubCategory subCategory) {
         this.description = description;
         this.schedule = schedule;
+        this.subCategory = subCategory;
+    }
+
+    public ScheduleSubCategory(String description, Schedule schedule) {
+        this.description = description;
+        this.schedule = schedule;
+    }
+
+    public void updateSubCategory(SubCategory subCategory) {
         this.subCategory = subCategory;
     }
 }
