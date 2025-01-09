@@ -13,11 +13,13 @@ import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
+import com.example.connect.global.error.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +53,10 @@ public class ScheduleService {
     public ScheduleResDto updateSchedule(Long id, ScheduleServiceDto serviceDto) {
 
         Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
+        
+        if (!Objects.equals(schedule.getUser().getId(), serviceDto.getUserId())) {
+            throw new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION);
+        }
 
         schedule.updateField(serviceDto.toUpdateServiceDto());
 
