@@ -92,4 +92,16 @@ public class ScheduleService {
 
         scheduleSubCategoryRepository.saveAll(scheduleSubCategories);
     }
+
+    @Transactional
+    public void deleteSchedule(Long id, Long userId) {
+
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
+
+        if (!Objects.equals(schedule.getUser().getId(), userId)) {
+            throw new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION);
+        }
+
+        scheduleRepository.delete(schedule);
+    }
 }
