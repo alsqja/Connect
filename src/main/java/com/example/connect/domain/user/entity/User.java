@@ -63,6 +63,9 @@ public class User extends BaseEntity {
     @Column(name = "is_active_matching", nullable = false)
     private Boolean isActiveMatching;
 
+    @Column(name = "reported_count", nullable = false)
+    private Integer reportedCount;
+
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private UserStatus status;
@@ -96,6 +99,9 @@ public class User extends BaseEntity {
         }
         if (isDeleted == null) {
             isDeleted = false;
+        }
+        if (reportedCount == null) {
+            reportedCount = 0;
         }
     }
 
@@ -138,15 +144,11 @@ public class User extends BaseEntity {
         }
     }
 
-    public void updateRole(UserRole role) {
-        this.role = role;
-    }
-
     public void updateStatus(UserStatus status) {
         this.status = status;
     }
 
-    public void updateIsDeleted(Boolean isDeleted) {
-        this.isDeleted = isDeleted;
+    public void addReportedCount() {
+        this.reportedCount++;
     }
 }

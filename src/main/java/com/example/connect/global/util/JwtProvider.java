@@ -44,10 +44,11 @@ public class JwtProvider {
 
     public TokenDto generateToken(RedisUserDto sessionUser) throws EntityNotFoundException {
 
-        String email = sessionUser.getEmail();
-
         String accessToken = this.generateTokenBy(sessionUser);
         String refreshToken = this.generateRefreshToken(sessionUser);
+
+        redisTokenRepository.saveUser(sessionUser);
+        redisTokenRepository.saveRefreshToken(sessionUser.getEmail(), refreshToken, this.refreshExpiryMillis);
 
         return new TokenDto(accessToken, refreshToken);
     }
@@ -61,11 +62,11 @@ public class JwtProvider {
         try {
             return !this.tokenExpired(token);
         } catch (MalformedJwtException e) {
-            log.error("Invalid JWT token: {}", e.getMessage());
+            log.error("잘못된 토큰: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
-            log.error("JWT token is expired: {}", e.getMessage());
+            log.error("만료된 토큰: {}", e.getMessage());
         } catch (UnsupportedJwtException e) {
-            log.error("JWT token is unsupported: {}", e.getMessage());
+            log.error("지원되지 않는 토큰: {}", e.getMessage());
         }
 
         return false;
@@ -75,8 +76,6 @@ public class JwtProvider {
 
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + this.expiryMillis);
-
-        redisTokenRepository.saveUser(sessionUser);
 
         return Jwts.builder()
                 .subject(sessionUser.getEmail())
@@ -118,16 +117,12 @@ public class JwtProvider {
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + this.refreshExpiryMillis);
 
-        String refreshToken = Jwts.builder()
+        return Jwts.builder()
                 .subject(sessionUser.getEmail())
                 .issuedAt(currentDate)
                 .expiration(expireDate)
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)), Jwts.SIG.HS256)
                 .compact();
-
-        redisTokenRepository.saveRefreshToken(sessionUser.getEmail(), refreshToken, this.refreshExpiryMillis);
-
-        return refreshToken;
     }
 
     // 리프레시 토큰 검증
@@ -144,7 +139,7 @@ public class JwtProvider {
 
             return claims.getExpiration().after(new Date());
         } catch (JwtException e) {
-            log.error("Invalid refresh token: {}", e.getMessage());
+            log.error("잘못된 refresh token: {}", e.getMessage());
             return false;
         }
     }

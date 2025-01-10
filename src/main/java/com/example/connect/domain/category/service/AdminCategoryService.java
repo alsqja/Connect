@@ -14,6 +14,7 @@ public class AdminCategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    @Transactional
     public AdminCategoryResDto createCategory(AdminCategoryReqDto adminCategoryReqDto) {
 
         Category category = new Category(adminCategoryReqDto.getName(), adminCategoryReqDto.getImageUrl());

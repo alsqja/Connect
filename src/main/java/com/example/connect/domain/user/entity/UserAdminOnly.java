@@ -42,6 +42,9 @@ public class UserAdminOnly extends BaseEntity {
     @Column(name = "is_active_matching")
     private Boolean isActiveMatching;
 
+    @Column(name = "reported_count", nullable = false)
+    private Integer reportedCount;
+
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private UserStatus status;

@@ -90,7 +90,7 @@ public class DataInitializer {
         for (int i = 0; i < 100; i++) {
             Gender gender = (i % 2 == 0) ? Gender.MAN : Gender.WOMAN;
             UserRole role = i % 3 == 0 ? UserRole.ADMIN : UserRole.USER;
-            User user = new User("test@email.com" + i, "Password1!", "name" + i, "19970814", gender, "https://eshop.parkland.co.kr/upload/tip_guide2/g_20241121105659536.jpg", i % 2 == 0, role);
+            User user = new User("test@email.com" + i, passwordEncoder.encode("Password1!"), "name" + i, "19970814", gender, "https://eshop.parkland.co.kr/upload/tip_guide2/g_20241121105659536.jpg", i % 2 == 0, role);
             userRepository.save(user);
         }
 
@@ -105,7 +105,7 @@ public class DataInitializer {
         );
         Payment savePayment1 = paymentRepository.save(payment1);
 
-        Point point = new Point(BigDecimal.valueOf(10000), user1, payment1);
+        Point point = new Point(BigDecimal.valueOf(10000), user1, savePayment1);
         pointRepository.save(point);
 
         Membership membership = new Membership(MembershipType.PREMIUM, LocalDate.now().plusYears(1), user1);
@@ -140,5 +140,8 @@ public class DataInitializer {
 
         Report report = new Report("잠수탐", savedMatching, user1, user2);
         reportRepository.save(report);
+
+        user2.addReportedCount();
+        userRepository.save(user2);
     }
 }
