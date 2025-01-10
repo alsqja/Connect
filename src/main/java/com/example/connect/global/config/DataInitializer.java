@@ -135,7 +135,7 @@ public class DataInitializer {
         ScheduleSubCategory scheduleSubCategory = new ScheduleSubCategory("헬스하자", savedSchedule1, savedSubCategory);
         scheduleSubCategoryRepository.save(scheduleSubCategory);
 
-        Matching matching = new Matching(1, MatchStatus.ACCEPTED, savedSchedule1, savedSchedule2);
+        Matching matching = new Matching(MatchStatus.ACCEPTED, savedSchedule1, savedSchedule2);
         Matching savedMatching = matchingRepository.save(matching);
 
         Report report = new Report("잠수탐", savedMatching, user1, user2);

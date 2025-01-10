@@ -42,9 +42,6 @@ public class Matching extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MatchStatus status;
 
-    @Column(name = "count", nullable = false)
-    private Integer count;
-
     @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isDeleted;
 
@@ -66,8 +63,7 @@ public class Matching extends BaseEntity {
         }
     }
 
-    public Matching(Integer count, MatchStatus status, Schedule fromSchedule, Schedule toSchedule) {
-        this.count = count;
+    public Matching(MatchStatus status, Schedule fromSchedule, Schedule toSchedule) {
         this.status = status;
         this.fromSchedule = fromSchedule;
         this.toSchedule = toSchedule;
