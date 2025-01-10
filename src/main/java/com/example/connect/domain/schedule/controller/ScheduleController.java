@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,5 +53,19 @@ public class ScheduleController {
         ScheduleResDto result = scheduleService.updateSchedule(id, scheduleReqDto.toServiceDto(me.getId()));
 
         return new ResponseEntity<>(new CommonResDto<>("일정 수정 완료", result), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSchedule(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RedisUserDto me = userDetails.getUser();
+
+        scheduleService.deleteSchedule(id, me.getId());
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
