@@ -10,10 +10,12 @@ import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.enums.UserStatus;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
+import com.example.connect.global.error.exception.ForbiddenException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Service
@@ -44,10 +46,34 @@ public class ReportService {
 
         reportRepository.save(report);
 
-        if (reportRepository.countAllByToUser(toUser) >= 5) {
+        toUser.addReportedCount();
+
+        if (toUser.getReportedCount() == 5) {
             toUser.updateStatus(UserStatus.REJECTED);
         }
 
         return new ReportResDto(report);
+    }
+
+    @Transactional
+    public void cancelReport(Long id, Long myId) {
+
+        Report report = reportRepository.findByIdOrElseThrow(id);
+
+        if (!Objects.equals(report.getFromUser().getId(), myId)) {
+            throw new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION);
+        }
+
+        if (report.getCreatedAt().isBefore(LocalDateTime.now().minusMonths(6))) {
+            throw new BadRequestException(ErrorCode.BAD_REQUEST);
+        }
+
+        reportRepository.delete(report);
+
+        if (report.getToUser().getReportedCount() == 5) {
+            report.getToUser().updateStatus(UserStatus.NORMAL);
+        }
+
+        report.getToUser().minusReportedCount();
     }
 }
