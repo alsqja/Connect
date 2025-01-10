@@ -48,7 +48,7 @@ public class ReportService {
 
         toUser.addReportedCount();
 
-        if (toUser.getReportedCount() >= 5) {
+        if (toUser.getReportedCount() == 5) {
             toUser.updateStatus(UserStatus.REJECTED);
         }
 
@@ -58,23 +58,18 @@ public class ReportService {
     @Transactional
     public void cancelReport(Long id, Long myId) {
 
-        //신고 내역 조회
         Report report = reportRepository.findByIdOrElseThrow(id);
 
-        //
         if (!Objects.equals(report.getFromUser().getId(), myId)) {
             throw new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION);
         }
 
-        //createdAt 으로부터 6개월 이내의 신고내역인가?
         if (report.getCreatedAt().isBefore(LocalDateTime.now().minusMonths(6))) {
             throw new BadRequestException(ErrorCode.BAD_REQUEST);
         }
 
-        //신고 취소
         reportRepository.delete(report);
 
-        //5회째의 신고가 취소되었을 경우, rejected -> normal
         if (report.getToUser().getReportedCount() == 5) {
             report.getToUser().updateStatus(UserStatus.NORMAL);
         }
