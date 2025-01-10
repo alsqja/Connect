@@ -14,14 +14,12 @@ import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +28,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final PointRepository pointRepository;
     private final PortoneService portoneService;
-    private final RestTemplate restTemplate;
+    private final WebClient webClient;
 
     /**
      * 결제 추가
@@ -41,7 +39,6 @@ public class PaymentService {
             Long userId
     ) {
         User user = userRepository.findById(userId).orElseThrow();
-        HttpHeaders headers = portoneService.makeHeaders();
 
         Payment payment = new Payment(
                 paymentReqDto.getPayUid(),
@@ -54,11 +51,11 @@ public class PaymentService {
         );
 
         // 결제 정보 단건 조회
-        ResponseEntity<PaidPaymentResDto> responseEntity = getPaymentData(headers, paymentReqDto.getPayUid());
-        BigDecimal totalAmount = BigDecimal.valueOf(responseEntity.getBody().getAmount().getTotal());
+        PaidPaymentResDto responseEntity = getPaymentData(paymentReqDto.getPayUid());
+        BigDecimal totalAmount = BigDecimal.valueOf(responseEntity.getAmount().getTotal());
 
         // 요청금액과 결제 금액이 같은지, 결제에 성공한 상태인지 검증
-        if (payment.getAmount().compareTo(totalAmount) == 0 && responseEntity.getBody().getStatus().equals("PAID")) {
+        if (payment.getAmount().compareTo(totalAmount) == 0 && responseEntity.getStatus().equals("PAID")) {
             payment = paymentRepository.save(payment);
             Point point = new Point(paymentReqDto.getAmount().divide(new BigDecimal(10)), user, payment);
 
@@ -87,11 +84,11 @@ public class PaymentService {
     @Transactional
     public PaymentResDto cancelPayment(Long paymentId, BigDecimal amount, String reason) {
         Payment payment = paymentRepository.findById(paymentId).orElseThrow();
-        HttpHeaders headers = portoneService.makeHeaders();
+        String token = portoneService.portoneToken();
 
         // 결제 정보 단건 조회
-        ResponseEntity<PaidPaymentResDto> responseEntity = getPaymentData(headers, payment.getPayUid());
-        BigDecimal totalAmount = BigDecimal.valueOf(responseEntity.getBody().getAmount().getTotal());
+        PaidPaymentResDto responseEntity = getPaymentData(payment.getPayUid());
+        BigDecimal totalAmount = BigDecimal.valueOf(responseEntity.getAmount().getTotal());
 
         // TODO: point 구현 완료 후 검증 로직 추가 (결제 금액중 포인트 사용분이 있을경우 결제 취소 불가)
         // 환불 요청금액이 DB 와 같은지, 포트원에 넘어간 금액과 같은지 검증
@@ -101,11 +98,17 @@ public class PaymentService {
 
         if (payment.getPayStatus().equals(PaymentStatus.PAID)) {
             // 결제 취소
-            String url = "https://api.portone.io/payments/" + payment.getPayUid() + "/cancel";
-            HttpEntity<String> request = new HttpEntity<>("{\"reason\" : \"" + reason + "\"}", headers);
+            String url = "/payments/" + payment.getPayUid() + "/cancel";
 
             payment.updatePayStatus(PaymentStatus.CANCELLED, reason);
-            restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+
+            webClient.post()
+                    .uri(url)
+                    .header("Authorization", "Bearer " + token)
+                    .body(Mono.just(Map.of("reason", reason)), Map.class)
+                    .retrieve()
+                    .bodyToMono(Void.class)
+                    .block();
 
             PaymentResDto paymentResDto = new PaymentResDto(
                     payment.getPayUid(),
@@ -123,7 +126,12 @@ public class PaymentService {
     }
 
     // 검증을 위한 결제 단건 조회
-    public ResponseEntity<PaidPaymentResDto> getPaymentData(HttpHeaders headers, String paymentId) {
-        return restTemplate.exchange("https://api.portone.io/payments/" + paymentId, HttpMethod.GET, new HttpEntity<>(headers), PaidPaymentResDto.class);
+    public PaidPaymentResDto getPaymentData(String paymentId) {
+        return webClient.get()
+                .uri("/payments/" + paymentId)
+                .header("Authorization", "Bearer " + portoneService.portoneToken())
+                .retrieve()
+                .bodyToMono(PaidPaymentResDto.class)
+                .block();
     }
 }

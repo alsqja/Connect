@@ -55,6 +55,8 @@ dependencies {
 
     implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
 
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 tasks.named('test') {
