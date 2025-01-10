@@ -24,7 +24,7 @@ public class AdminUserResDto implements BaseDtoType {
     private final Boolean isActiveMatching;
     private final UserRole role;
     private final MembershipType memberType;
-    private final Long reportCount;
+    private final Integer reportCount;
     private final LocalDate expiredDate;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;

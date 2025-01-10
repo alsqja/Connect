@@ -1,14 +1,12 @@
 package com.example.connect.domain.user.repository;
 
 import com.example.connect.domain.membership.entity.QMembership;
-import com.example.connect.domain.report.entity.QReport;
 import com.example.connect.domain.user.dto.AdminUserResDto;
 import com.example.connect.domain.user.entity.QUserAdminOnly;
 import com.example.connect.domain.user.entity.UserAdminOnly;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.NotFoundException;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,7 +26,6 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
 
         QUserAdminOnly user = QUserAdminOnly.userAdminOnly;
         QMembership membership = QMembership.membership;
-        QReport report = QReport.report;
 
         List<AdminUserResDto> results = queryFactory.select(
                         Projections.constructor(
@@ -42,9 +39,7 @@ public class CustomUserRepositoryImpl implements CustomUserRepository {
                                 user.isActiveMatching,
                                 user.role,
                                 membership.type,
-                                JPAExpressions.select(report.count())
-                                        .from(report)
-                                        .where(report.toUser.id.eq(user.id)),
+                                user.reportedCount,
                                 membership.expiredDate,
                                 user.createdAt,
                                 user.updatedAt,

@@ -33,6 +33,10 @@ public class ScheduleService {
     @Transactional
     public ScheduleResDto createSchedule(ScheduleServiceDto serviceDto) {
 
+        if (serviceDto.getContents().size() > 10) {
+            throw new BadRequestException(ErrorCode.BAD_REQUEST);
+        }
+
         User user = userRepository.findByIdOrElseThrow(serviceDto.getUserId());
 
         if (scheduleRepository.existsScheduleByUserAndDate(user, serviceDto.getDate())) {
@@ -52,8 +56,12 @@ public class ScheduleService {
     @Transactional
     public ScheduleResDto updateSchedule(Long id, ScheduleServiceDto serviceDto) {
 
+        if (serviceDto.getContents().size() > 10) {
+            throw new BadRequestException(ErrorCode.BAD_REQUEST);
+        }
+
         Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
-        
+
         if (!Objects.equals(schedule.getUser().getId(), serviceDto.getUserId())) {
             throw new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION);
         }
