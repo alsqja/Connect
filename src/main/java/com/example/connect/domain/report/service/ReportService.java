@@ -10,10 +10,12 @@ import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.enums.UserStatus;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
+import com.example.connect.global.error.exception.ForbiddenException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Service
@@ -44,10 +46,39 @@ public class ReportService {
 
         reportRepository.save(report);
 
-        if (reportRepository.countAllByToUser(toUser) >= 5) {
+        toUser.addReportedCount();
+
+        if (toUser.getReportedCount() >= 5) {
             toUser.updateStatus(UserStatus.REJECTED);
         }
 
         return new ReportResDto(report);
+    }
+
+    @Transactional
+    public void cancelReport(Long id, Long myId) {
+
+        //신고 내역 조회
+        Report report = reportRepository.findByIdOrElseThrow(id);
+
+        //
+        if (!Objects.equals(report.getFromUser().getId(), myId)) {
+            throw new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION);
+        }
+
+        //createdAt 으로부터 6개월 이내의 신고내역인가?
+        if (report.getCreatedAt().isBefore(LocalDateTime.now().minusMonths(6))) {
+            throw new BadRequestException(ErrorCode.BAD_REQUEST);
+        }
+
+        //신고 취소
+        reportRepository.delete(report);
+
+        //5회째의 신고가 취소되었을 경우, rejected -> normal
+        if (report.getToUser().getReportedCount() == 5) {
+            report.getToUser().updateStatus(UserStatus.NORMAL);
+        }
+
+        report.getToUser().minusReportedCount();
     }
 }

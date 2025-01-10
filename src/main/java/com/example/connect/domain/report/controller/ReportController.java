@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,5 +35,16 @@ public class ReportController {
         ReportResDto result = reportService.createReport(redisUserDto.getId(), reportReqDto.getToId(), reportReqDto.getMatchingId(), reportReqDto.getContent());
 
         return new ResponseEntity<>(new CommonResDto<>("신고 접수 완료.", result), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> cancelReport(@PathVariable Long id, Authentication authentication) {
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RedisUserDto redisUserDto = userDetails.getUser();
+
+        reportService.cancelReport(id, redisUserDto.getId());
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

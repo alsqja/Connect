@@ -151,4 +151,8 @@ public class User extends BaseEntity {
     public void addReportedCount() {
         this.reportedCount++;
     }
+
+    public void minusReportedCount() {
+        this.reportedCount--;
+    }
 }
