@@ -66,7 +66,7 @@ public class PaymentController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         RedisUserDto me = userDetails.getUser();
 
-        PaymentListResDto payment = paymentService.getAllPayments(me.getId(), payType, page, size);
+        PaymentListResDto payment = paymentService.getAllPayments(me.getId(), me.getRole(), payType, page, size);
 
         return new ResponseEntity<>(new CommonResDto<>("결제 조회 완료.", payment), HttpStatus.OK);
     }

@@ -13,8 +13,10 @@ import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.enums.PaymentStatus;
 import com.example.connect.global.enums.PaymentType;
+import com.example.connect.global.enums.UserRole;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
+import com.example.connect.global.error.exception.ForbiddenException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -136,15 +138,24 @@ public class PaymentService {
      * 1. 관리자 유저만 type을 통한 검색 사용
      * 2. 전체 검색의 경우 일반 유저 사용
      */
-    public PaymentListResDto getAllPayments(Long userId, String type, int page, int size) {
+    public PaymentListResDto getAllPayments(
+            Long userId, UserRole userRole, String type, int page, int size
+    ) {
         Pageable pageable = PageRequest.of(page - 1, size);
-
         Page<PaymentGetResDto> payments;
 
-        if (type != null) {
-            payments = paymentRepository.findByType(PaymentType.valueOf(type), pageable);
+        if (type != null && !type.isEmpty()) {
+            if (userRole == UserRole.ADMIN) {
+                payments = paymentRepository.findByType(PaymentType.valueOf(type), pageable);
+            } else {
+                throw new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION);
+            }
         } else {
-            payments = paymentRepository.findByUserId(userId, pageable);
+            if (userRole == UserRole.USER) {
+                payments = paymentRepository.findByUserId(userId, pageable);
+            } else {
+                throw new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION);
+            }
         }
 
         return new PaymentListResDto(page, size, payments.getTotalElements(), payments.getTotalPages(), payments.getContent());
