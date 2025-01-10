@@ -1,6 +1,7 @@
 package com.example.connect.domain.payment.controller;
 
 import com.example.connect.domain.payment.dto.PaymentCancelReqDto;
+import com.example.connect.domain.payment.dto.PaymentListResDto;
 import com.example.connect.domain.payment.dto.PaymentReqDto;
 import com.example.connect.domain.payment.dto.PaymentResDto;
 import com.example.connect.domain.payment.service.PaymentService;
@@ -11,9 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -48,5 +51,23 @@ public class PaymentController {
         PaymentResDto paymentResDto = paymentService.cancelPayment(paymentCancelReqDto.getPaymentId(), paymentCancelReqDto.getAmount(), paymentCancelReqDto.getReason());
 
         return new ResponseEntity<>(new CommonResDto<>("결제 취소 완료.", paymentResDto), HttpStatus.OK);
+    }
+
+    /**
+     * 결제 내역 조회
+     */
+    @GetMapping
+    public ResponseEntity<CommonResDto<PaymentListResDto>> getPayment(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String payType,
+            Authentication authentication
+    ) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RedisUserDto me = userDetails.getUser();
+
+        PaymentListResDto payment = paymentService.getAllPayments(me.getId(), payType, page, size);
+
+        return new ResponseEntity<>(new CommonResDto<>("결제 조회 완료.", payment), HttpStatus.OK);
     }
 }
