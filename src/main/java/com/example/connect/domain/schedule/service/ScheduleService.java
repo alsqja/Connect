@@ -13,11 +13,13 @@ import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
+import com.example.connect.global.error.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -42,20 +44,44 @@ public class ScheduleService {
 
         Schedule savedSchedule = scheduleRepository.save(schedule);
 
+        saveScheduleSubCategory(serviceDto, savedSchedule);
+
+        return new ScheduleResDto(savedSchedule, serviceDto.getContents().stream().map(ContentDescriptionDto::getId).toList());
+    }
+
+    @Transactional
+    public ScheduleResDto updateSchedule(Long id, ScheduleServiceDto serviceDto) {
+
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
+        
+        if (!Objects.equals(schedule.getUser().getId(), serviceDto.getUserId())) {
+            throw new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION);
+        }
+
+        schedule.updateField(serviceDto.toUpdateServiceDto());
+
+        if (!serviceDto.getContents().isEmpty()) {
+            scheduleSubCategoryRepository.deleteAllBySchedule(schedule);
+
+            saveScheduleSubCategory(serviceDto, schedule);
+        }
+
+        return new ScheduleResDto(schedule, serviceDto.getContents().stream().map(ContentDescriptionDto::getId).toList());
+    }
+
+    private void saveScheduleSubCategory(ScheduleServiceDto serviceDto, Schedule schedule) {
         List<SubCategory> subCategories = subCategoryRepository.findAllById(serviceDto.getContents().stream().map(ContentDescriptionDto::getId).toList());
 
         if (subCategories.size() != serviceDto.getContents().size()) {
             throw new BadRequestException(ErrorCode.BAD_REQUEST);
         }
 
-        List<ScheduleSubCategory> scheduleSubCategories = serviceDto.getContents().stream().map(i -> new ScheduleSubCategory(i.getDescription(), savedSchedule)).toList();
+        List<ScheduleSubCategory> scheduleSubCategories = serviceDto.getContents().stream().map(i -> new ScheduleSubCategory(i.getDescription(), schedule)).toList();
 
         for (int i = 0; i < subCategories.size(); i++) {
             scheduleSubCategories.get(i).updateSubCategory(subCategories.get(i));
         }
 
         scheduleSubCategoryRepository.saveAll(scheduleSubCategories);
-
-        return new ScheduleResDto(savedSchedule, serviceDto.getContents().stream().map(ContentDescriptionDto::getId).toList());
     }
 }

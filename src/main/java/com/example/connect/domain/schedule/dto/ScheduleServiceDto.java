@@ -40,4 +40,15 @@ public class ScheduleServiceDto {
                 this.longitude
         );
     }
+
+    public ScheduleUpdateServiceDto toUpdateServiceDto() {
+        return new ScheduleUpdateServiceDto(
+                this.date,
+                this.title,
+                this.details,
+                this.address,
+                this.latitude,
+                this.longitude
+        );
+    }
 }
