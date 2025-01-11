@@ -5,6 +5,7 @@ import com.example.connect.domain.user.entity.User;
 import com.example.connect.global.enums.Gender;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.NotFoundException;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,6 +21,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     boolean existsScheduleByUserAndDate(User user, LocalDate date);
 
+    @EntityGraph(attributePaths = {"user"})
     Optional<Schedule> findByIdAndUserId(Long id, Long userId);
 
     @Query("""
@@ -32,6 +34,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             WHERE u.gender = :gender
             AND s.id != :id
             AND u.birth BETWEEN :birthYearStart AND :birthYearEnd
+            AND s.date = :date
             AND cast(FUNCTION('acos',
                 cos(radians(:latitude)) * cos(radians(s.latitude)) *
                 cos(radians(s.longitude) - radians(:longitude)) +
@@ -50,6 +53,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             @Param("birthYearEnd") String birthYearEnd,
             @Param("latitude") double latitude,
             @Param("longitude") double longitude,
-            @Param("distance") double distance
+            @Param("distance") double distance,
+            @Param("date") LocalDate date
     );
 }

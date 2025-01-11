@@ -35,6 +35,7 @@ import com.example.connect.global.enums.PaymentType;
 import com.example.connect.global.enums.UserRole;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +45,7 @@ import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
+@Profile("dev")
 public class DataInitializer {
 
     private final UserRepository userRepository;

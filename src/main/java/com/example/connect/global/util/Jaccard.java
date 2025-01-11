@@ -5,46 +5,41 @@ import com.example.connect.domain.schedule.entity.Schedule;
 import com.example.connect.domain.schedulesubcategory.entity.ScheduleSubCategory;
 import com.example.connect.domain.subcategory.entity.SubCategory;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
+import org.jetbrains.annotations.TestOnly;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Component
 @Getter
 public class Jaccard {
 
-    private List<Double> similarities = new ArrayList<>();
-    private int biggestIndex = 0;
+    private final List<Double> similarities = new ArrayList<>();
+    private int biggestIndex = -1;
     private double biggestSimilarity = -1;
 
-    public void findBiggest() {
-        int index = 0;
-        double max = -1;
-
-        for (int i = 0; i < similarities.size(); i++) {
-            if (similarities.get(i) > max) {
-                max = similarities.get(i);
-                index = i;
-            }
-        }
-
-        biggestIndex = index;
-        biggestSimilarity = max;
+    @TestOnly
+    public void reset() {
+        this.similarities.clear();
+        this.biggestIndex = -1;
+        this.biggestSimilarity = -1;
     }
 
     public void addSimilaritySchedule(Schedule schedule1, Schedule schedule2) {
 
-        double Similarity = calculateScheduleSimilarity(
+        double similarity = calculateScheduleSimilarity(
                 schedule1.getScheduleContents().stream().map(ScheduleSubCategory::getSubCategory).toList(),
                 schedule2.getScheduleContents().stream().map(ScheduleSubCategory::getSubCategory).toList(),
                 schedule1.getScheduleContents().stream().map(i -> i.getSubCategory().getCategory()).toList(),
                 schedule2.getScheduleContents().stream().map(i -> i.getSubCategory().getCategory()).toList()
         );
 
-        similarities.add(Similarity);
+        if (similarity > biggestSimilarity) {
+            this.biggestSimilarity = similarity;
+            this.biggestIndex = this.similarities.size();
+        }
+        similarities.add(similarity);
     }
 
     private double calculateJaccardSimilarity(Set<Long> set1, Set<Long> set2) {

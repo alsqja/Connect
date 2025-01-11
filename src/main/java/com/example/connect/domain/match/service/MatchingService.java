@@ -24,7 +24,6 @@ public class MatchingService {
 
     private final MatchingRepository matchingRepository;
     private final ScheduleRepository scheduleRepository;
-    private final Jaccard jaccard;
 
     @Transactional
     public MatchingResDto createMatching(Long userId, Long scheduleId) {
@@ -32,7 +31,7 @@ public class MatchingService {
         Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, userId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.BAD_REQUEST));
 
-        User user = schedule.getUser();
+        User user = schedule.getUser(); // q + 1
         Gender gender = user.getGender().equals(Gender.MAN) ? Gender.WOMAN : Gender.MAN;
         String birth = user.getBirth();
         String start = Integer.toString(Integer.parseInt(birth.substring(0, 4)) - 5);
@@ -45,7 +44,8 @@ public class MatchingService {
                 end,
                 schedule.getLatitude(),
                 schedule.getLongitude(),
-                10
+                10,
+                schedule.getDate()
         );
 
         if (schedule.getCount() > 0) {
@@ -57,11 +57,10 @@ public class MatchingService {
             throw new NotFoundException(ErrorCode.NOT_FOUND);
         }
 
+        Jaccard jaccard = new Jaccard();
         for (Schedule otherSchedule : scheduleList) {
             jaccard.addSimilaritySchedule(schedule, otherSchedule);
         }
-
-        jaccard.findBiggest();
 
         int biggestIndex = jaccard.getBiggestIndex();
         double biggestSimilarity = jaccard.getBiggestSimilarity();
