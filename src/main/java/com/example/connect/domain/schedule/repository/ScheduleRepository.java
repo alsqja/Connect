@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+public interface ScheduleRepository extends JpaRepository<Schedule, Long>, CustomScheduleRepository {
     default Schedule findByIdOrElseThrow(Long id) {
         return findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
     }
