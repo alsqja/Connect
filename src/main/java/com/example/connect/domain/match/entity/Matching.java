@@ -42,6 +42,9 @@ public class Matching extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MatchStatus status;
 
+    @Column(name = "similarity", nullable = false)
+    private double similarity;
+
     @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isDeleted;
 
@@ -63,9 +66,10 @@ public class Matching extends BaseEntity {
         }
     }
 
-    public Matching(MatchStatus status, Schedule fromSchedule, Schedule toSchedule) {
+    public Matching(MatchStatus status, Schedule fromSchedule, Schedule toSchedule, double similarity) {
         this.status = status;
         this.fromSchedule = fromSchedule;
         this.toSchedule = toSchedule;
+        this.similarity = similarity;
     }
 }
