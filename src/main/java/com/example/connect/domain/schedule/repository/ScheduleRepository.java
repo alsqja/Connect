@@ -32,6 +32,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Custo
             JOIN FETCH sc.subCategory sc2
             JOIN FETCH sc2.category c
             WHERE u.gender = :gender
+            AND u.isActiveMatching = true
             AND s.id != :id
             AND u.birth BETWEEN :birthYearStart AND :birthYearEnd
             AND s.date = :date

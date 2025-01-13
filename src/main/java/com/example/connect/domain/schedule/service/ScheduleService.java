@@ -1,5 +1,6 @@
 package com.example.connect.domain.schedule.service;
 
+import com.example.connect.domain.schedule.dto.ScheduleOnlyResDto;
 import com.example.connect.domain.schedule.dto.SchedulePageResDto;
 import com.example.connect.domain.schedule.dto.ScheduleResDto;
 import com.example.connect.domain.schedule.dto.ScheduleServiceDto;
@@ -126,5 +127,12 @@ public class ScheduleService {
         }
 
         return new SchedulePageResDto(schedulePage);
+    }
+
+    public ScheduleOnlyResDto findScheduleById(Long id) {
+
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
+
+        return new ScheduleOnlyResDto(schedule);
     }
 }

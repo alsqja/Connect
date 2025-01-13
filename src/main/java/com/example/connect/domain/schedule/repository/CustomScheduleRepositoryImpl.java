@@ -38,6 +38,7 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
                 .where(builder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .orderBy(schedule.date.desc())
                 .fetch();
 
         long total = Optional.ofNullable(
