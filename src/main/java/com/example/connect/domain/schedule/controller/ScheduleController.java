@@ -2,6 +2,7 @@ package com.example.connect.domain.schedule.controller;
 
 import com.example.connect.domain.match.dto.MatchingResDto;
 import com.example.connect.domain.match.service.MatchingService;
+import com.example.connect.domain.schedule.dto.ScheduleOnlyResDto;
 import com.example.connect.domain.schedule.dto.SchedulePageResDto;
 import com.example.connect.domain.schedule.dto.ScheduleReqDto;
 import com.example.connect.domain.schedule.dto.ScheduleResDto;
@@ -105,5 +106,15 @@ public class ScheduleController {
         SchedulePageResDto result = scheduleService.findAllSchedules(me.getId(), date, page, size);
 
         return new ResponseEntity<>(new CommonResDto<>("일정 전체 조회 완료", result), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CommonResDto<ScheduleOnlyResDto>> findSchedule(
+            @PathVariable Long id
+    ) {
+
+        ScheduleOnlyResDto result = scheduleService.findScheduleById(id);
+
+        return new ResponseEntity<>(new CommonResDto<>("일정 조회 완료", result), HttpStatus.OK);
     }
 }
