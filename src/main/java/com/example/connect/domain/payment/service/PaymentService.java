@@ -152,7 +152,7 @@ public class PaymentService {
             }
         } else {
             if (userRole == UserRole.USER) {
-                payments = paymentRepository.findByUserId(userId, pageable);
+                payments = paymentRepository.findByUserData(userId, pageable);
             } else {
                 throw new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION);
             }

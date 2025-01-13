@@ -10,8 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
-    @Query("select p from Payment p where p.type = :type")
+    @Query("select p from Payment p where p.type = :type order by p.createdAt desc")
     Page<PaymentGetResDto> findByType(@Param("type") PaymentType type, Pageable pageable);
 
-    Page<PaymentGetResDto> findByUserId(Long userId, Pageable pageable);
+    @Query("select p from Payment p join fetch p.user u where u.id = :userId order by p.createdAt desc")
+    Page<PaymentGetResDto> findByUserData(Long userId, Pageable pageable);
 }
