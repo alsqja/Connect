@@ -1,5 +1,7 @@
 package com.example.connect.domain.schedule.controller;
 
+import com.example.connect.domain.match.dto.MatchingResDto;
+import com.example.connect.domain.match.service.MatchingService;
 import com.example.connect.domain.schedule.dto.ScheduleReqDto;
 import com.example.connect.domain.schedule.dto.ScheduleResDto;
 import com.example.connect.domain.schedule.service.ScheduleService;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
+    private final MatchingService matchingService;
 
     @PostMapping
     public ResponseEntity<CommonResDto<ScheduleResDto>> createSchedule(
@@ -67,5 +70,19 @@ public class ScheduleController {
         scheduleService.deleteSchedule(id, me.getId());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/{id}/matchings")
+    public ResponseEntity<CommonResDto<MatchingResDto>> matchSchedule(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RedisUserDto me = userDetails.getUser();
+
+        MatchingResDto result = matchingService.createMatching(me.getId(), id);
+
+        return new ResponseEntity<>(new CommonResDto<>("매칭 찾기 완료", result), HttpStatus.CREATED);
     }
 }

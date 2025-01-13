@@ -57,6 +57,9 @@ public class Schedule extends BaseEntity {
     @Column(name = "longitude", nullable = false)
     private Double longitude;
 
+    @Column(name = "count", nullable = false)
+    private Integer count;
+
     @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isDeleted;
 
@@ -77,6 +80,9 @@ public class Schedule extends BaseEntity {
     public void prePersist() {
         if (isDeleted == null) {
             isDeleted = false;
+        }
+        if (count == null) {
+            count = 0;
         }
     }
 
@@ -123,5 +129,9 @@ public class Schedule extends BaseEntity {
         if (longitude != null) {
             this.longitude = updateServiceDto.getLongitude();
         }
+    }
+
+    public void addCount() {
+        this.count++;
     }
 }
