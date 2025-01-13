@@ -7,7 +7,9 @@ import com.example.connect.domain.schedule.dto.SchedulePageResDto;
 import com.example.connect.domain.schedule.dto.ScheduleReqDto;
 import com.example.connect.domain.schedule.dto.ScheduleResDto;
 import com.example.connect.domain.schedule.service.ScheduleService;
+import com.example.connect.domain.schedulesubcategory.dto.ScheduleSubCategoryResDto;
 import com.example.connect.domain.user.dto.RedisUserDto;
+import com.example.connect.global.common.dto.CommonListResDto;
 import com.example.connect.global.common.dto.CommonResDto;
 import com.example.connect.global.config.auth.UserDetailsImpl;
 import jakarta.validation.Valid;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -116,5 +119,13 @@ public class ScheduleController {
         ScheduleOnlyResDto result = scheduleService.findScheduleById(id);
 
         return new ResponseEntity<>(new CommonResDto<>("일정 조회 완료", result), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/sub-categories")
+    public ResponseEntity<CommonListResDto<ScheduleSubCategoryResDto>> findScheduleContent(@PathVariable Long id) {
+
+        List<ScheduleSubCategoryResDto> results = scheduleService.findScheduleContent(id);
+
+        return new ResponseEntity<>(new CommonListResDto<>("일정 컨텐츠 조회 완료", results), HttpStatus.OK);
     }
 }

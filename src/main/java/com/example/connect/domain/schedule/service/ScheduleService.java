@@ -7,6 +7,7 @@ import com.example.connect.domain.schedule.dto.ScheduleServiceDto;
 import com.example.connect.domain.schedule.entity.Schedule;
 import com.example.connect.domain.schedule.repository.ScheduleRepository;
 import com.example.connect.domain.schedulesubcategory.dto.ContentDescriptionDto;
+import com.example.connect.domain.schedulesubcategory.dto.ScheduleSubCategoryResDto;
 import com.example.connect.domain.schedulesubcategory.entity.ScheduleSubCategory;
 import com.example.connect.domain.schedulesubcategory.repository.ScheduleSubCategoryRepository;
 import com.example.connect.domain.subcategory.entity.SubCategory;
@@ -134,5 +135,10 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findByIdOrElseThrow(id);
 
         return new ScheduleOnlyResDto(schedule);
+    }
+
+    public List<ScheduleSubCategoryResDto> findScheduleContent(Long id) {
+
+        return subCategoryRepository.findDetailsByScheduleId(id);
     }
 }
