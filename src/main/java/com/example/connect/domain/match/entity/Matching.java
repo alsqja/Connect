@@ -4,6 +4,8 @@ import com.example.connect.domain.report.entity.Report;
 import com.example.connect.domain.schedule.entity.Schedule;
 import com.example.connect.global.common.BaseEntity;
 import com.example.connect.global.enums.MatchStatus;
+import com.example.connect.global.error.errorcode.ErrorCode;
+import com.example.connect.global.error.exception.BadRequestException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -71,5 +73,12 @@ public class Matching extends BaseEntity {
         this.fromSchedule = fromSchedule;
         this.toSchedule = toSchedule;
         this.similarity = similarity;
+    }
+
+    public void updateStatus(MatchStatus status) {
+        if (!this.status.canTransitionTo(status)) {
+            throw new BadRequestException(ErrorCode.BAD_REQUEST);
+        }
+        this.status = status;
     }
 }

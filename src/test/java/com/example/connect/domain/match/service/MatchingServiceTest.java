@@ -2,7 +2,7 @@ package com.example.connect.domain.match.service;
 
 import com.example.connect.domain.category.entity.Category;
 import com.example.connect.domain.category.repository.CategoryRepository;
-import com.example.connect.domain.match.dto.MatchingResDto;
+import com.example.connect.domain.match.dto.MatchingWithScheduleResDto;
 import com.example.connect.domain.match.repository.MatchingRepository;
 import com.example.connect.domain.schedule.entity.Schedule;
 import com.example.connect.domain.schedule.repository.ScheduleRepository;
@@ -151,8 +151,8 @@ class MatchingServiceTest {
         entityManager.flush();
         entityManager.clear();
 
-        MatchingResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
-        MatchingResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
+        MatchingWithScheduleResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
+        MatchingWithScheduleResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
 //        MatchingResDto result3 = matchingService.createMatching(user3.getId(), savedSchedule3.getId());
 //        MatchingResDto result4 = matchingService.createMatching(user4.getId(), savedSchedule4.getId());
 
@@ -213,8 +213,8 @@ class MatchingServiceTest {
         entityManager.flush();
         entityManager.clear();
 
-        MatchingResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
-        MatchingResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
+        MatchingWithScheduleResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
+        MatchingWithScheduleResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
 
         System.out.println(result1.getSimilarity());
         System.out.println(result2.getSimilarity());
@@ -271,8 +271,8 @@ class MatchingServiceTest {
         entityManager.flush();
         entityManager.clear();
 
-        MatchingResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
-        MatchingResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
+        MatchingWithScheduleResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
+        MatchingWithScheduleResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
 
         System.out.println(result1.getSimilarity());
         System.out.println(result2.getSimilarity());
@@ -338,8 +338,8 @@ class MatchingServiceTest {
         entityManager.flush();
         entityManager.clear();
 
-        MatchingResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
-        MatchingResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
+        MatchingWithScheduleResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
+        MatchingWithScheduleResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
 
         System.out.println(result1.getSimilarity());
         System.out.println(result2.getSimilarity());
@@ -403,8 +403,8 @@ class MatchingServiceTest {
         entityManager.flush();
         entityManager.clear();
 
-        MatchingResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
-        MatchingResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
+        MatchingWithScheduleResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
+        MatchingWithScheduleResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
 
         System.out.println(result1.getSimilarity());
         System.out.println(result2.getSimilarity());
