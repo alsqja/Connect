@@ -1,5 +1,6 @@
 package com.example.connect.domain.schedule.service;
 
+import com.example.connect.domain.schedule.dto.SchedulePageResDto;
 import com.example.connect.domain.schedule.dto.ScheduleResDto;
 import com.example.connect.domain.schedule.dto.ScheduleServiceDto;
 import com.example.connect.domain.schedule.entity.Schedule;
@@ -15,9 +16,13 @@ import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
 import com.example.connect.global.error.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -103,5 +108,23 @@ public class ScheduleService {
         }
 
         scheduleRepository.delete(schedule);
+    }
+
+    public SchedulePageResDto findAllSchedules(Long userId, LocalDate date, int page, int size) {
+
+        Pageable pageable;
+        Page<Schedule> schedulePage;
+
+        if (date == null) {
+            pageable = PageRequest.of(page - 1, size);
+            schedulePage = scheduleRepository.findAllPageSchedule(pageable, null, null, userId);
+        } else {
+            pageable = PageRequest.of(0, 31);
+            LocalDate startDate = LocalDate.of(date.getYear(), date.getMonth(), 1);
+            LocalDate endDate = LocalDate.of(date.getYear(), date.getMonth().plus(1), 1).minusDays(1);
+            schedulePage = scheduleRepository.findAllPageSchedule(pageable, startDate, endDate, userId);
+        }
+
+        return new SchedulePageResDto(schedulePage);
     }
 }
