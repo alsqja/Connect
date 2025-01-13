@@ -2,6 +2,7 @@ package com.example.connect.domain.match.service;
 
 import com.example.connect.domain.match.dto.MatchingListResDto;
 import com.example.connect.domain.match.dto.MatchingResDto;
+import com.example.connect.domain.match.dto.MatchingWithScheduleResDto;
 import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.match.repository.MatchingRepository;
 import com.example.connect.domain.schedule.entity.Schedule;
@@ -27,7 +28,7 @@ public class MatchingService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public MatchingResDto createMatching(Long userId, Long scheduleId) {
+    public MatchingWithScheduleResDto createMatching(Long userId, Long scheduleId) {
 
         Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, userId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.BAD_REQUEST));
@@ -71,11 +72,21 @@ public class MatchingService {
 
         schedule.addCount();
 
-        return new MatchingResDto(scheduleList.get(biggestIndex), matching);
+        return new MatchingWithScheduleResDto(scheduleList.get(biggestIndex), matching);
     }
 
     public List<MatchingListResDto> findScheduleMatching(Long id) {
 
         return matchingRepository.findDetailByScheduleId(id);
+    }
+
+    @Transactional
+    public MatchingResDto updateMatchingStatus(Long id, MatchStatus status) {
+
+        Matching matching = matchingRepository.findByIdOrElseThrow(id);
+
+        matching.updateStatus(status);
+
+        return new MatchingResDto(matching);
     }
 }

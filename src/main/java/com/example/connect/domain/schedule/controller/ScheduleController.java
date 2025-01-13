@@ -1,7 +1,7 @@
 package com.example.connect.domain.schedule.controller;
 
 import com.example.connect.domain.match.dto.MatchingListResDto;
-import com.example.connect.domain.match.dto.MatchingResDto;
+import com.example.connect.domain.match.dto.MatchingWithScheduleResDto;
 import com.example.connect.domain.match.service.MatchingService;
 import com.example.connect.domain.schedule.dto.ScheduleOnlyResDto;
 import com.example.connect.domain.schedule.dto.SchedulePageResDto;
@@ -83,7 +83,7 @@ public class ScheduleController {
     }
 
     @PostMapping("/{id}/matchings")
-    public ResponseEntity<CommonResDto<MatchingResDto>> matchSchedule(
+    public ResponseEntity<CommonResDto<MatchingWithScheduleResDto>> matchSchedule(
             @PathVariable Long id,
             Authentication authentication
     ) {
@@ -91,7 +91,7 @@ public class ScheduleController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         RedisUserDto me = userDetails.getUser();
 
-        MatchingResDto result = matchingService.createMatching(me.getId(), id);
+        MatchingWithScheduleResDto result = matchingService.createMatching(me.getId(), id);
 
         return new ResponseEntity<>(new CommonResDto<>("매칭 찾기 완료", result), HttpStatus.CREATED);
     }
