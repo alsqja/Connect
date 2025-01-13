@@ -1,12 +1,39 @@
 package com.example.connect.domain.match.repository;
 
+import com.example.connect.domain.match.dto.MatchingListResDto;
 import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface MatchingRepository extends JpaRepository<Matching, Long> {
     default Matching findByIdOrElseThrow(Long id) {
         return findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
     }
+
+    @Query("""
+            SELECT new com.example.connect.domain.match.dto.MatchingListResDto(
+                m.id,
+                ts.id,
+                fs.id,
+                ts.user.id,
+                fs.user.id,
+                ts.user.name,
+                fs.user.name,
+                ts.user.profileUrl,
+                fs.user.profileUrl,
+                m.similarity,
+                m.status,
+                m.createdAt,
+                m.updatedAt
+            ) FROM Matching m
+            LEFT JOIN m.toSchedule ts
+            LEFT JOIN m.fromSchedule fs
+            WHERE (ts.id = :id OR fs.id = :id)
+            AND (m.status = "PENDING" OR m.status = "ACCEPTED")
+            """)
+    List<MatchingListResDto> findDetailByScheduleId(Long id);
 }

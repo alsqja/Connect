@@ -1,5 +1,6 @@
 package com.example.connect.domain.match.service;
 
+import com.example.connect.domain.match.dto.MatchingListResDto;
 import com.example.connect.domain.match.dto.MatchingResDto;
 import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.match.repository.MatchingRepository;
@@ -63,13 +64,18 @@ public class MatchingService {
         }
 
         int biggestIndex = jaccard.getBiggestIndex();
-        double biggestSimilarity = jaccard.getBiggestSimilarity();
+        double biggestSimilarity = jaccard.getBiggestSimilarity() > 0 ? jaccard.getBiggestSimilarity() : 0;
 
-        Matching matching = new Matching(MatchStatus.CREATED, schedule, scheduleList.get(biggestIndex));
+        Matching matching = new Matching(MatchStatus.CREATED, schedule, scheduleList.get(biggestIndex), biggestSimilarity);
         matchingRepository.save(matching);
 
         schedule.addCount();
 
-        return new MatchingResDto(scheduleList.get(biggestIndex), matching, biggestSimilarity);
+        return new MatchingResDto(scheduleList.get(biggestIndex), matching);
+    }
+
+    public List<MatchingListResDto> findScheduleMatching(Long id) {
+
+        return matchingRepository.findDetailByScheduleId(id);
     }
 }

@@ -17,17 +17,17 @@ public class MatchingResDto implements BaseDtoType {
     private final Long userId;
     private final String userName;
     private final String profileUrl;
-    private final Double similarity;
+    private final double similarity;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public MatchingResDto(Schedule schedule, Matching matching, double similarity) {
+    public MatchingResDto(Schedule schedule, Matching matching) {
         this.id = matching.getId();
         this.toScheduleId = schedule.getId();
         this.userId = schedule.getUser().getId();
         this.userName = schedule.getUser().getName();
         this.profileUrl = schedule.getUser().getProfileUrl();
-        this.similarity = similarity;
+        this.similarity = matching.getSimilarity();
         this.createdAt = matching.getCreatedAt();
         this.updatedAt = matching.getUpdatedAt();
     }

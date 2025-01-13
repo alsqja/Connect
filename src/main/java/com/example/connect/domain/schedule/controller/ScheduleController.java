@@ -1,5 +1,6 @@
 package com.example.connect.domain.schedule.controller;
 
+import com.example.connect.domain.match.dto.MatchingListResDto;
 import com.example.connect.domain.match.dto.MatchingResDto;
 import com.example.connect.domain.match.service.MatchingService;
 import com.example.connect.domain.schedule.dto.ScheduleOnlyResDto;
@@ -127,5 +128,13 @@ public class ScheduleController {
         List<ScheduleSubCategoryResDto> results = scheduleService.findScheduleContent(id);
 
         return new ResponseEntity<>(new CommonListResDto<>("일정 컨텐츠 조회 완료", results), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/matchings")
+    public ResponseEntity<CommonListResDto<MatchingListResDto>> findScheduleMatching(@PathVariable Long id) {
+
+        List<MatchingListResDto> results = matchingService.findScheduleMatching(id);
+
+        return new ResponseEntity<>(new CommonListResDto<>("일정 매칭 조회 완료", results), HttpStatus.OK);
     }
 }
