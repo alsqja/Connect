@@ -60,6 +60,7 @@ public class AuthController {
 
         if (authentication != null && authentication.isAuthenticated()) {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
+            redisTokenRepository.deleteUser(authentication.getName());
             redisTokenRepository.deleteRefreshToken(authentication.getName());
         }
 

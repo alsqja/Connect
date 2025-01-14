@@ -70,7 +70,7 @@ public class AuthService {
 
         TokenDto tokens = jwtProvider.generateToken(sessionUser);
 
-        return new UserTokenResDto(sessionUser.getId(), sessionUser.getRole(), sessionUser.getMembershipType(), sessionUser.getExpiredDate(), tokens.getAccessToken(), tokens.getRefreshToken());
+        return new UserTokenResDto(sessionUser, tokens);
     }
 
     public TokenDto refresh(String refreshToken) {
