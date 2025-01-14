@@ -30,6 +30,9 @@ public class Point extends BaseEntity {
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
 
+    @Column(name = "is_zero", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
+    private Boolean isZero;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -38,9 +41,14 @@ public class Point extends BaseEntity {
     @JoinColumn(name = "payment_id")
     private Payment payment;
 
-    public Point(BigDecimal amount, User user, Payment payment) {
+    public Point(BigDecimal amount, User user, Payment payment, Boolean isZero) {
         this.amount = amount;
         this.user = user;
         this.payment = payment;
+        this.isZero = isZero;
+    }
+
+    public void pointUpdate(Boolean isZero) {
+        this.isZero = isZero;
     }
 }

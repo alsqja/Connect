@@ -12,6 +12,7 @@ public enum ErrorCode {
     INVALID_FILE(HttpStatus.BAD_REQUEST, "지원하지 않는 양식의 파일입니다."),
     LARGE_FILE(HttpStatus.BAD_REQUEST, "파일의 용량은 최대 5MB 입니다."),
     BAD_INPUT(HttpStatus.BAD_REQUEST, "잘못된 입력값 입니다."),
+    LACK_POINT(HttpStatus.BAD_REQUEST, "포인트가 부족합니다"),
 
     // 401 UNAUTHORIZED
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
