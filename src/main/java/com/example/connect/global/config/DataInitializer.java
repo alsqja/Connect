@@ -107,7 +107,7 @@ public class DataInitializer {
         );
         Payment savePayment1 = paymentRepository.save(payment1);
 
-        Point point = new Point(BigDecimal.valueOf(10000), user1, savePayment1);
+        Point point = new Point(BigDecimal.valueOf(10000), user1, savePayment1, false);
         pointRepository.save(point);
 
         Membership membership = new Membership(MembershipType.PREMIUM, LocalDate.now().plusYears(1), user1);

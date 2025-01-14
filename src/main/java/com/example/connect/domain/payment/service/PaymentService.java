@@ -9,10 +9,13 @@ import com.example.connect.domain.payment.entity.Payment;
 import com.example.connect.domain.payment.repository.PaymentRepository;
 import com.example.connect.domain.point.entity.Point;
 import com.example.connect.domain.point.repository.PointRepository;
+import com.example.connect.domain.pointuse.entity.PointUse;
+import com.example.connect.domain.pointuse.repository.PointUseRepository;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.enums.PaymentStatus;
 import com.example.connect.global.enums.PaymentType;
+import com.example.connect.global.enums.PointUseType;
 import com.example.connect.global.enums.UserRole;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
@@ -27,6 +30,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Map;
 
 @Service
@@ -35,6 +39,7 @@ public class PaymentService {
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
     private final PointRepository pointRepository;
+    private final PointUseRepository pointUseRepository;
     private final PortoneService portoneService;
     private final WebClient webClient;
 
@@ -47,6 +52,7 @@ public class PaymentService {
             Long userId
     ) {
         User user = userRepository.findById(userId).orElseThrow();
+        DecimalFormat df = new DecimalFormat("###,###");
 
         Payment payment = new Payment(
                 paymentReqDto.getPayUid(),
@@ -65,9 +71,11 @@ public class PaymentService {
         // 요청금액과 결제 금액이 같은지, 결제에 성공한 상태인지 검증
         if (payment.getAmount().compareTo(totalAmount) == 0 && responseEntity.getStatus().equals("PAID")) {
             payment = paymentRepository.save(payment);
-            Point point = new Point(paymentReqDto.getAmount().divide(new BigDecimal(10)), user, payment);
+            Point point = new Point(paymentReqDto.getAmount().divide(new BigDecimal(10)), user, payment, false);
+            PointUse pointUse = new PointUse(point.getAmount(), new BigDecimal(0), "포인트 " + df.format(point.getAmount()) + "P 충전", PointUseType.CHANGE, point);
 
             pointRepository.save(point);
+            pointUseRepository.save(pointUse);
         } else {
             cancelPayment(payment.getId(), payment.getAmount(), "결제 금액 오류");
 
