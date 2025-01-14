@@ -53,6 +53,7 @@ public class PaymentService {
     ) {
         User user = userRepository.findById(userId).orElseThrow();
         DecimalFormat df = new DecimalFormat("###,###");
+        String token = portoneService.portoneToken();
 
         Payment payment = new Payment(
                 paymentReqDto.getPayUid(),
@@ -65,14 +66,14 @@ public class PaymentService {
         );
 
         // 결제 정보 단건 조회
-        PaidPaymentResDto responseEntity = getPaymentData(paymentReqDto.getPayUid());
+        PaidPaymentResDto responseEntity = getPaymentData(paymentReqDto.getPayUid(), token);
         BigDecimal totalAmount = BigDecimal.valueOf(responseEntity.getAmount().getTotal());
 
         // 요청금액과 결제 금액이 같은지, 결제에 성공한 상태인지 검증
         if (payment.getAmount().compareTo(totalAmount) == 0 && responseEntity.getStatus().equals("PAID")) {
             payment = paymentRepository.save(payment);
             Point point = new Point(paymentReqDto.getAmount().divide(new BigDecimal(10)), user, payment, false);
-            PointUse pointUse = new PointUse(point.getAmount(), new BigDecimal(0), "포인트 " + df.format(point.getAmount()) + "P 충전", PointUseType.CHANGE, point);
+            PointUse pointUse = new PointUse(new BigDecimal(0), point.getAmount(), "포인트 " + df.format(point.getAmount()) + "P 충전", PointUseType.CHANGE, point);
 
             pointRepository.save(point);
             pointUseRepository.save(pointUse);
@@ -102,11 +103,14 @@ public class PaymentService {
         Payment payment = paymentRepository.findById(paymentId).orElseThrow();
         String token = portoneService.portoneToken();
 
+        if (pointUseRepository.isPointUse(paymentId)) {
+            throw new BadRequestException(ErrorCode.PAYMENT_USE_POINT);
+        }
+
         // 결제 정보 단건 조회
-        PaidPaymentResDto responseEntity = getPaymentData(payment.getPayUid());
+        PaidPaymentResDto responseEntity = getPaymentData(payment.getPayUid(), token);
         BigDecimal totalAmount = BigDecimal.valueOf(responseEntity.getAmount().getTotal());
 
-        // TODO: point 구현 완료 후 검증 로직 추가 (결제 금액중 포인트 사용분이 있을경우 결제 취소 불가)
         // 환불 요청금액이 DB 와 같은지, 포트원에 넘어간 금액과 같은지 검증
         if (payment.getAmount().compareTo(amount) != 0 || totalAmount.compareTo(amount) != 0) {
             throw new BadRequestException(ErrorCode.BAD_REQUEST);
@@ -115,8 +119,18 @@ public class PaymentService {
         if (payment.getPayStatus().equals(PaymentStatus.PAID)) {
             // 결제 취소
             String url = "/payments/" + payment.getPayUid() + "/cancel";
+            Point point = pointRepository.findByPaymentId(paymentId);
 
             payment.updatePayStatus(PaymentStatus.CANCELLED, reason);
+            point.pointUpdate(true);
+
+            PointUse pointUse = new PointUse(
+                    payment.getAmount().divide(new BigDecimal(10)),
+                    BigDecimal.ZERO,
+                    "결제 환불요청으로 인한 포인트 회수",
+                    PointUseType.REFUND,
+                    point
+            );
 
             webClient.post()
                     .uri(url)
@@ -125,6 +139,8 @@ public class PaymentService {
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();
+
+            pointUseRepository.save(pointUse);
 
             PaymentResDto paymentResDto = new PaymentResDto(
                     payment.getPayUid(),
@@ -140,6 +156,7 @@ public class PaymentService {
             throw new BadRequestException(ErrorCode.BAD_REQUEST);
         }
     }
+
 
     /**
      * 결제 조회
@@ -169,11 +186,13 @@ public class PaymentService {
         return new PaymentListResDto(page, size, payments.getTotalElements(), payments.getTotalPages(), payments.getContent());
     }
 
-    // 검증을 위한 결제 단건 조회
-    public PaidPaymentResDto getPaymentData(String paymentId) {
+    /**
+     * 검증을 위한 결제 단건 조회
+     */
+    public PaidPaymentResDto getPaymentData(String paymentId, String token) {
         return webClient.get()
                 .uri("/payments/" + paymentId)
-                .header("Authorization", "Bearer " + portoneService.portoneToken())
+                .header("Authorization", "Bearer " + token)
                 .retrieve()
                 .bodyToMono(PaidPaymentResDto.class)
                 .block();

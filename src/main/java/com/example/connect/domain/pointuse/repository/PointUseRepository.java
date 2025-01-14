@@ -16,4 +16,7 @@ public interface PointUseRepository extends JpaRepository<PointUse, Long> {
 
     @Query("select pu from PointUse pu join pu.point p where p.createdAt < :expiredDate and p.isZero = false and pu.createdAt = (select max(ipu.createdAt) from PointUse ipu where ipu.point.id = p.id)")
     List<PointUse> findExpiredPoints(LocalDateTime expiredDate);
+
+    @Query("select (count(pu) > 1) from PointUse pu where pu.point.payment.id = :paymentId")
+    Boolean isPointUse(Long paymentId);
 }
