@@ -11,7 +11,6 @@ public interface PointRepository extends JpaRepository<Point, Long> {
         return findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
     }
 
-    // 사용중인 포인트가 아닌 남은 포인트 합
     @Query("select sum(p.amount) from Point p where p.isZero = false and (select count(pu) from PointUse pu where pu.point.id = p.id) = 1 and p.user.id = :userId")
     Long sumAmount(Long userId);
 }
