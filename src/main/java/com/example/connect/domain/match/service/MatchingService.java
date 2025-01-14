@@ -41,6 +41,7 @@ public class MatchingService {
 
         List<Schedule> scheduleList = scheduleRepository.findAllForMatching(
                 scheduleId,
+                userId,
                 gender,
                 start,
                 end,
@@ -49,11 +50,6 @@ public class MatchingService {
                 10,
                 schedule.getDate()
         );
-
-        if (schedule.getCount() > 0) {
-            int count = schedule.getCount();
-            scheduleList.subList(0, count).clear();
-        }
 
         if (scheduleList.isEmpty()) {
             throw new NotFoundException(ErrorCode.NOT_FOUND);
