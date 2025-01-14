@@ -1,5 +1,6 @@
 package com.example.connect.domain.point.service;
 
+import com.example.connect.domain.point.entity.Point;
 import com.example.connect.domain.point.repository.PointRepository;
 import com.example.connect.domain.pointuse.entity.PointUse;
 import com.example.connect.domain.pointuse.repository.PointUseRepository;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -97,6 +99,30 @@ public class PointService {
         } else {
             // 1-2. false: error message 출력
             throw new BadRequestException(ErrorCode.LACK_POINT);
+        }
+    }
+
+    /**
+     * 포인트 소멸
+     *
+     * @param pointUseList 소멸 요청될 포인트
+     */
+    @Transactional
+    public void expiredPoint(List<PointUse> pointUseList) {
+        for (PointUse pointUse : pointUseList) {
+            PointUse updatePointUse = new PointUse(
+                    pointUse.getPointChange(),
+                    BigDecimal.ZERO,
+                    "포인트 기간 만료 소멸",
+                    PointUseType.CHANGE,
+                    pointUse.getPoint()
+            );
+
+            Point updatePoint = updatePointUse.getPoint();
+            updatePoint.pointUpdate(true);
+
+            pointRepository.save(updatePoint);
+            pointUseRepository.save(updatePointUse);
         }
     }
 }
