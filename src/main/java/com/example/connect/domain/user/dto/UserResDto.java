@@ -6,6 +6,7 @@ import com.example.connect.global.enums.MembershipType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -22,10 +23,11 @@ public class UserResDto implements BaseDtoType {
     private final Boolean isActiveMatching;
     private final MembershipType membershipType;
     private final LocalDate expiredDate;
+    private final BigDecimal point;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public UserResDto(RedisUserDto user) {
+    public UserResDto(RedisUserDto user, BigDecimal point) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.name = user.getName();
@@ -35,6 +37,7 @@ public class UserResDto implements BaseDtoType {
         this.isActiveMatching = user.getIsActiveMatching();
         this.membershipType = user.getMembershipType();
         this.expiredDate = user.getExpiredDate();
+        this.point = point;
         this.createdAt = user.getCreatedAt();
         this.updatedAt = user.getUpdatedAt();
     }

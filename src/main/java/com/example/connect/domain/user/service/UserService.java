@@ -1,9 +1,9 @@
 package com.example.connect.domain.user.service;
 
 import com.example.connect.domain.membership.repository.MembershipRepository;
+import com.example.connect.domain.point.repository.PointRepository;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.UpdateUserServiceDto;
-import com.example.connect.domain.user.dto.UserResDto;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.RedisTokenRepository;
 import com.example.connect.domain.user.repository.UserRepository;
@@ -22,9 +22,10 @@ public class UserService {
     private final MembershipRepository membershipRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisTokenRepository redisTokenRepository;
+    private final PointRepository pointRepository;
 
     @Transactional
-    public UserResDto updateMe(UpdateUserServiceDto serviceDto) {
+    public RedisUserDto updateMe(UpdateUserServiceDto serviceDto) {
 
         User me = userRepository.findByIdOrElseThrow(serviceDto.getSessionUser().getId());
 
@@ -44,7 +45,7 @@ public class UserService {
         redisUserDto.updateMembership(serviceDto.getSessionUser().getMembershipType(), serviceDto.getSessionUser().getExpiredDate());
         redisTokenRepository.saveUser(redisUserDto);
 
-        return new UserResDto(redisUserDto);
+        return redisUserDto;
     }
 
     public void checkPassword(RedisUserDto me, String password) {
