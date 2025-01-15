@@ -2,6 +2,8 @@ package com.example.connect.domain.point.service;
 
 import com.example.connect.domain.point.entity.Point;
 import com.example.connect.domain.point.repository.PointRepository;
+import com.example.connect.domain.pointuse.dto.PointUseListResDto;
+import com.example.connect.domain.pointuse.dto.PointUseResDto;
 import com.example.connect.domain.pointuse.entity.PointUse;
 import com.example.connect.domain.pointuse.repository.PointUseRepository;
 import com.example.connect.global.enums.PointUseType;
@@ -9,6 +11,9 @@ import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,16 +25,21 @@ public class PointService {
     private final PointRepository pointRepository;
     private final PointUseRepository pointUseRepository;
 
+    public BigDecimal nullToZero(BigDecimal value) {
+        if (value == null) {
+            return BigDecimal.ZERO;
+        }
+        return value;
+    }
+
     @Transactional
     public void usePoint(Long userId, Long matchingCount, String details) {
         BigDecimal totalSpendPoint = BigDecimal.valueOf(matchingCount * 50);
         PointUse pointInUse = pointUseRepository.findPointInUse(userId);
-        Long purePoint = pointRepository.sumAmount(userId);
-        BigDecimal totalHavePoint = BigDecimal.valueOf(purePoint).add(pointInUse.getPointChange());
+        BigDecimal totalHavePoint = totalRemainPoint(userId);
 
         // 1. 사용하려는 포인트가 현재 보유중인 포인트 보다 작은지 확인
         if (totalSpendPoint.compareTo(totalHavePoint) <= 0) {
-            System.out.println(pointInUse);
             // 1-1. true : 가장 최근 사용 포인트의 남은 양이 사용 요청 포인트 보다 많은지 확인 && 포인트가 사용되었는지 확인
             if (
                     pointInUse.getPointChange().compareTo(totalSpendPoint) >= 0 &&
@@ -124,5 +134,33 @@ public class PointService {
             pointRepository.save(updatePoint);
             pointUseRepository.save(updatePointUse);
         }
+    }
+
+    public PointUseListResDto getAllPoint(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<PointUse> pointUseList = pointUseRepository.findByUserId(userId, pageable);
+
+        List<PointUseResDto> pointUseResDtos = pointUseList.getContent().stream().map(data ->
+                new PointUseResDto(
+                        data.getId(),
+                        data.getAmount(),
+                        data.getPointChange(),
+                        data.getDetails(),
+                        data.getPointUseType(),
+                        data.getCreatedAt(),
+                        data.getUpdatedAt()
+                )).toList();
+
+        return new PointUseListResDto(page, size, pointUseList.getTotalElements(), pointUseList.getTotalPages(), pointUseResDtos);
+    }
+
+    public BigDecimal totalRemainPoint(Long userId) {
+        PointUse pointInUse = pointUseRepository.findPointInUse(userId);
+        BigDecimal usingPoint = nullToZero(pointInUse.getPointChange());
+        BigDecimal purePoint = nullToZero(new BigDecimal(pointRepository.sumAmount(userId)));
+
+        BigDecimal totalRemainPoint = usingPoint.compareTo(BigDecimal.ZERO) == 0 ? purePoint : purePoint.add(usingPoint);
+
+        return totalRemainPoint;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.connect.domain.user.controller;
 
+import com.example.connect.domain.point.service.PointService;
 import com.example.connect.domain.user.dto.PasswordReqDto;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.UpdateUserReqDto;
@@ -29,12 +30,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api/users/my")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final PointService pointService;
 
     @GetMapping
     public ResponseEntity<CommonResDto<UserResDto>> findMe(Authentication authentication) {
@@ -42,7 +46,9 @@ public class UserController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         RedisUserDto me = userDetails.getUser();
 
-        return new ResponseEntity<>(new CommonResDto<>("프로필 조회 완료", new UserResDto(me)), HttpStatus.OK);
+        BigDecimal totalRemainPoint = pointService.totalRemainPoint(me.getId());
+
+        return new ResponseEntity<>(new CommonResDto<>("프로필 조회 완료", new UserResDto(me, totalRemainPoint)), HttpStatus.OK);
     }
 
     @PatchMapping
@@ -55,8 +61,10 @@ public class UserController {
         RedisUserDto me = userDetails.getUser();
 
         UpdateUserServiceDto serviceDto = dto.toServiceDto(me);
-
-        UserResDto result = userService.updateMe(serviceDto);
+        BigDecimal totalRemainPoint = pointService.totalRemainPoint(me.getId());
+        RedisUserDto redisUserDto = userService.updateMe(serviceDto);
+        
+        UserResDto result = new UserResDto(redisUserDto, totalRemainPoint);
 
         return new ResponseEntity<>(new CommonResDto<>("프로필 수정 완료", result), HttpStatus.OK);
     }

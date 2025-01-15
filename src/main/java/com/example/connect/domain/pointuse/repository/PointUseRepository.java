@@ -1,6 +1,8 @@
 package com.example.connect.domain.pointuse.repository;
 
 import com.example.connect.domain.pointuse.entity.PointUse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,4 +21,7 @@ public interface PointUseRepository extends JpaRepository<PointUse, Long> {
 
     @Query("select (count(pu) > 1) from PointUse pu where pu.point.payment.id = :paymentId")
     Boolean isPointUse(Long paymentId);
+
+    @Query("select pu from PointUse pu where pu.point.user.id = :userId order by pu.createdAt desc")
+    Page<PointUse> findByUserId(Long userId, Pageable pageable);
 }
