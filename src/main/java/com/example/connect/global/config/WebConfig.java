@@ -30,7 +30,7 @@ public class WebConfig {
     private final AuthenticationEntryPoint authEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
 
-    private static final String[] WHITE_LIST = {"/api/auth/login", "/api/auth/signup", "/error", "/api/auth/refresh", "/api/file-url"};
+    private static final String[] WHITE_LIST = {"/api/auth/login/**", "/api/auth/signup", "/error", "/api/auth/refresh", "/api/file-url"};
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

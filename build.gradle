@@ -21,7 +21,7 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven {url 'https://jitpack.io'}
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -50,13 +50,14 @@ dependencies {
 
     // AWS SDK for S3
     implementation 'software.amazon.awssdk:s3:2.+'
-    
+
     testImplementation 'com.h2database:h2'
 
     implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
 
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 }
 
 tasks.named('test') {
