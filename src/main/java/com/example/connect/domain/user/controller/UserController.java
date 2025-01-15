@@ -46,9 +46,9 @@ public class UserController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         RedisUserDto me = userDetails.getUser();
 
-        BigDecimal totalRemainPoint = pointService.totalRemainPoint(me.getId());
+//        BigDecimal totalRemainPoint = pointService.totalRemainPoint(me.getId());
 
-        return new ResponseEntity<>(new CommonResDto<>("프로필 조회 완료", new UserResDto(me, totalRemainPoint)), HttpStatus.OK);
+        return new ResponseEntity<>(new CommonResDto<>("프로필 조회 완료", new UserResDto(me, BigDecimal.ZERO)), HttpStatus.OK);
     }
 
     @PatchMapping
@@ -63,7 +63,7 @@ public class UserController {
         UpdateUserServiceDto serviceDto = dto.toServiceDto(me);
         BigDecimal totalRemainPoint = pointService.totalRemainPoint(me.getId());
         RedisUserDto redisUserDto = userService.updateMe(serviceDto);
-        
+
         UserResDto result = new UserResDto(redisUserDto, totalRemainPoint);
 
         return new ResponseEntity<>(new CommonResDto<>("프로필 수정 완료", result), HttpStatus.OK);

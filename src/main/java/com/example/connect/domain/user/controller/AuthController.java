@@ -8,6 +8,7 @@ import com.example.connect.domain.user.dto.UserReqDto;
 import com.example.connect.domain.user.dto.UserTokenResDto;
 import com.example.connect.domain.user.repository.RedisTokenRepository;
 import com.example.connect.domain.user.service.AuthService;
+import com.example.connect.domain.user.service.NaverAuthService;
 import com.example.connect.global.common.dto.CommonResDto;
 import com.example.connect.global.common.dto.TokenDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,9 +19,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,6 +33,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final RedisTokenRepository redisTokenRepository;
+    private final NaverAuthService naverAuthService;
 
     @PostMapping("/signup")
     public ResponseEntity<CommonResDto<SignupResDto>> signup(@Valid @RequestBody UserReqDto userReqDto) {
@@ -75,5 +79,16 @@ public class AuthController {
         TokenDto result = authService.refresh(dto.getRefreshToken());
 
         return new ResponseEntity<>(new CommonResDto<>("토큰 재발급 완료", result), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/login/naver/code")
+    public ResponseEntity<CommonResDto<UserTokenResDto>> loginCallback(
+            @RequestParam String code,
+            @RequestParam String state
+    ) {
+
+        UserTokenResDto result = naverAuthService.handleNaverLogin(code, state);
+
+        return new ResponseEntity<>(new CommonResDto<>("로그인 완료", result), HttpStatus.OK);
     }
 }
