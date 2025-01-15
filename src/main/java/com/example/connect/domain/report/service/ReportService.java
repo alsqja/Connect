@@ -2,6 +2,7 @@ package com.example.connect.domain.report.service;
 
 import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.match.repository.MatchingRepository;
+import com.example.connect.domain.report.dto.AdminReportResDto;
 import com.example.connect.domain.report.dto.MyReportResDto;
 import com.example.connect.domain.report.dto.ReportResDto;
 import com.example.connect.domain.report.entity.Report;
@@ -87,5 +88,19 @@ public class ReportService {
         Page<Report> reportDetails = reportRepository.findByUserId(userId, pageable);
 
         return new MyReportResDto(page, size, reportDetails.getTotalElements(), reportDetails.getTotalPages(), reportDetails.getContent().stream().map(ReportResDto::new).toList());
+    }
+
+    public AdminReportResDto getAllReports(int page, int size, Long toUserId) {
+
+        Pageable pageable = PageRequest.of(page -1, size);
+        Page<Report> reportDetails;
+
+        if (toUserId != null) {
+            reportDetails = reportRepository.findAllByToUserId(toUserId, pageable);
+        } else {
+            reportDetails = reportRepository.findAll(pageable);
+        }
+
+        return new AdminReportResDto(page, size, reportDetails.getTotalElements(), reportDetails.getTotalPages(), reportDetails.getContent().stream().map(ReportResDto::new).toList());
     }
 }

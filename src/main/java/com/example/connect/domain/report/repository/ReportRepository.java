@@ -20,4 +20,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     @Query("select r from Report as r where r.fromUser.id = :userId")
     Page<Report> findByUserId(Long userId, Pageable pageable);
+
+    Page<Report> findAllByToUserId(Long toUserId, Pageable pageable);
 }
