@@ -5,6 +5,7 @@ import com.example.connect.domain.match.dto.MatchingResDto;
 import com.example.connect.domain.match.dto.MatchingWithScheduleResDto;
 import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.match.repository.MatchingRepository;
+import com.example.connect.domain.point.service.PointService;
 import com.example.connect.domain.schedule.entity.Schedule;
 import com.example.connect.domain.schedule.repository.ScheduleRepository;
 import com.example.connect.domain.user.entity.User;
@@ -26,6 +27,7 @@ public class MatchingService {
 
     private final MatchingRepository matchingRepository;
     private final ScheduleRepository scheduleRepository;
+    private final PointService pointService;
 
     @Transactional
     public MatchingWithScheduleResDto createMatching(Long userId, Long scheduleId) {
@@ -67,6 +69,10 @@ public class MatchingService {
         matchingRepository.save(matching);
 
         schedule.addCount();
+
+        if (schedule.getCount() > 5) {
+            pointService.usePoint(userId, 1L, "매칭 1회: 50 포인트 사용");
+        }
 
         return new MatchingWithScheduleResDto(scheduleList.get(biggestIndex), matching);
     }
