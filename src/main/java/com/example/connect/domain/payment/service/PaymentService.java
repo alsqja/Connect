@@ -20,6 +20,7 @@ import com.example.connect.global.enums.UserRole;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
 import com.example.connect.global.error.exception.ForbiddenException;
+import com.example.connect.global.error.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -51,7 +52,8 @@ public class PaymentService {
             PaymentReqDto paymentReqDto,
             Long userId
     ) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException(ErrorCode.NOT_FOUND));
         DecimalFormat df = new DecimalFormat("###,###");
         String token = portoneService.portoneToken();
 
