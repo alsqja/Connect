@@ -94,10 +94,6 @@ public class NaverAuthService {
             return userRepository.save(newUser);
         });
 
-        if (user.getId() != null) {
-            user.updateUserFields(userInfo.getName(), userInfo.getImageUrl(), user.getIsActiveMatching());
-        }
-
         Membership membership = membershipRepository.findByUserIdAndExpiredDateAfter(user.getId(), LocalDate.now()).orElse(null);
 
         RedisUserDto sessionUser;
