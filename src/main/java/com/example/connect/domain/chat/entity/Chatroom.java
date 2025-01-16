@@ -1,5 +1,6 @@
 package com.example.connect.domain.chat.entity;
 
+import com.example.connect.domain.chat.dto.ChatroomResponseDto;
 import com.example.connect.domain.chat.entity.enums.RoomStatus;
 import com.example.connect.domain.match.entity.Matching;
 import jakarta.persistence.*;
@@ -37,5 +38,13 @@ public class Chatroom {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    public ChatroomResponseDto toDto() {
+        return new ChatroomResponseDto(
+                this.id,
+                this.matching.getId(),
+                this.createdAt
+        );
     }
 }
