@@ -9,9 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,8 +32,17 @@ public class ChatroomController {
         return new ResponseEntity<>(new CommonListResDto<>("채팅방 리스트 조회", results), HttpStatus.OK);
     }
 
-    // TODO: 채팅방 삭제 API - 각 채팅방에 채팅방에 존재하는 유저들의 카운트를 추가하여 카운트가 0 이 되면, 채팅방, 채팅 내역 삭제 처리
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity delete(
+            @PathVariable Long roomId,
+            Authentication authentication
+    ) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RedisUserDto me = userDetails.getUser();
 
-    //
+        chatroomService.delete(me.getId(), roomId);
+
+        return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
 

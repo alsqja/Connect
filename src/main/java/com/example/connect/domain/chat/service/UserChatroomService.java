@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,7 @@ public class UserChatroomService {
     private final UserRepository userRepository;
 
 
+    @Transactional(readOnly = true)
     public Page<ChatRequestDto>  getChatHistory(Long chatroomId) {
 
         // TODO: 페이징 처리 고려, 프론트에서 스크롤 이벤트로 다음 페이지 받아오기
@@ -31,6 +33,7 @@ public class UserChatroomService {
         return userChatroomRepository.findTopChatsByChatroomId(chatroomId, pageable);
     }
 
+    @Transactional
     public void save(Long userId, Long chatroomId) {
         User findUser = userRepository.findByIdOrElseThrow(userId);
         Chatroom findChatroom = chatroomRepository.findByIdOrElseThrow(chatroomId);

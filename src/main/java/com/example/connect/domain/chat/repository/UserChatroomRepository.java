@@ -22,6 +22,8 @@ public interface UserChatroomRepository extends JpaRepository<UserChatroom, Long
         return findByUserId(userId).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
     }
 
+    Optional<UserChatroom> findByChatroomId(Long chatroomId);
+
     @Query("""
             SELECT new com.example.connect.domain.chat.dto.ChatResponseDto(
                 cr.id,
@@ -35,4 +37,6 @@ public interface UserChatroomRepository extends JpaRepository<UserChatroom, Long
             ORDER BY c.createdAt DESC
             """)
     Page<ChatRequestDto> findTopChatsByChatroomId(@Param("chatroomId") Long chatroomId, Pageable pageable);
+
+    void deleteByUserIdAndChatroomId(Long userId, Long ChatroomId);
 }
