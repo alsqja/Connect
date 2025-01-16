@@ -20,14 +20,18 @@ public class Chat {
     @JoinColumn(name = "user_chatroom_id", nullable = false)
     private UserChatroom userChatroom;
 
+    @Column(name = "chatroom_id", nullable = false)
+    private Long chatroomId;
+
     @Column(name="content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public Chat(UserChatroom userChatroom, String content) {
+    public Chat(UserChatroom userChatroom, Long chatroomId, String content) {
         this.userChatroom = userChatroom;
+        this.chatroomId = chatroomId;
         this.content = content;
     }
 
