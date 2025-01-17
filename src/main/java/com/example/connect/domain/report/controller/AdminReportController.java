@@ -2,7 +2,6 @@ package com.example.connect.domain.report.controller;
 
 import com.example.connect.domain.report.dto.AdminReportResDto;
 import com.example.connect.domain.report.service.AdminReportService;
-import com.example.connect.domain.report.service.ReportService;
 import com.example.connect.global.common.dto.CommonResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminReportController {
 
     private final AdminReportService adminReportService;
-    private final ReportService reportService;
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReport(@PathVariable Long id) {
@@ -35,7 +33,7 @@ public class AdminReportController {
                                                                          @RequestParam(defaultValue = "10") int size,
                                                                          @RequestParam(required = false) Long toUserId) {
 
-        AdminReportResDto results = reportService.getAllReports(page, size, toUserId);
+        AdminReportResDto results = adminReportService.getAllReports(page, size, toUserId);
 
         return new ResponseEntity<>(new CommonResDto<>("신고 내역 조회 완료.", results), HttpStatus.OK);
     }
