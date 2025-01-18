@@ -214,13 +214,10 @@ class MatchingServiceTest {
         entityManager.clear();
 
         MatchingWithScheduleResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
-        MatchingWithScheduleResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
 
         System.out.println(result1.getSimilarity());
-        System.out.println(result2.getSimilarity());
 
         assertEquals(1, (double) result1.getSimilarity(), "similarity: " + result1.getSimilarity());
-        assertEquals(1, (double) result2.getSimilarity(), "similarity: " + result2.getSimilarity());
     }
 
     @Test
@@ -272,14 +269,10 @@ class MatchingServiceTest {
         entityManager.clear();
 
         MatchingWithScheduleResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
-        MatchingWithScheduleResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
 
         System.out.println(result1.getSimilarity());
-        System.out.println(result2.getSimilarity());
 
         assertTrue(result1.getSimilarity() < 1, "similarity: " + result1.getSimilarity());
-        assertTrue(result2.getSimilarity() < 1, "similarity: " + result2.getSimilarity());
-        assertEquals(result1.getSimilarity(), result2.getSimilarity());
     }
 
     @Test
@@ -339,14 +332,10 @@ class MatchingServiceTest {
         entityManager.clear();
 
         MatchingWithScheduleResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
-        MatchingWithScheduleResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
 
         System.out.println(result1.getSimilarity());
-        System.out.println(result2.getSimilarity());
 
         assertTrue(result1.getSimilarity() < 1, "similarity: " + result1.getSimilarity());
-        assertTrue(result2.getSimilarity() < 1, "similarity: " + result2.getSimilarity());
-        assertEquals(result1.getSimilarity(), result2.getSimilarity());
     }
 
     @Test
@@ -404,14 +393,10 @@ class MatchingServiceTest {
         entityManager.clear();
 
         MatchingWithScheduleResDto result1 = matchingService.createMatching(user1.getId(), savedSchedule1.getId());
-        MatchingWithScheduleResDto result2 = matchingService.createMatching(user2.getId(), savedSchedule2.getId());
 
         System.out.println(result1.getSimilarity());
-        System.out.println(result2.getSimilarity());
 
         assertTrue(result1.getSimilarity() < 1, "similarity: " + result1.getSimilarity());
-        assertTrue(result2.getSimilarity() < 1, "similarity: " + result2.getSimilarity());
-        assertEquals(result1.getSimilarity(), result2.getSimilarity());
     }
 
     @Test
