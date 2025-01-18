@@ -28,7 +28,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Custo
                 SELECT s
                 FROM Schedule s
                 LEFT JOIN FETCH s.scheduleContents sc
-                INNER JOIN FETCH s.user u
+                INNER JOIN s.user u
                 INNER JOIN FETCH sc.subCategory sc2
                 INNER JOIN FETCH sc2.category c
                 LEFT JOIN Report r ON r.toUser.id = u.id AND r.fromUser.id = :userId
