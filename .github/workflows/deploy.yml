@@ -61,4 +61,5 @@ jobs:
               -e NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} \
               -e NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }} \
               -e NAVER_REDIRECT_URI=${{ secrets.NAVER_REDIRECT_URI }} \
+              -e PORTONE_API_SECRET_V2=${{ secrets.PORTONE_API_SECRET_V2 }} \
               alsqja2626/connect:latest
