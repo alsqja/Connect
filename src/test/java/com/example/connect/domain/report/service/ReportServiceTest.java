@@ -2,7 +2,6 @@ package com.example.connect.domain.report.service;
 
 import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.match.repository.MatchingRepository;
-import com.example.connect.domain.report.dto.AdminReportResDto;
 import com.example.connect.domain.report.dto.MyReportResDto;
 import com.example.connect.domain.report.dto.ReportResDto;
 import com.example.connect.domain.report.entity.Report;
@@ -16,6 +15,7 @@ import com.example.connect.global.enums.MatchStatus;
 import com.example.connect.global.enums.UserRole;
 import com.example.connect.global.enums.UserStatus;
 import com.example.connect.global.error.exception.BadRequestException;
+import com.example.connect.global.error.exception.ForbiddenException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -148,5 +148,29 @@ class ReportServiceTest {
 
         assertEquals(2, result.getTotalElements());
         assertEquals(user1.getId(), result.getData().get(0).getFromId());
+    }
+
+    @Test
+    void cancelReport() {
+
+        //given
+        Report report1 = new Report("잠수탐", matching1, user1, user2);
+        reportRepository.save(report1);
+
+        user2.addReportedCount();
+        user2.addReportedCount();
+        user2.addReportedCount();
+        user2.addReportedCount();
+        user2.addReportedCount();
+        user2.updateStatus(UserStatus.REJECTED);
+
+        //when
+        ForbiddenException anotherUserException = assertThrows(ForbiddenException.class, () -> reportService.cancelReport(report1.getId(), user2.getId()));
+        reportService.cancelReport(report1.getId(), user1.getId());
+
+        //then
+        assertNull(reportRepository.findById(report1.getId()).orElse(null));
+        assertEquals(4, user2.getReportedCount());
+        assertEquals(UserStatus.NORMAL, user2.getStatus());
     }
 }
