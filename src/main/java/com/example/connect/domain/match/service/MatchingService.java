@@ -9,6 +9,7 @@ import com.example.connect.domain.point.service.PointService;
 import com.example.connect.domain.schedule.entity.Schedule;
 import com.example.connect.domain.schedule.repository.ScheduleRepository;
 import com.example.connect.domain.user.entity.User;
+import com.example.connect.global.common.Const;
 import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.MatchStatus;
 import com.example.connect.global.error.errorcode.ErrorCode;
@@ -35,6 +36,10 @@ public class MatchingService {
         Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, userId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.BAD_REQUEST));
 
+        if (schedule.getCount() >= 5) {
+            pointService.usePoint(userId, 1L, "매칭 1회: 50 포인트 사용");
+        }
+
         User user = schedule.getUser(); // q + 1
         Gender gender = user.getGender().equals(Gender.MAN) ? Gender.WOMAN : Gender.MAN;
         String birth = user.getBirth();
@@ -49,7 +54,7 @@ public class MatchingService {
                 end,
                 schedule.getLatitude(),
                 schedule.getLongitude(),
-                10,
+                Const.MATCHING_DISTANCE,
                 schedule.getDate()
         );
 
@@ -59,7 +64,9 @@ public class MatchingService {
 
         Jaccard jaccard = new Jaccard();
         for (Schedule otherSchedule : scheduleList) {
-            jaccard.addSimilaritySchedule(schedule, otherSchedule);
+            if (!schedule.getId().equals(otherSchedule.getId())) {
+                jaccard.addSimilaritySchedule(schedule, otherSchedule);
+            }
         }
 
         int biggestIndex = jaccard.getBiggestIndex();
@@ -69,10 +76,6 @@ public class MatchingService {
         matchingRepository.save(matching);
 
         schedule.addCount();
-
-        if (schedule.getCount() > 5) {
-            pointService.usePoint(userId, 1L, "매칭 1회: 50 포인트 사용");
-        }
 
         return new MatchingWithScheduleResDto(scheduleList.get(biggestIndex), matching);
     }

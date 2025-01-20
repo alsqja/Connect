@@ -25,30 +25,27 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Custo
     Optional<Schedule> findByIdAndUserId(Long id, Long userId);
 
     @Query("""
-                SELECT DISTINCT s
+                SELECT s
                 FROM Schedule s
                 LEFT JOIN FETCH s.scheduleContents sc
-                JOIN FETCH s.user u
-                JOIN FETCH sc.subCategory sc2
-                JOIN FETCH sc2.category c
+                INNER JOIN s.user u
+                INNER JOIN FETCH sc.subCategory sc2
+                INNER JOIN FETCH sc2.category c
                 LEFT JOIN Report r ON r.toUser.id = u.id AND r.fromUser.id = :userId
+                LEFT JOIN Matching m ON m.isDeleted = false
+                    AND (m.fromSchedule.id = s.id OR m.toSchedule.id = s.id)
+                    AND (m.fromSchedule.id = :id OR m.toSchedule.id = :id)
                 WHERE u.gender = :gender
                   AND u.isActiveMatching = true
-                  AND s.id != :id
                   AND u.birth BETWEEN :birthYearStart AND :birthYearEnd
                   AND s.date = :date
                   AND r.id IS NULL
+                  AND m.id IS NULL
                   AND cast(FUNCTION('acos',
                       cos(radians(:latitude)) * cos(radians(s.latitude)) *
                       cos(radians(s.longitude) - radians(:longitude)) +
                       sin(radians(:latitude)) * sin(radians(s.latitude))
                   ) as double) * 6371 <= :distance
-                  AND NOT EXISTS (
-                      SELECT 1
-                      FROM Matching m
-                      WHERE (m.fromSchedule.id = s.id OR m.toSchedule.id = s.id)
-                        AND (m.fromSchedule.id = :id OR m.toSchedule.id = :id)
-                  )
                 ORDER BY cast(FUNCTION('acos',
                     cos(radians(:latitude)) * cos(radians(s.latitude)) *
                     cos(radians(s.longitude) - radians(:longitude)) +
