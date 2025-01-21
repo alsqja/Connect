@@ -1,6 +1,6 @@
 package com.example.connect.domain.chat.repository;
 
-import com.example.connect.domain.chat.dto.ChatRequestDto;
+import com.example.connect.domain.chat.dto.ChatResponseDto;
 import com.example.connect.domain.chat.entity.UserChatroom;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.NotFoundException;
@@ -36,7 +36,7 @@ public interface UserChatroomRepository extends JpaRepository<UserChatroom, Long
             WHERE cr.id = :chatroomId
             ORDER BY c.createdAt DESC
             """)
-    Page<ChatRequestDto> findTopChatsByChatroomId(@Param("chatroomId") Long chatroomId, Pageable pageable);
+    Page<ChatResponseDto> findTopChatsByChatroomId(@Param("chatroomId") Long chatroomId, Pageable pageable);
 
     void deleteByUserIdAndChatroomId(Long userId, Long ChatroomId);
 }

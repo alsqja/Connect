@@ -1,6 +1,7 @@
 package com.example.connect.domain.chat.controller;
 
 import com.example.connect.domain.chat.dto.ChatRequestDto;
+import com.example.connect.domain.chat.dto.ChatResponseDto;
 import com.example.connect.domain.chat.service.ChatService;
 import com.example.connect.domain.chat.service.UserChatroomService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class ChatController {
     }
 
     @SubscribeMapping("/sub/chatroom/{chatroomId}/history")
-    public Page<ChatRequestDto> getChatHistory(@DestinationVariable Long chatroomId) {
+    public Page<ChatResponseDto> getChatHistory(@DestinationVariable Long chatroomId) {
         return userChatroomService.getChatHistory(chatroomId);
     }
 

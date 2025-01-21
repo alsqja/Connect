@@ -1,6 +1,7 @@
 package com.example.connect.domain.chat;
 
 import com.example.connect.domain.chat.dto.ChatRequestDto;
+import com.example.connect.domain.chat.dto.ChatResponseDto;
 import com.example.connect.domain.chat.service.ChatroomService;
 import com.example.connect.domain.chat.service.UserChatroomService;
 import com.example.connect.domain.user.dto.RedisUserDto;
@@ -59,7 +60,7 @@ public class WebsocketEventListener {
             );
         } else {
             // 기존 채팅방의 채팅 내역 불러오기
-            Page<ChatRequestDto> chatHistory = userChatroomService.getChatHistory(chatroomId);
+            Page<ChatResponseDto> chatHistory = userChatroomService.getChatHistory(chatroomId);
 
             // 조회한 채팅 내역
             simpMessageSendingOperations.convertAndSend(
