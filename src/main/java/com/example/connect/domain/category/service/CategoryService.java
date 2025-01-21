@@ -17,7 +17,7 @@ public class CategoryService {
 
     public List<AllCategoriesResDto> getAllCategories() {
 
-        List<Category> categories = categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAllCategoryWithSubCategories();
 
         return categories.stream().map(category -> new AllCategoriesResDto(
                 category.getId(),
