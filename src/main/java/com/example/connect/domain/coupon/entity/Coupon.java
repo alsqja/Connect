@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +46,12 @@ public class Coupon extends BaseEntity {
     @Column(name = "amount", nullable = false)
     private Integer amount;
 
+    @Column(name = "expired_date", nullable = false)
+    private LocalDate expiredDate;
+
+    @Column(name = "open_date", nullable = false)
+    private LocalDateTime openDate;
+
     @Column(name = "is_deleted", nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean isDeleted;
 
@@ -57,10 +65,12 @@ public class Coupon extends BaseEntity {
         }
     }
 
-    public Coupon(String name, String description, Integer count, Integer amount) {
+    public Coupon(String name, String description, Integer count, Integer amount, LocalDate expiredDate, LocalDateTime openDate) {
         this.name = name;
         this.description = description;
         this.count = count;
         this.amount = amount;
+        this.expiredDate = expiredDate;
+        this.openDate = openDate;
     }
 }

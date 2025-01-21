@@ -97,7 +97,7 @@ public class DataInitializer {
 //        SubCategory subCategory = new SubCategory("축구", "", savedCategory);
 //        SubCategory savedSubCategory = subCategoryRepository.save(subCategory);
 //
-//        Coupon coupon = new Coupon("coupon", "couponDescription", 100, 5);
+//        Coupon coupon = new Coupon("coupon", "couponDescription", 100, 5, LocalDate.of(2025, 2, 28), LocalDateTime.of(2025, 1, 21, 0, 0, 0));
 //        Coupon savedCoupon = couponRepository.save(coupon);
 //
 //        CouponUser couponUser = new CouponUser(LocalDateTime.now().plusMonths(1), CouponUserStatus.UNUSED, savedUser1, savedCoupon);
