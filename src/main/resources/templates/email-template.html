@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>이메일 인증</title>
+    <style>
+        .container {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .code {
+            font-size: 30px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <img src="cid:logoImage" class="logo" alt="logo"/>
+    <h2>이메일 인증 코드</h2>
+    <p>아래의 인증 코드를 입력해주세요.</p>
+    <h2 class="code">[[${code}]]</h2>
+    <div class="footer">
+        이 이메일은 자동으로 발송되었습니다. 회신하지 마세요.
+    </div>
+</div>
+</body>
+</html>

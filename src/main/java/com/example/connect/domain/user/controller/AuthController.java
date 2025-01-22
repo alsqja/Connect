@@ -1,5 +1,6 @@
 package com.example.connect.domain.user.controller;
 
+import com.example.connect.domain.user.dto.EmailReqDto;
 import com.example.connect.domain.user.dto.LoginReqDto;
 import com.example.connect.domain.user.dto.RefreshReqDto;
 import com.example.connect.domain.user.dto.SignupResDto;
@@ -8,6 +9,7 @@ import com.example.connect.domain.user.dto.UserReqDto;
 import com.example.connect.domain.user.dto.UserTokenResDto;
 import com.example.connect.domain.user.repository.RedisTokenRepository;
 import com.example.connect.domain.user.service.AuthService;
+import com.example.connect.domain.user.service.EmailService;
 import com.example.connect.domain.user.service.NaverAuthService;
 import com.example.connect.global.common.dto.CommonResDto;
 import com.example.connect.global.common.dto.TokenDto;
@@ -34,6 +36,7 @@ public class AuthController {
     private final AuthService authService;
     private final RedisTokenRepository redisTokenRepository;
     private final NaverAuthService naverAuthService;
+    private final EmailService emailService;
 
     @PostMapping("/signup")
     public ResponseEntity<CommonResDto<SignupResDto>> signup(@Valid @RequestBody UserReqDto userReqDto) {
@@ -90,5 +93,13 @@ public class AuthController {
         UserTokenResDto result = naverAuthService.handleNaverLogin(code, state);
 
         return new ResponseEntity<>(new CommonResDto<>("로그인 완료", result), HttpStatus.OK);
+    }
+
+    @PostMapping("/email")
+    public ResponseEntity<Void> mailSend(@Valid @RequestBody EmailReqDto emailReqDto) {
+
+        emailService.sendEmail(emailReqDto.getEmail());
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
