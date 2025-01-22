@@ -1,5 +1,8 @@
 package com.example.connect.domain.user.service;
 
+import com.example.connect.domain.user.repository.RedisEmailRepository;
+import com.example.connect.global.error.errorcode.ErrorCode;
+import com.example.connect.global.error.exception.BadRequestException;
 import com.example.connect.global.util.VerifyKeyCreator;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -19,6 +22,7 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
+    private final RedisEmailRepository redisEmailRepository;
 
     public void sendEmail(String to) {
         try {
@@ -38,8 +42,20 @@ public class EmailService {
             helper.addInline("logoImage", new ClassPathResource("static/images/logo.png"));
 
             mailSender.send(message);
+
+            redisEmailRepository.saveEmailCode(to, key);
+
         } catch (MessagingException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public void verifyCode(String email, String code) {
+
+        String savedCode = redisEmailRepository.getEmailCode(email);
+
+        if (!savedCode.equals(code)) {
+            throw new BadRequestException(ErrorCode.BAD_REQUEST);
         }
     }
 }

@@ -102,4 +102,12 @@ public class AuthController {
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+
+    @PostMapping("/email/verify")
+    public ResponseEntity<Void> verifyEmail(@Valid @RequestBody EmailReqDto emailReqDto) {
+
+        emailService.verifyCode(emailReqDto.getEmail(), emailReqDto.getCode());
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
