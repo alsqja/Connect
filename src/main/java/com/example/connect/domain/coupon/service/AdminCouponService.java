@@ -18,7 +18,7 @@ public class AdminCouponService {
 
     public CouponResDto createCoupon(AdminCouponReqDto adminCouponReqDto) {
         if (
-                adminCouponReqDto.getExpiredDate().compareTo(adminCouponReqDto.getOpenDate().toLocalDate()) >= 0
+                adminCouponReqDto.getExpiredDate().compareTo(adminCouponReqDto.getOpenDate().toLocalDate()) <= 0
                         || adminCouponReqDto.getOpenDate().isBefore(LocalDateTime.now())
         ) {
             throw new BadRequestException(ErrorCode.BAD_REQUEST);
