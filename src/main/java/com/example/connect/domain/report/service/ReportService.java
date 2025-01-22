@@ -84,7 +84,7 @@ public class ReportService {
     public MyReportResDto getMyReports(int page, int size, Long userId) {
 
         Pageable pageable = PageRequest.of(page -1, size);
-        Page<Report> reportDetails = reportRepository.findByUserId(userId, pageable);
+        Page<Report> reportDetails = reportRepository.findByFromUserId(userId, pageable);
 
         return new MyReportResDto(page, size, reportDetails.getTotalElements(), reportDetails.getTotalPages(), reportDetails.getContent().stream().map(ReportResDto::new).toList());
     }
