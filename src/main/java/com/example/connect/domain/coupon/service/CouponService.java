@@ -25,4 +25,10 @@ public class CouponService {
 
         return resDto;
     }
+
+    public CouponResDto getCoupon(Long id) {
+        Coupon coupon = couponRepository.findByIdOrElseThrow(id);
+
+        return new CouponResDto(coupon);
+    }
 }
