@@ -54,7 +54,7 @@ public class EmailService {
 
         String savedCode = redisEmailRepository.getEmailCode(email);
 
-        if (!savedCode.equals(code)) {
+        if (savedCode == null || !savedCode.equals(code)) {
             throw new BadRequestException(ErrorCode.BAD_REQUEST);
         }
     }

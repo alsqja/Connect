@@ -7,6 +7,7 @@ import com.example.connect.domain.user.dto.SignupResDto;
 import com.example.connect.domain.user.dto.SignupServiceDto;
 import com.example.connect.domain.user.dto.UserTokenResDto;
 import com.example.connect.domain.user.entity.User;
+import com.example.connect.domain.user.repository.RedisEmailRepository;
 import com.example.connect.domain.user.repository.RedisTokenRepository;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.common.dto.TokenDto;
@@ -32,8 +33,15 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
     private final RedisTokenRepository redisTokenRepository;
+    private final RedisEmailRepository redisEmailRepository;
 
     public SignupResDto signup(SignupServiceDto signupServiceDto) {
+
+        String emailStatus = redisEmailRepository.getEmailStatus(signupServiceDto.getEmail());
+
+        if (!"verified".equals(emailStatus)) {
+            throw new BadRequestException(ErrorCode.BAD_REQUEST);
+        }
 
         boolean isExist = userRepository.existsByEmail(signupServiceDto.getEmail()) > 0;
 
@@ -46,6 +54,8 @@ public class AuthService {
         user.updatePassword(passwordEncoder.encode(user.getPassword()));
 
         User savedUser = userRepository.save(user);
+
+        redisEmailRepository.deleteEmailStatus(signupServiceDto.getEmail());
 
         return new SignupResDto(savedUser);
     }
