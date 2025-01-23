@@ -42,13 +42,7 @@ public class AuthService {
         if (!"verified".equals(emailStatus)) {
             throw new BadRequestException(ErrorCode.BAD_REQUEST);
         }
-
-        boolean isExist = userRepository.existsByEmail(signupServiceDto.getEmail()) > 0;
-
-        if (isExist) {
-            throw new BadRequestException(ErrorCode.INVALID_EMAIL);
-        }
-
+        
         User user = signupServiceDto.toUser();
 
         user.updatePassword(passwordEncoder.encode(user.getPassword()));
