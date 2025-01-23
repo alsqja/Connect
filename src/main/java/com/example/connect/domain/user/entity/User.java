@@ -5,6 +5,7 @@ import com.example.connect.domain.membership.entity.Membership;
 import com.example.connect.domain.point.entity.Point;
 import com.example.connect.domain.report.entity.Report;
 import com.example.connect.domain.schedule.entity.Schedule;
+import com.example.connect.domain.userimage.entity.UserImage;
 import com.example.connect.global.common.BaseEntity;
 import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.UserRole;
@@ -91,6 +92,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Membership> memberships = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserImage> userImages = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
