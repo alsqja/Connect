@@ -1,6 +1,7 @@
 package com.example.connect.domain.user.service;
 
 import com.example.connect.domain.user.repository.RedisEmailRepository;
+import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
 import com.example.connect.global.util.VerifyKeyCreator;
@@ -23,8 +24,14 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
     private final RedisEmailRepository redisEmailRepository;
+    private final UserRepository userRepository;
 
     public void sendEmail(String to) {
+
+        if (userRepository.existsByEmail(to) > 0) {
+            throw new BadRequestException(ErrorCode.INVALID_EMAIL);
+        }
+
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, StandardCharsets.UTF_8.name());
