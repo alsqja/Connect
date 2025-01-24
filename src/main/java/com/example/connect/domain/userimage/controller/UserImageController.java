@@ -1,6 +1,7 @@
 package com.example.connect.domain.userimage.controller;
 
 import com.example.connect.domain.user.dto.RedisUserDto;
+import com.example.connect.domain.userimage.dto.UserImageDetailResDto;
 import com.example.connect.domain.userimage.dto.UserImagePageResDto;
 import com.example.connect.domain.userimage.dto.UserImageReqDto;
 import com.example.connect.domain.userimage.dto.UserImageResDto;
@@ -101,5 +102,16 @@ public class UserImageController {
         userImageService.deleteImage(userId, id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CommonResDto<UserImageDetailResDto>> findImageById(
+            @PathVariable Long userId,
+            @PathVariable Long id
+    ) {
+
+        UserImageDetailResDto result = userImageService.findById(userId, id);
+
+        return new ResponseEntity<>(new CommonResDto<>("피드 단일 조회 완료", result), HttpStatus.OK);
     }
 }
