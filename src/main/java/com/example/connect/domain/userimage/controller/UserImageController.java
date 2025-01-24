@@ -9,12 +9,13 @@ import com.example.connect.domain.userimage.service.UserImageService;
 import com.example.connect.global.common.dto.CommonResDto;
 import com.example.connect.global.config.auth.UserDetailsImpl;
 import com.example.connect.global.error.errorcode.ErrorCode;
-import com.example.connect.global.error.exception.BadRequestException;
+import com.example.connect.global.error.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,7 +41,7 @@ public class UserImageController {
         RedisUserDto user = userDetails.getUser();
 
         if (!user.getId().equals(userId)) {
-            throw new BadRequestException(ErrorCode.BAD_REQUEST);
+            throw new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION);
         }
 
         UserImage inputImage = new UserImage(dto.getUrl(), dto.getDescription());
@@ -60,5 +61,25 @@ public class UserImageController {
         UserImagePageResDto results = userImageService.findUserImages(userId, page, size);
 
         return new ResponseEntity<>(new CommonResDto<>("피드 조회 완료", results), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<CommonResDto<UserImageResDto>> updateImage(
+            @PathVariable Long userId,
+            @PathVariable Long id,
+            @RequestBody UserImageReqDto dto,
+            Authentication authentication
+    ) {
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RedisUserDto user = userDetails.getUser();
+
+        if (!user.getId().equals(userId)) {
+            throw new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION);
+        }
+
+        UserImageResDto result = userImageService.updateImage(userId, id, dto.getUrl(), dto.getDescription());
+
+        return new ResponseEntity<>(new CommonResDto<>("피드 수정 완료", result), HttpStatus.OK);
     }
 }

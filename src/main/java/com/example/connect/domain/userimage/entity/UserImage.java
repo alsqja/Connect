@@ -42,4 +42,13 @@ public class UserImage extends BaseEntity {
     public void updateUser(User user) {
         this.user = user;
     }
+
+    public void updateFields(String url, String description) {
+        if (url != null) {
+            this.url = url;
+        }
+        if (description != null) {
+            this.description = description;
+        }
+    }
 }
