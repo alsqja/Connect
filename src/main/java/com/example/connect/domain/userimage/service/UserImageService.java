@@ -53,7 +53,19 @@ public class UserImageService {
         }
 
         userImage.get().updateFields(url, description);
-        
+
         return new UserImageResDto(userImage.get());
+    }
+
+    @Transactional
+    public void deleteImage(Long userId, Long id) {
+
+        Optional<UserImage> userImage = userImageRepository.findByUserIdAndId(userId, id);
+
+        if (userImage.isEmpty()) {
+            throw new NotFoundException(ErrorCode.NOT_FOUND);
+        }
+
+        userImageRepository.delete(userImage.get());
     }
 }
