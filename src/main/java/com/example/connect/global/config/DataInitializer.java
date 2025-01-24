@@ -125,7 +125,7 @@ public class DataInitializer {
         Coupon coupon = new Coupon("coupon", "couponDescription", 100, 5, LocalDate.of(2025, 2, 28), LocalDateTime.of(2025, 1, 21, 0, 0, 0));
         Coupon savedCoupon = couponRepository.save(coupon);
 
-        CouponUser couponUser = new CouponUser(LocalDateTime.now().plusMonths(1), CouponUserStatus.UNUSED, savedUser1, savedCoupon);
+        CouponUser couponUser = new CouponUser(LocalDate.now().plusMonths(1), CouponUserStatus.UNUSED, savedUser1, savedCoupon);
         couponUserRepository.save(couponUser);
 
         Schedule schedule1 = new Schedule(LocalDate.of(2025, 1, 30), "운동", "3대 200 입니다", "충청북도 청주시 서원구 월평로 24", 36.6, 127.5, user1);

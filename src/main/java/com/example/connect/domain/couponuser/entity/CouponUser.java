@@ -15,16 +15,17 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "coupon_user")
+@Table(name = "coupon_user", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "coupon_id"})})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE coupon_user SET is_deleted = true WHERE id = ?")
@@ -36,7 +37,7 @@ public class CouponUser extends BaseEntity {
     private Long id;
 
     @Column(name = "expired_at", nullable = false)
-    private LocalDateTime expiredAt;
+    private LocalDate expiredDate;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -60,8 +61,8 @@ public class CouponUser extends BaseEntity {
         }
     }
 
-    public CouponUser(LocalDateTime expiredAt, CouponUserStatus status, User user, Coupon coupon) {
-        this.expiredAt = expiredAt;
+    public CouponUser(LocalDate expiredDate, CouponUserStatus status, User user, Coupon coupon) {
+        this.expiredDate = expiredDate;
         this.status = status;
         this.user = user;
         this.coupon = coupon;
