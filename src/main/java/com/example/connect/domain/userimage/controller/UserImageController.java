@@ -1,6 +1,7 @@
 package com.example.connect.domain.userimage.controller;
 
 import com.example.connect.domain.user.dto.RedisUserDto;
+import com.example.connect.domain.userimage.dto.UserImagePageResDto;
 import com.example.connect.domain.userimage.dto.UserImageReqDto;
 import com.example.connect.domain.userimage.dto.UserImageResDto;
 import com.example.connect.domain.userimage.entity.UserImage;
@@ -13,10 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -45,5 +48,17 @@ public class UserImageController {
         UserImageResDto result = userImageService.saveImage(userId, inputImage);
 
         return new ResponseEntity<>(new CommonResDto<>("피드 저장 완료", result), HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<CommonResDto<UserImagePageResDto>> findImages(
+            @PathVariable Long userId,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "12") int size
+    ) {
+
+        UserImagePageResDto results = userImageService.findUserImages(userId, page, size);
+
+        return new ResponseEntity<>(new CommonResDto<>("피드 조회 완료", results), HttpStatus.OK);
     }
 }
