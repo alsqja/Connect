@@ -16,6 +16,7 @@ public enum ErrorCode {
     PAYMENT_USE_POINT(HttpStatus.BAD_REQUEST, "이미 포인트로 사용한 결제 입니다."),
     NOT_ISSUE_COUPON(HttpStatus.BAD_REQUEST, "현재 발급중인 쿠폰이 아닙니다."),
     ALREADY_HAVE_COUPON(HttpStatus.BAD_REQUEST, "이미 소지한 쿠폰입니다."),
+    USED_COUPON(HttpStatus.BAD_REQUEST, "이미 사용한 쿠폰입니다."),
 
     // 401 UNAUTHORIZED
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),

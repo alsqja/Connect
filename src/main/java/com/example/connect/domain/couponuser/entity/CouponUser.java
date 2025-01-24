@@ -67,4 +67,8 @@ public class CouponUser extends BaseEntity {
         this.user = user;
         this.coupon = coupon;
     }
+
+    public void isUse() {
+        this.status = CouponUserStatus.USED;
+    }
 }
