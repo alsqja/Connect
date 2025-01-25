@@ -1,7 +1,7 @@
 package com.example.connect.domain.chat.controller;
 
-import com.example.connect.domain.chat.dto.ChatRequestDto;
-import com.example.connect.domain.chat.dto.ChatResponseDto;
+import com.example.connect.domain.chat.dto.ChatReqDto;
+import com.example.connect.domain.chat.dto.ChatResDto;
 import com.example.connect.domain.chat.service.ChatService;
 import com.example.connect.domain.chat.service.UserChatroomService;
 import lombok.RequiredArgsConstructor;
@@ -30,17 +30,17 @@ public class ChatController {
     }
 
     @SubscribeMapping("/sub/chatroom/{chatroomId}/history")
-    public Page<ChatResponseDto> getChatHistory(@DestinationVariable Long chatroomId) {
+    public Page<ChatResDto> getChatHistory(@DestinationVariable Long chatroomId) {
         return userChatroomService.getChatHistory(chatroomId);
     }
 
-    @MessageMapping("/chat")
-    public void message(@RequestBody ChatRequestDto message) {
+    @MessageMapping("/chats/room/{roomId}")
+    public void message(@DestinationVariable Long roomId,  @RequestBody ChatReqDto message) {
 
-        chatService.save(message);
+        chatService.save(roomId, message);
 
         simpMessageSendingOperations.convertAndSend(
-                "/sub/chatroom/" + message.getChatroomId(),
+                "/sub/chats/room/" + roomId,
                 message
         );
     }

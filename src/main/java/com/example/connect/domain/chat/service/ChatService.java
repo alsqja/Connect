@@ -1,6 +1,6 @@
 package com.example.connect.domain.chat.service;
 
-import com.example.connect.domain.chat.dto.ChatRequestDto;
+import com.example.connect.domain.chat.dto.ChatReqDto;
 import com.example.connect.domain.chat.entity.Chat;
 import com.example.connect.domain.chat.entity.UserChatroom;
 import com.example.connect.domain.chat.repository.ChatRepository;
@@ -17,11 +17,11 @@ public class ChatService {
     private final UserChatroomRepository userChatroomRepository;
 
     @Transactional
-    public void save(ChatRequestDto message) {
+    public void save(Long roomId, ChatReqDto message) {
 
         UserChatroom findUserChatroom = userChatroomRepository.findByUserIdOrElseThrow(message.getSenderId());
 
-        Chat chat = new Chat(findUserChatroom, message.getChatroomId(), message.getContent());
+        Chat chat = new Chat(findUserChatroom, roomId, message.getContent());
 
         chatRepository.save(chat);
     }

@@ -4,9 +4,8 @@ import lombok.Getter;
 
 
 @Getter
-public class ChatRequestDto {
+public class ChatReqDto {
 
-    private Long chatroomId;
     private Long senderId;
     private String content;
 }

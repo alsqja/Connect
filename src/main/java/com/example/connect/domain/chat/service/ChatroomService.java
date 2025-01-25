@@ -1,6 +1,6 @@
 package com.example.connect.domain.chat.service;
 
-import com.example.connect.domain.chat.dto.ChatroomResponseDto;
+import com.example.connect.domain.chat.dto.ChatroomResDto;
 import com.example.connect.domain.chat.entity.Chatroom;
 import com.example.connect.domain.chat.entity.UserChatroom;
 import com.example.connect.domain.chat.entity.enums.RoomStatus;
@@ -23,12 +23,13 @@ public class ChatroomService {
 
     private final ChatRepository chatRepository;
     private final ChatroomRepository chatroomRepository;
+    private final UserChatroomService userChatroomService;
     private final UserChatroomRepository userChatroomRepository;
     private final MatchingRepository matchingRepository;
 
 
     @Transactional
-    public Long create(Long matchingId) {
+    public ChatroomResDto create(Long userId, Long matchingId) {
 
         Matching findMatching = matchingRepository.findByIdOrElseThrow(matchingId);
 
@@ -36,11 +37,13 @@ public class ChatroomService {
 
         Chatroom saveChatroom = chatroomRepository.save(chatroom);
 
-        return saveChatroom.getId();
+        userChatroomService.save(userId, saveChatroom.getId());
+
+        return saveChatroom.toDto();
     }
 
     @Transactional(readOnly = true)
-    public List<ChatroomResponseDto> getChatroomList(Long userId) {
+    public List<ChatroomResDto> getChatroomList(Long userId) {
         return chatroomRepository
                 .findAllByUserId(userId)
                 .stream()

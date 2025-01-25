@@ -1,7 +1,6 @@
 package com.example.connect.domain.chat.service;
 
-import com.example.connect.domain.chat.dto.ChatRequestDto;
-import com.example.connect.domain.chat.dto.ChatResponseDto;
+import com.example.connect.domain.chat.dto.ChatResDto;
 import com.example.connect.domain.chat.entity.Chatroom;
 import com.example.connect.domain.chat.entity.UserChatroom;
 import com.example.connect.domain.chat.repository.ChatroomRepository;
@@ -25,7 +24,7 @@ public class UserChatroomService {
 
 
     @Transactional(readOnly = true)
-    public Page<ChatResponseDto>  getChatHistory(Long chatroomId) {
+    public Page<ChatResDto>  getChatHistory(Long chatroomId) {
 
         // TODO: 페이징 처리 고려, 프론트에서 스크롤 이벤트로 다음 페이지 받아오기
         // Pageable 설정 (최대 15개 조회)
