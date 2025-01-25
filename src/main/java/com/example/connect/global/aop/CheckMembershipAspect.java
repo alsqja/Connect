@@ -3,6 +3,7 @@ package com.example.connect.global.aop;
 import com.example.connect.domain.match.dto.MatchingWithScheduleResDto;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.UserSimpleResDto;
+import com.example.connect.domain.userimage.dto.UserImageDetailResDto;
 import com.example.connect.global.common.Const;
 import com.example.connect.global.config.auth.UserDetailsImpl;
 import com.example.connect.global.enums.MembershipType;
@@ -38,18 +39,24 @@ public class CheckMembershipAspect {
         return result;
     }
 
-    @Around(value = "@annotation(com.example.connect.global.aop.annotation.CheckMembership) && args(userId, scheduleId)",
-            argNames = "joinPoint,userId,scheduleId")
-    public Object checkMatchingMembership(ProceedingJoinPoint joinPoint, Long userId, Long scheduleId) throws Throwable {
+    @Around(value = "@annotation(com.example.connect.global.aop.annotation.CheckMembership) && args(userId, idOrScheduleId)",
+            argNames = "joinPoint,userId,idOrScheduleId")
+    public Object checkMembership(ProceedingJoinPoint joinPoint, Long userId, Long idOrScheduleId) throws Throwable {
 
-        MatchingWithScheduleResDto result = (MatchingWithScheduleResDto) joinPoint.proceed();
+        Object result = joinPoint.proceed();
 
         if (!MembershipType.PREMIUM.equals(getCurrentUser().getMembershipType())) {
-            return maskMatchingWithScheduleResDto(result);
+            if (result instanceof MatchingWithScheduleResDto) {
+                return maskMatchingWithScheduleResDto((MatchingWithScheduleResDto) result);
+            }
+            if (result instanceof UserImageDetailResDto) {
+                return maskUserImageDetailResDto((UserImageDetailResDto) result);
+            }
         }
 
         return result;
     }
+
 
     private UserSimpleResDto maskUserSimpleResDto(UserSimpleResDto dto) {
         return new UserSimpleResDto(
@@ -69,6 +76,19 @@ public class CheckMembershipAspect {
                 dto.getUserName(),
                 Const.DEFAULT_PROFILE, // 프로필 마스킹
                 dto.getSimilarity(),
+                dto.getCreatedAt(),
+                dto.getUpdatedAt()
+        );
+    }
+
+    private UserImageDetailResDto maskUserImageDetailResDto(UserImageDetailResDto dto) {
+        return new UserImageDetailResDto(
+                dto.getId(),
+                dto.getUrl(),
+                dto.getDescription(),
+                dto.getUserName(),
+                dto.getUserId(),
+                Const.DEFAULT_PROFILE,
                 dto.getCreatedAt(),
                 dto.getUpdatedAt()
         );
