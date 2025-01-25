@@ -35,7 +35,7 @@ public class UserImageService {
 
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        Page<UserImage> userImagePage = userImageRepository.findByUserId(userId, pageable);
+        Page<UserImage> userImagePage = userImageRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
 
         return new UserImagePageResDto(userImagePage);
     }

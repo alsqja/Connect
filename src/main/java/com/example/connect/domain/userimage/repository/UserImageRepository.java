@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface UserImageRepository extends JpaRepository<UserImage, Long> {
 
-    Page<UserImage> findByUserId(Long userId, Pageable pageable);
+    Page<UserImage> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
 
     Optional<UserImage> findByUserIdAndId(Long userId, Long id);
 
