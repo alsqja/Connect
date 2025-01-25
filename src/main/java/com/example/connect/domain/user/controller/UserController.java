@@ -6,6 +6,7 @@ import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.UpdateUserReqDto;
 import com.example.connect.domain.user.dto.UpdateUserServiceDto;
 import com.example.connect.domain.user.dto.UserResDto;
+import com.example.connect.domain.user.dto.UserSimpleResDto;
 import com.example.connect.domain.user.service.UserService;
 import com.example.connect.global.common.Const;
 import com.example.connect.global.common.dto.CommonResDto;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,14 +35,14 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping("/api/users/my")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
     private final PointService pointService;
 
-    @GetMapping
+    @GetMapping("/my")
     public ResponseEntity<CommonResDto<UserResDto>> findMe(Authentication authentication) {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -51,7 +53,7 @@ public class UserController {
         return new ResponseEntity<>(new CommonResDto<>("프로필 조회 완료", new UserResDto(me, totalRemainPoint)), HttpStatus.OK);
     }
 
-    @PatchMapping
+    @PatchMapping("/my")
     public ResponseEntity<CommonResDto<UserResDto>> updateMe(
             @RequestBody UpdateUserReqDto dto,
             Authentication authentication
@@ -69,7 +71,7 @@ public class UserController {
         return new ResponseEntity<>(new CommonResDto<>("프로필 수정 완료", result), HttpStatus.OK);
     }
 
-    @PostMapping("/check-password")
+    @PostMapping("/my/check-password")
     public ResponseEntity<Void> checkPassword(
             @RequestBody PasswordReqDto dto,
             Authentication authentication,
@@ -94,7 +96,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/my")
     public ResponseEntity<Void> deleteMe(
             @SessionAttribute(name = Const.PASSWORD_CHECK, required = false) Boolean isChecked,
             Authentication authentication,
@@ -116,5 +118,19 @@ public class UserController {
         }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CommonResDto<UserSimpleResDto>> findById(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RedisUserDto me = userDetails.getUser();
+
+        UserSimpleResDto result = userService.findById(id, me);
+
+        return new ResponseEntity<>(new CommonResDto<>("유저 조회 완료", result), HttpStatus.OK);
     }
 }
