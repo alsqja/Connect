@@ -122,14 +122,10 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CommonResDto<UserSimpleResDto>> findById(
-            @PathVariable Long id,
-            Authentication authentication
+            @PathVariable Long id
     ) {
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        RedisUserDto me = userDetails.getUser();
-
-        UserSimpleResDto result = userService.findById(id, me);
+        UserSimpleResDto result = userService.findById(id);
 
         return new ResponseEntity<>(new CommonResDto<>("유저 조회 완료", result), HttpStatus.OK);
     }

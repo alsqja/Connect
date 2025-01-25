@@ -67,7 +67,7 @@ public class UserService {
     }
 
     @CheckMembership
-    public UserSimpleResDto findById(Long id, RedisUserDto me) {
+    public UserSimpleResDto findById(Long id) {
 
         User user = userRepository.findByIdOrElseThrow(id);
 
