@@ -4,6 +4,8 @@ import com.example.connect.domain.match.dto.MatchingWithScheduleResDto;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.UserSimpleResDto;
 import com.example.connect.domain.userimage.dto.UserImageDetailResDto;
+import com.example.connect.domain.userimage.dto.UserImagePageResDto;
+import com.example.connect.domain.userimage.dto.UserImageResDto;
 import com.example.connect.global.common.Const;
 import com.example.connect.global.config.auth.UserDetailsImpl;
 import com.example.connect.global.enums.MembershipType;
@@ -14,6 +16,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Aspect
 @Component
@@ -57,6 +61,24 @@ public class CheckMembershipAspect {
         return result;
     }
 
+    @Around(value = "@annotation(com.example.connect.global.aop.annotation.CheckMembership) && args(userId, page, size)",
+            argNames = "joinPoint,userId,page,size")
+    public Object checkUserImageMembership(ProceedingJoinPoint joinPoint, Long userId, int page, int size) throws Throwable {
+
+        UserImagePageResDto result = (UserImagePageResDto) joinPoint.proceed();
+
+        RedisUserDto me = getCurrentUser();
+
+        if (userId.equals(me.getId())) {
+            return result;
+        }
+
+        if (!MembershipType.PREMIUM.equals(me.getMembershipType())) {
+            return maskUserImagePageResDto(result);
+        }
+
+        return result;
+    }
 
     private UserSimpleResDto maskUserSimpleResDto(UserSimpleResDto dto) {
         return new UserSimpleResDto(
@@ -64,7 +86,7 @@ public class CheckMembershipAspect {
                 dto.getName(),
                 dto.getBirth(),
                 dto.getGender(),
-                Const.DEFAULT_PROFILE // 프로필 URL 기본값 마스킹
+                Const.DEFAULT_PROFILE
         );
     }
 
@@ -74,7 +96,7 @@ public class CheckMembershipAspect {
                 dto.getToScheduleId(),
                 dto.getUserId(),
                 dto.getUserName(),
-                Const.DEFAULT_PROFILE, // 프로필 마스킹
+                Const.DEFAULT_PROFILE,
                 dto.getSimilarity(),
                 dto.getCreatedAt(),
                 dto.getUpdatedAt()
@@ -91,6 +113,23 @@ public class CheckMembershipAspect {
                 Const.DEFAULT_PROFILE,
                 dto.getCreatedAt(),
                 dto.getUpdatedAt()
+        );
+    }
+
+    private UserImagePageResDto maskUserImagePageResDto(UserImagePageResDto dto) {
+
+        List<UserImageResDto> data = dto.getData();
+
+        if (data.size() < 3) {
+            return dto;
+        }
+
+        return new UserImagePageResDto(
+                dto.getPage(),
+                dto.getSize(),
+                dto.getTotalElements(),
+                dto.getTotalPages(),
+                dto.getData().subList(0, 3)
         );
     }
 
