@@ -9,6 +9,7 @@ import com.example.connect.domain.point.service.PointService;
 import com.example.connect.domain.schedule.entity.Schedule;
 import com.example.connect.domain.schedule.repository.ScheduleRepository;
 import com.example.connect.domain.user.entity.User;
+import com.example.connect.global.aop.annotation.CheckMembership;
 import com.example.connect.global.common.Const;
 import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.MatchStatus;
@@ -31,6 +32,7 @@ public class MatchingService {
     private final PointService pointService;
 
     @Transactional
+    @CheckMembership
     public MatchingWithScheduleResDto createMatching(Long userId, Long scheduleId) {
 
         Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, userId)

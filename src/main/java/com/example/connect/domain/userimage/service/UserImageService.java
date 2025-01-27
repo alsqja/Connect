@@ -7,6 +7,7 @@ import com.example.connect.domain.userimage.dto.UserImagePageResDto;
 import com.example.connect.domain.userimage.dto.UserImageResDto;
 import com.example.connect.domain.userimage.entity.UserImage;
 import com.example.connect.domain.userimage.repository.UserImageRepository;
+import com.example.connect.global.aop.annotation.CheckMembership;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +36,7 @@ public class UserImageService {
 
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        Page<UserImage> userImagePage = userImageRepository.findByUserId(userId, pageable);
+        Page<UserImage> userImagePage = userImageRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable);
 
         return new UserImagePageResDto(userImagePage);
     }
@@ -58,6 +59,7 @@ public class UserImageService {
         userImageRepository.delete(userImage);
     }
 
+    @CheckMembership
     public UserImageDetailResDto findById(Long userId, Long id) {
 
         UserImage userImage = userImageRepository.findByUserIdAndIdOrElseThrow(userId, id);
