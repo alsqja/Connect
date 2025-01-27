@@ -9,20 +9,24 @@ import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
-public class UserImageResDto implements BaseDtoType {
+public class UserImageDetailResDto implements BaseDtoType {
 
     private final Long id;
-    private final Long userId;
     private final String url;
     private final String description;
+    private final String userName;
+    private final Long userId;
+    private final String userProfileUrl;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public UserImageResDto(UserImage userImage) {
+    public UserImageDetailResDto(UserImage userImage) {
         this.id = userImage.getId();
-        this.userId = userImage.getUser().getId();
         this.url = userImage.getUrl();
         this.description = userImage.getDescription();
+        this.userName = userImage.getUser().getName();
+        this.userId = userImage.getUser().getId();
+        this.userProfileUrl = userImage.getUser().getProfileUrl();
         this.createdAt = userImage.getCreatedAt();
         this.updatedAt = userImage.getUpdatedAt();
     }

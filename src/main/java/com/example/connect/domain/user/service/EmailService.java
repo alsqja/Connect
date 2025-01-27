@@ -64,5 +64,7 @@ public class EmailService {
         if (savedCode == null || !savedCode.equals(code)) {
             throw new BadRequestException(ErrorCode.BAD_REQUEST);
         }
+
+        redisEmailRepository.saveEmailStatus(email, "verified");
     }
 }

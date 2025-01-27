@@ -4,9 +4,11 @@ import com.example.connect.domain.membership.repository.MembershipRepository;
 import com.example.connect.domain.point.repository.PointRepository;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.UpdateUserServiceDto;
+import com.example.connect.domain.user.dto.UserSimpleResDto;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.RedisTokenRepository;
 import com.example.connect.domain.user.repository.UserRepository;
+import com.example.connect.global.aop.annotation.CheckMembership;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.UnAuthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -62,5 +64,13 @@ public class UserService {
         redisTokenRepository.deleteRefreshToken(me.getEmail());
 
         userRepository.deleteById(me.getId());
+    }
+
+    @CheckMembership
+    public UserSimpleResDto findById(Long id) {
+
+        User user = userRepository.findByIdOrElseThrow(id);
+
+        return new UserSimpleResDto(user);
     }
 }

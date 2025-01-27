@@ -73,4 +73,32 @@ public class Coupon extends BaseEntity {
         this.expiredDate = expiredDate;
         this.openDate = openDate;
     }
+
+    public void updateCoupon(String name, String description, Integer count, Integer amount, LocalDate expiredDate, LocalDateTime openDate, Boolean isDeleted) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (description != null) {
+            this.description = description;
+        }
+        if (count != null) {
+            this.count = count;
+        }
+        if (amount != null) {
+            this.amount = amount;
+        }
+        if (expiredDate != null) {
+            this.expiredDate = expiredDate;
+        }
+        if (openDate != null) {
+            this.openDate = openDate;
+        }
+        if (isDeleted != null) {
+            this.isDeleted = isDeleted;
+        }
+    }
+
+    public void isDelete() {
+        this.isDeleted = true;
+    }
 }
