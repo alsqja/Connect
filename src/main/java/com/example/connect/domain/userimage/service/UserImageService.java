@@ -32,6 +32,7 @@ public class UserImageService {
         return new UserImageResDto(userImageRepository.save(userImage));
     }
 
+    @CheckMembership
     public UserImagePageResDto findUserImages(Long userId, int page, int size) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
