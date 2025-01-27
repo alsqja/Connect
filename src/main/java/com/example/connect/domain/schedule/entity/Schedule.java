@@ -141,4 +141,8 @@ public class Schedule extends BaseEntity {
     public void addCount() {
         this.count++;
     }
+
+    public void decreaseCount(Integer count) {
+        this.count -= count;
+    }
 }

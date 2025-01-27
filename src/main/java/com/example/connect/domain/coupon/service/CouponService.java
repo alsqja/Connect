@@ -5,13 +5,17 @@ import com.example.connect.domain.coupon.dto.CouponResDto;
 import com.example.connect.domain.coupon.entity.Coupon;
 import com.example.connect.domain.coupon.repository.CouponRepository;
 import com.example.connect.domain.couponuser.dto.CouponUserResDto;
+import com.example.connect.domain.couponuser.dto.CouponUserUseResDto;
 import com.example.connect.domain.couponuser.entity.CouponUser;
 import com.example.connect.domain.couponuser.repository.CouponUserRepository;
+import com.example.connect.domain.schedule.entity.Schedule;
+import com.example.connect.domain.schedule.repository.ScheduleRepository;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.enums.CouponUserStatus;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
+import com.example.connect.global.error.exception.UnAuthorizedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +33,7 @@ public class CouponService {
     private final CouponRepository couponRepository;
     private final CouponUserRepository couponUserRepository;
     private final UserRepository userRepository;
+    private final ScheduleRepository scheduleRepository;
 
     public CouponListResDto getCouponList(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -85,5 +91,33 @@ public class CouponService {
                 couponUser.getUpdatedAt()
         );
         return couponUserResDto;
+    }
+
+    @Transactional
+    public CouponUserUseResDto useCoupon(Long id, Long scheduleId, Long userId) {
+        CouponUser couponUser = couponUserRepository.findByIdOrElseThrow(id);
+        Schedule schedule = scheduleRepository.findByIdOrElseThrow(scheduleId);
+
+        if (!Objects.equals(userId, couponUser.getUser().getId())
+                || !Objects.equals(userId, schedule.getUser().getId())
+        ) {
+            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_USER);
+        }
+
+        if (couponUser.getStatus().equals(CouponUserStatus.USED)) {
+            throw new BadRequestException(ErrorCode.USED_COUPON);
+        }
+
+        Coupon coupon = couponRepository.findByIdOrElseThrow(couponUser.getUser().getId());
+
+        schedule.decreaseCount(coupon.getAmount());
+        couponUser.isUse();
+
+        CouponUserUseResDto couponUserUseResDto = new CouponUserUseResDto(
+                coupon.getAmount(),
+                5 - schedule.getCount()
+        );
+
+        return couponUserUseResDto;
     }
 }
