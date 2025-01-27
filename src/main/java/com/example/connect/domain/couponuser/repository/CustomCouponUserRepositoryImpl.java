@@ -1,7 +1,7 @@
 package com.example.connect.domain.couponuser.repository;
 
 import com.example.connect.domain.coupon.entity.QCoupon;
-import com.example.connect.domain.couponuser.dto.CouponUserResDto;
+import com.example.connect.domain.couponuser.dto.CouponUserGetResDto;
 import com.example.connect.domain.couponuser.entity.QCouponUser;
 import com.example.connect.domain.user.entity.QUser;
 import com.example.connect.global.enums.CouponUserStatus;
@@ -21,7 +21,7 @@ public class CustomCouponUserRepositoryImpl implements CustomCouponUserRepositor
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<CouponUserResDto> findCouponUserByUserId(Long userId, CouponUserStatus status, Pageable pageable) {
+    public Page<CouponUserGetResDto> findCouponUserByUserId(Long userId, CouponUserStatus status, Pageable pageable) {
         QCouponUser cu = QCouponUser.couponUser;
         QCoupon c = QCoupon.coupon;
         QUser u = QUser.user;
@@ -33,8 +33,10 @@ public class CustomCouponUserRepositoryImpl implements CustomCouponUserRepositor
             builder.and(cu.status.eq(status));
         }
 
-        List<CouponUserResDto> results = queryFactory.select(
-                        Projections.constructor(CouponUserResDto.class, cu.id, u.id, c.id, c.name, c.description, c.expiredDate, cu.status, cu.createdAt, cu.updatedAt))
+        List<CouponUserGetResDto> results = queryFactory.select(
+                        Projections.constructor(
+                                CouponUserGetResDto.class, cu.id, u.id, c.id, c.name,
+                                c.description, c.expiredDate, cu.status, c.amount, cu.createdAt, cu.updatedAt))
                 .from(cu)
                 .join(cu.coupon, c)
                 .join(cu.user, u)

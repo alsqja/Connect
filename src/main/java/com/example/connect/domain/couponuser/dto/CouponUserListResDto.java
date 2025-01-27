@@ -13,5 +13,5 @@ public class CouponUserListResDto implements BaseDtoType {
     private final int size;
     private final long totalElements;
     private final int totalPages;
-    private final List<CouponUserResDto> data;
+    private final List<CouponUserGetResDto> data;
 }
