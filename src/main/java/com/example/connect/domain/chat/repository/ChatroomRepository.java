@@ -1,5 +1,6 @@
 package com.example.connect.domain.chat.repository;
 
+import com.example.connect.domain.chat.dto.ChatroomResDto;
 import com.example.connect.domain.chat.entity.Chatroom;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.NotFoundException;
@@ -17,10 +18,21 @@ public interface ChatroomRepository extends JpaRepository<Chatroom, Long> {
     }
 
     @Query("""
-        SELECT cr
-        FROM Chatroom cr
+        SELECT new com.example.connect.domain.chat.dto.ChatroomResDto(
+        cr.id,
+        cr.matching.id,
+        fs.date,
+        fs.title,
+        fs.address,
+        t_u.id,
+        t_u.name,
+        t_u.gender
+        ) FROM Chatroom cr
         JOIN UserChatroom uc ON uc.chatroom.id = cr.id
+        JOIN cr.matching.fromSchedule fs
+        JOIN cr.matching.toSchedule ts
+        JOIN ts.user t_u
         WHERE uc.user.id = :userId
-        """)
-    List<Chatroom> findAllByUserId(@Param("userId") Long userId);
+    """)
+    List<ChatroomResDto> findAllChatroomByUserId(@Param("userId") Long userId);
 }
