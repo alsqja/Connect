@@ -97,4 +97,8 @@ public class Coupon extends BaseEntity {
             this.isDeleted = isDeleted;
         }
     }
+
+    public void isDelete() {
+        this.isDeleted = true;
+    }
 }

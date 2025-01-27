@@ -13,6 +13,6 @@ public interface CouponUserRepository extends JpaRepository<CouponUser, Long> {
 
     @Query("select count(cu) from CouponUser cu where cu.coupon.id = :couponId")
     Long countCouponUseId(Long couponId);
-    
+
     boolean existsByCouponIdAndUserId(Long couponId, Long userId);
 }

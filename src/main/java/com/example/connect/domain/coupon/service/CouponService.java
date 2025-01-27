@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -119,5 +120,12 @@ public class CouponService {
         );
 
         return couponUserUseResDto;
+    }
+
+    @Transactional
+    public void expireCoupon() {
+        List<Coupon> coupons = couponRepository.findByExpiredDateIsLessThanEqual(LocalDate.now());
+
+        couponRepository.deleteAll(coupons);
     }
 }
