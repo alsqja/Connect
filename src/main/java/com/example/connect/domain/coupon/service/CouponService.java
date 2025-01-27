@@ -124,17 +124,8 @@ public class CouponService {
 
     @Transactional
     public void expireCoupon() {
-        List<CouponUser> couponUserList = couponUserRepository.findByExpiredDate(LocalDate.now());
+        List<Coupon> coupons = couponRepository.findByExpiredDateIsLessThanEqual(LocalDate.now());
 
-        for (CouponUser couponUser : couponUserList) {
-            couponUser.isDelete();
-            couponUserRepository.save(couponUser);
-
-            Coupon coupon = couponUser.getCoupon();
-            if (!coupon.getIsDeleted()) {
-                coupon.isDelete();
-                couponRepository.save(coupon);
-            }
-        }
+        couponRepository.deleteAll(coupons);
     }
 }

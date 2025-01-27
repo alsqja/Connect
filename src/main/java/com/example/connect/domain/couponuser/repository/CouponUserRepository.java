@@ -6,9 +6,6 @@ import com.example.connect.global.error.exception.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.time.LocalDate;
-import java.util.List;
-
 public interface CouponUserRepository extends JpaRepository<CouponUser, Long> {
     default CouponUser findByIdOrElseThrow(Long id) {
         return findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
@@ -18,7 +15,4 @@ public interface CouponUserRepository extends JpaRepository<CouponUser, Long> {
     Long countCouponUseId(Long couponId);
 
     boolean existsByCouponIdAndUserId(Long couponId, Long userId);
-
-    @Query("select cu from CouponUser cu join fetch cu.coupon where cu.expiredDate <= :now")
-    List<CouponUser> findByExpiredDate(LocalDate now);
 }
