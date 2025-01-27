@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class ChatService {
@@ -16,12 +18,15 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final UserChatroomRepository userChatroomRepository;
 
+    /**
+     * 채팅 저장
+     */
     @Transactional
-    public void save(Long roomId, ChatReqDto message) {
+    public void save(Long roomId, ChatReqDto message, LocalDateTime current) {
 
-        UserChatroom findUserChatroom = userChatroomRepository.findByUserIdOrElseThrow(message.getSenderId());
+        UserChatroom findUserChatroom = userChatroomRepository.findByUserIdAndChatroomIdOrElseThrow(message.getSenderId(), roomId);
 
-        Chat chat = new Chat(findUserChatroom, roomId, message.getContent());
+        Chat chat = new Chat(findUserChatroom, roomId, message.getMessage(), current);
 
         chatRepository.save(chat);
     }

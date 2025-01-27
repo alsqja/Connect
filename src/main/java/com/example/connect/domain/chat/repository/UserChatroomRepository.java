@@ -27,6 +27,7 @@ public interface UserChatroomRepository extends JpaRepository<UserChatroom, Long
         SELECT new com.example.connect.domain.chat.dto.ChatResDto(
             cr.id,
             uc.user.id,
+            u.name,
             u.profileUrl,
             c.content,
             c.createdAt

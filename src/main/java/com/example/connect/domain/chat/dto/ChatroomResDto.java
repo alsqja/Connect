@@ -16,8 +16,8 @@ public class ChatroomResDto implements BaseDtoType {
     private final Long matchingId;
     private final LocalDate date;
     private final String title;
+    private final String detail;
     private final String address;
-    private final Long partnerId;
-    private final String partnerName;
-    private final Gender partnerGender;
+    private final String fromScheduleUserName;
+    private final String toScheduleUserName;
 }

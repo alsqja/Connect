@@ -34,17 +34,4 @@ public class Chatroom {
         this.matching = matching;
         this.status = status;
     }
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
-
-    public ChatroomResDto toDto() {
-        return new ChatroomResDto(
-                this.id,
-                this.matching.getId(),
-                this.createdAt
-        );
-    }
 }

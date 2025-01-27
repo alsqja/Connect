@@ -19,20 +19,23 @@ public interface ChatroomRepository extends JpaRepository<Chatroom, Long> {
 
     @Query("""
         SELECT new com.example.connect.domain.chat.dto.ChatroomResDto(
-        cr.id,
-        cr.matching.id,
-        fs.date,
-        fs.title,
-        fs.address,
-        t_u.id,
-        t_u.name,
-        t_u.gender
-        ) FROM Chatroom cr
+            cr.id,
+            cr.matching.id,
+            fs.date,
+            fs.title,
+            fs.details,
+            fs.address,
+            f_u.name,
+            t_u.name
+        ) 
+        FROM Chatroom cr
         JOIN UserChatroom uc ON uc.chatroom.id = cr.id
         JOIN cr.matching.fromSchedule fs
         JOIN cr.matching.toSchedule ts
+        JOIN fs.user f_u
         JOIN ts.user t_u
         WHERE uc.user.id = :userId
+        ORDER BY fs.date DESC 
     """)
     List<ChatroomResDto> findAllChatroomByUserId(@Param("userId") Long userId);
 }
