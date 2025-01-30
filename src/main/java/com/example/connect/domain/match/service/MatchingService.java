@@ -6,6 +6,7 @@ import com.example.connect.domain.match.dto.MatchingWithScheduleResDto;
 import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.match.repository.MatchingRepository;
 import com.example.connect.domain.point.service.PointService;
+import com.example.connect.domain.schedule.dto.ScheduleMatchingReqDto;
 import com.example.connect.domain.schedule.entity.Schedule;
 import com.example.connect.domain.schedule.repository.ScheduleRepository;
 import com.example.connect.domain.user.entity.User;
@@ -33,7 +34,7 @@ public class MatchingService {
 
     @Transactional
     @CheckMembership
-    public MatchingWithScheduleResDto createMatching(Long userId, Long scheduleId) {
+    public MatchingWithScheduleResDto createMatching(Long userId, Long scheduleId, ScheduleMatchingReqDto dto) {
 
         Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, userId)
                 .orElseThrow(() -> new BadRequestException(ErrorCode.BAD_REQUEST));
@@ -42,7 +43,7 @@ public class MatchingService {
             pointService.usePoint(userId, 1L, "매칭 1회: 50 포인트 사용");
         }
 
-        User user = schedule.getUser(); // q + 1
+        User user = schedule.getUser();
         Gender gender = user.getGender().equals(Gender.MAN) ? Gender.WOMAN : Gender.MAN;
         String birth = user.getBirth();
         String start = Integer.toString(Integer.parseInt(birth.substring(0, 4)) - 5);
@@ -56,7 +57,7 @@ public class MatchingService {
                 end,
                 schedule.getLatitude(),
                 schedule.getLongitude(),
-                Const.MATCHING_DISTANCE,
+                Const.DEFAULT_MATCHING_DISTANCE,
                 schedule.getDate()
         );
 

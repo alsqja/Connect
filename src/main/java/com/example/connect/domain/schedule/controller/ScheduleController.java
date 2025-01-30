@@ -3,6 +3,7 @@ package com.example.connect.domain.schedule.controller;
 import com.example.connect.domain.match.dto.MatchingListResDto;
 import com.example.connect.domain.match.dto.MatchingWithScheduleResDto;
 import com.example.connect.domain.match.service.MatchingService;
+import com.example.connect.domain.schedule.dto.ScheduleMatchingReqDto;
 import com.example.connect.domain.schedule.dto.ScheduleOnlyResDto;
 import com.example.connect.domain.schedule.dto.SchedulePageResDto;
 import com.example.connect.domain.schedule.dto.ScheduleReqDto;
@@ -10,6 +11,7 @@ import com.example.connect.domain.schedule.dto.ScheduleResDto;
 import com.example.connect.domain.schedule.service.ScheduleService;
 import com.example.connect.domain.schedulesubcategory.dto.ScheduleSubCategoryResDto;
 import com.example.connect.domain.user.dto.RedisUserDto;
+import com.example.connect.global.aop.annotation.SetMembershipFilter;
 import com.example.connect.global.common.dto.CommonListResDto;
 import com.example.connect.global.common.dto.CommonResDto;
 import com.example.connect.global.config.auth.UserDetailsImpl;
@@ -83,15 +85,17 @@ public class ScheduleController {
     }
 
     @PostMapping("/{id}/matchings")
+    @SetMembershipFilter
     public ResponseEntity<CommonResDto<MatchingWithScheduleResDto>> matchSchedule(
             @PathVariable Long id,
+            @RequestBody ScheduleMatchingReqDto dto,
             Authentication authentication
     ) {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         RedisUserDto me = userDetails.getUser();
 
-        MatchingWithScheduleResDto result = matchingService.createMatching(me.getId(), id);
+        MatchingWithScheduleResDto result = matchingService.createMatching(me.getId(), id, dto);
 
         return new ResponseEntity<>(new CommonResDto<>("매칭 찾기 완료", result), HttpStatus.CREATED);
     }
