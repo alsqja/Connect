@@ -58,9 +58,9 @@ public class CheckMembershipAspect {
         return result;
     }
 
-    @Around(value = "@annotation(com.example.connect.global.aop.annotation.CheckMembership) && args(userId, scheduleId, dto)",
-            argNames = "joinPoint,userId,scheduleId,dto")
-    public Object checkMatchingMembership(ProceedingJoinPoint joinPoint, Long userId, Long scheduleId, ScheduleMatchingReqDto dto) throws Throwable {
+    @Around(value = "@annotation(com.example.connect.global.aop.annotation.CheckMembership) && args(me, scheduleId, dto)",
+            argNames = "joinPoint,me,scheduleId,dto")
+    public Object checkMatchingMembership(ProceedingJoinPoint joinPoint, RedisUserDto me, Long scheduleId, ScheduleMatchingReqDto dto) throws Throwable {
 
         MatchingWithScheduleResDto result = (MatchingWithScheduleResDto) joinPoint.proceed();
 

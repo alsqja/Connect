@@ -95,7 +95,7 @@ public class ScheduleController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         RedisUserDto me = userDetails.getUser();
 
-        MatchingWithScheduleResDto result = matchingService.createMatching(me.getId(), id, dto);
+        MatchingWithScheduleResDto result = matchingService.createMatching(me, id, dto);
 
         return new ResponseEntity<>(new CommonResDto<>("매칭 찾기 완료", result), HttpStatus.CREATED);
     }
