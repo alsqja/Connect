@@ -174,7 +174,7 @@ public class CouponService {
         Coupon coupon = new Coupon(
                 birthYear + " 년 생일 쿠폰",
                 birthYear + " 생일을 축하드립니다!",
-                Integer.MAX_VALUE,
+                1,
                 5,
                 LocalDate.of(Integer.parseInt(birthYear), 12, 31).plusDays(14),
                 LocalDateTime.of(Integer.parseInt(birthYear), 12, 31, 0, 0, 0).plusDays(14)
