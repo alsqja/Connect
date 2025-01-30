@@ -44,10 +44,10 @@ public class MatchingService {
         }
 
         User user = schedule.getUser();
-        Gender gender = user.getGender().equals(Gender.MAN) ? Gender.WOMAN : Gender.MAN;
+        Gender gender = dto.getGender();
         String birth = user.getBirth();
-        String start = Integer.toString(Integer.parseInt(birth.substring(0, 4)) - 5);
-        String end = Integer.toString(Integer.parseInt(birth.substring(0, 4)) + 5);
+        String start = Integer.toString(Integer.parseInt(birth.substring(0, 4)) - dto.getMinusAge());
+        String end = Integer.toString(Integer.parseInt(birth.substring(0, 4)) + dto.getPlusAge());
 
         List<Schedule> scheduleList = scheduleRepository.findAllForMatching(
                 scheduleId,
@@ -66,10 +66,18 @@ public class MatchingService {
         }
 
         Jaccard jaccard = new Jaccard();
-        for (Schedule otherSchedule : scheduleList) {
-            if (!schedule.getId().equals(otherSchedule.getId())) {
-                jaccard.addSimilaritySchedule(schedule, otherSchedule);
+        int myIdx = -1;
+        
+        for (int i = 0; i < scheduleList.size(); i++) {
+            if (!schedule.getId().equals(scheduleList.get(i).getId())) {
+                jaccard.addSimilaritySchedule(schedule, scheduleList.get(i));
+            } else {
+                myIdx = i;
             }
+        }
+
+        if (myIdx >= 0) {
+            scheduleList.remove(myIdx);
         }
 
         int biggestIndex = jaccard.getBiggestIndex();

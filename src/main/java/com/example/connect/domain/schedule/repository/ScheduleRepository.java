@@ -35,7 +35,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Custo
                 LEFT JOIN Matching m ON m.isDeleted = false
                     AND (m.fromSchedule.id = s.id OR m.toSchedule.id = s.id)
                     AND (m.fromSchedule.id = :id OR m.toSchedule.id = :id)
-                WHERE u.gender = :gender
+                WHERE (:gender IS NULL OR u.gender = :gender)
                   AND u.isActiveMatching = true
                   AND u.birth BETWEEN :birthYearStart AND :birthYearEnd
                   AND s.date = :date

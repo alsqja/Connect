@@ -1,6 +1,7 @@
 package com.example.connect.global.aop;
 
 import com.example.connect.domain.match.dto.MatchingWithScheduleResDto;
+import com.example.connect.domain.schedule.dto.ScheduleMatchingReqDto;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.UserSimpleResDto;
 import com.example.connect.domain.userimage.dto.UserImageDetailResDto;
@@ -43,19 +44,29 @@ public class CheckMembershipAspect {
         return result;
     }
 
-    @Around(value = "@annotation(com.example.connect.global.aop.annotation.CheckMembership) && args(userId, idOrScheduleId)",
-            argNames = "joinPoint,userId,idOrScheduleId")
-    public Object checkMembership(ProceedingJoinPoint joinPoint, Long userId, Long idOrScheduleId) throws Throwable {
+    @Around(value = "@annotation(com.example.connect.global.aop.annotation.CheckMembership) && args(userId, id)",
+            argNames = "joinPoint,userId,id")
+    public Object checkUserFeedMembership(ProceedingJoinPoint joinPoint, Long userId, Long id) throws Throwable {
 
-        Object result = joinPoint.proceed();
+        UserImageDetailResDto result = (UserImageDetailResDto) joinPoint.proceed();
 
         if (!MembershipType.PREMIUM.equals(getCurrentUser().getMembershipType())) {
-            if (result instanceof MatchingWithScheduleResDto) {
-                return maskMatchingWithScheduleResDto((MatchingWithScheduleResDto) result);
-            }
-            if (result instanceof UserImageDetailResDto) {
-                return maskUserImageDetailResDto((UserImageDetailResDto) result);
-            }
+
+            return maskUserImageDetailResDto(result);
+        }
+
+        return result;
+    }
+
+    @Around(value = "@annotation(com.example.connect.global.aop.annotation.CheckMembership) && args(userId, scheduleId, dto)",
+            argNames = "joinPoint,userId,scheduleId,dto")
+    public Object checkMatchingMembership(ProceedingJoinPoint joinPoint, Long userId, Long scheduleId, ScheduleMatchingReqDto dto) throws Throwable {
+
+        MatchingWithScheduleResDto result = (MatchingWithScheduleResDto) joinPoint.proceed();
+
+        if (!MembershipType.PREMIUM.equals(getCurrentUser().getMembershipType())) {
+
+            return maskMatchingWithScheduleResDto(result);
         }
 
         return result;
