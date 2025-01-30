@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
@@ -125,18 +126,60 @@ public class CouponService {
         return couponUserUseResDto;
     }
 
-    @Transactional
-    public void expireCoupon() {
-        List<Coupon> coupons = couponRepository.findByExpiredDateIsLessThanEqual(LocalDate.now());
-
-        couponRepository.deleteAll(coupons);
-    }
-
     public CouponUserListResDto getUserCoupon(int page, int size, Long userId, CouponUserStatus status) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
         Page<CouponUserGetResDto> couponUsersList = couponUserRepository.findCouponUserByUserId(userId, status, pageable);
 
         return new CouponUserListResDto(page, size, couponUsersList.getTotalElements(), couponUsersList.getTotalPages(), couponUsersList.getContent());
+    }
+
+    @Transactional
+    public void expireCoupon() {
+        List<Coupon> coupons = couponRepository.findByExpiredDateIsLessThanEqual(LocalDate.now());
+
+        couponRepository.deleteAll(coupons);
+
+        List<CouponUser> couponUsers = couponUserRepository.findByExpiredDateIsLessThanEqual(LocalDate.now());
+
+        couponUserRepository.deleteAll(couponUsers);
+    }
+
+    @Transactional
+    public void createBirthCouponUser() {
+        String now = LocalDate.now().format(DateTimeFormatter.ofPattern("MMdd"));
+        String birthYear = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy"));
+        LocalDate expiredDate = LocalDate.now().plusDays(14);
+
+        List<User> users = userRepository.findByBirth(now);
+        Coupon coupon = couponRepository.findByName(birthYear + " 년 생일 쿠폰");
+
+        for (User user : users) {
+            CouponUser couponUser = new CouponUser(
+                    expiredDate,
+                    CouponUserStatus.UNUSED,
+                    user,
+                    coupon
+            );
+
+            couponUserRepository.save(couponUser);
+        }
+    }
+
+    @Transactional
+    public void createBirthCoupon() {
+        LocalDate now = LocalDate.now();
+        String birthYear = now.format(DateTimeFormatter.ofPattern("yyyy"));
+
+        Coupon coupon = new Coupon(
+                birthYear + " 년 생일 쿠폰",
+                birthYear + " 생일을 축하드립니다!",
+                Integer.MAX_VALUE,
+                5,
+                LocalDate.of(Integer.parseInt(birthYear), 12, 31).plusDays(14),
+                LocalDateTime.of(Integer.parseInt(birthYear), 12, 31, 0, 0, 0).plusDays(14)
+        );
+
+        couponRepository.save(coupon);
     }
 }

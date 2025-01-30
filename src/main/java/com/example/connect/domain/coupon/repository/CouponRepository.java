@@ -19,4 +19,6 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     Page<CouponResDto> findByOrderByCreatedAtDesc(Pageable pageable);
 
     List<Coupon> findByExpiredDateIsLessThanEqual(LocalDate now);
+
+    Coupon findByName(String name);
 }
