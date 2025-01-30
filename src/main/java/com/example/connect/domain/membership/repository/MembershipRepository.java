@@ -6,6 +6,7 @@ import com.example.connect.global.error.exception.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface MembershipRepository extends JpaRepository<Membership, Long> {
@@ -14,4 +15,6 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
     }
 
     Optional<Membership> findByUserIdAndExpiredDateAfter(Long id, LocalDate now);
+
+    List<Membership> findByExpiredDateBeforeAndIsActiveTrue(LocalDate now);
 }

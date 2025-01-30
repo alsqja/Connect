@@ -110,7 +110,7 @@ public class DataInitializer {
         Point point = new Point(BigDecimal.valueOf(10000), user1, savePayment1, false);
         pointRepository.save(point);
 
-        Membership membership = new Membership(MembershipType.PREMIUM, LocalDate.now().plusYears(1), user1);
+        Membership membership = new Membership(MembershipType.PREMIUM, LocalDate.now().plusYears(1), user1, payment1);
         membershipRepository.save(membership);
 
         Banner banner = new Banner("ad", "ad", LocalDateTime.now().plusYears(1));
