@@ -10,6 +10,7 @@ import com.example.connect.domain.couponuser.dto.CouponUserUseResDto;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.global.common.dto.CommonResDto;
 import com.example.connect.global.config.auth.UserDetailsImpl;
+import com.example.connect.global.enums.CouponFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +33,10 @@ public class CouponController {
     @GetMapping
     public ResponseEntity<CommonResDto<CouponListResDto>> getAllCoupons(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "ALL") CouponFilter filter
     ) {
-        CouponListResDto result = couponService.getCouponList(page, size);
+        CouponListResDto result = couponService.getCouponList(page, size, filter);
 
         return new ResponseEntity<>(new CommonResDto<>("쿠폰 조회 완료.", result), HttpStatus.OK);
     }
