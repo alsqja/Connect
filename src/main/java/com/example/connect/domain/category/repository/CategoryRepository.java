@@ -13,6 +13,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
         return findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
     }
 
-    @Query("SELECT c FROM Category c JOIN FETCH c.subCategories")
+    @Query("SELECT c FROM Category c LEFT JOIN FETCH c.subCategories")
     List<Category> findAllCategoryWithSubCategories();
 }

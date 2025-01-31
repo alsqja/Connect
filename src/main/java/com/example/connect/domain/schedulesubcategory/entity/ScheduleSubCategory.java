@@ -25,7 +25,7 @@ public class ScheduleSubCategory extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "description")
+    @Column(name = "description")
     private String description;
 
     @ManyToOne

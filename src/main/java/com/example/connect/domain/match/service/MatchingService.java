@@ -6,13 +6,15 @@ import com.example.connect.domain.match.dto.MatchingWithScheduleResDto;
 import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.match.repository.MatchingRepository;
 import com.example.connect.domain.point.service.PointService;
+import com.example.connect.domain.schedule.dto.ScheduleMatchingReqDto;
 import com.example.connect.domain.schedule.entity.Schedule;
 import com.example.connect.domain.schedule.repository.ScheduleRepository;
+import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.global.aop.annotation.CheckMembership;
-import com.example.connect.global.common.Const;
 import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.MatchStatus;
+import com.example.connect.global.enums.MembershipType;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
 import com.example.connect.global.error.exception.NotFoundException;
@@ -33,30 +35,30 @@ public class MatchingService {
 
     @Transactional
     @CheckMembership
-    public MatchingWithScheduleResDto createMatching(Long userId, Long scheduleId) {
+    public MatchingWithScheduleResDto createMatching(RedisUserDto me, Long scheduleId, ScheduleMatchingReqDto dto) {
 
-        Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, userId)
+        Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, me.getId())
                 .orElseThrow(() -> new BadRequestException(ErrorCode.BAD_REQUEST));
 
-        if (schedule.getCount() >= 5) {
-            pointService.usePoint(userId, 1L, "매칭 1회: 50 포인트 사용");
+        if (schedule.getCount() >= 5 && !me.getMembershipType().equals(MembershipType.PREMIUM)) {
+            pointService.usePoint(me.getId(), 1L, "매칭 1회: 50 포인트 사용");
         }
 
-        User user = schedule.getUser(); // q + 1
-        Gender gender = user.getGender().equals(Gender.MAN) ? Gender.WOMAN : Gender.MAN;
+        User user = schedule.getUser();
+        Gender gender = dto.getGender();
         String birth = user.getBirth();
-        String start = Integer.toString(Integer.parseInt(birth.substring(0, 4)) - 5);
-        String end = Integer.toString(Integer.parseInt(birth.substring(0, 4)) + 5);
+        String start = Integer.toString(Integer.parseInt(birth.substring(0, 4)) - dto.getMinusAge());
+        String end = Integer.toString(Integer.parseInt(birth.substring(0, 4)) + dto.getPlusAge());
 
         List<Schedule> scheduleList = scheduleRepository.findAllForMatching(
                 scheduleId,
-                userId,
+                me.getId(),
                 gender,
                 start,
                 end,
                 schedule.getLatitude(),
                 schedule.getLongitude(),
-                Const.MATCHING_DISTANCE,
+                dto.getDistance(),
                 schedule.getDate()
         );
 
@@ -65,10 +67,22 @@ public class MatchingService {
         }
 
         Jaccard jaccard = new Jaccard();
-        for (Schedule otherSchedule : scheduleList) {
-            if (!schedule.getId().equals(otherSchedule.getId())) {
-                jaccard.addSimilaritySchedule(schedule, otherSchedule);
+        int myIdx = -1;
+
+        for (int i = 0; i < scheduleList.size(); i++) {
+            if (!schedule.getId().equals(scheduleList.get(i).getId())) {
+                jaccard.addSimilaritySchedule(schedule, scheduleList.get(i));
+            } else {
+                myIdx = i;
             }
+        }
+
+        if (myIdx >= 0) {
+            scheduleList.remove(myIdx);
+        }
+
+        if (scheduleList.isEmpty()) {
+            throw new NotFoundException(ErrorCode.NOT_FOUND);
         }
 
         int biggestIndex = jaccard.getBiggestIndex();
