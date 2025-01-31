@@ -6,7 +6,7 @@ import com.example.connect.global.error.exception.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface CouponUserRepository extends JpaRepository<CouponUser, Long> {
+public interface CouponUserRepository extends JpaRepository<CouponUser, Long>, CustomCouponUserRepository {
     default CouponUser findByIdOrElseThrow(Long id) {
         return findById(id).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
     }

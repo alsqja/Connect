@@ -4,6 +4,8 @@ import com.example.connect.domain.coupon.dto.CouponListResDto;
 import com.example.connect.domain.coupon.dto.CouponResDto;
 import com.example.connect.domain.coupon.entity.Coupon;
 import com.example.connect.domain.coupon.repository.CouponRepository;
+import com.example.connect.domain.couponuser.dto.CouponUserGetResDto;
+import com.example.connect.domain.couponuser.dto.CouponUserListResDto;
 import com.example.connect.domain.couponuser.dto.CouponUserResDto;
 import com.example.connect.domain.couponuser.dto.CouponUserUseResDto;
 import com.example.connect.domain.couponuser.entity.CouponUser;
@@ -86,6 +88,7 @@ public class CouponService {
                 couponUser.getId(),
                 user.getId(),
                 coupon.getId(),
+                coupon.getName(),
                 coupon.getDescription(),
                 coupon.getExpiredDate(),
                 couponUser.getCreatedAt(),
@@ -127,5 +130,13 @@ public class CouponService {
         List<Coupon> coupons = couponRepository.findByExpiredDateIsLessThanEqual(LocalDate.now());
 
         couponRepository.deleteAll(coupons);
+    }
+
+    public CouponUserListResDto getUserCoupon(int page, int size, Long userId, CouponUserStatus status) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        Page<CouponUserGetResDto> couponUsersList = couponUserRepository.findCouponUserByUserId(userId, status, pageable);
+
+        return new CouponUserListResDto(page, size, couponUsersList.getTotalElements(), couponUsersList.getTotalPages(), couponUsersList.getContent());
     }
 }
