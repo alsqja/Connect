@@ -1,5 +1,7 @@
 package com.example.connect.domain.user.controller;
 
+import com.example.connect.domain.coupon.service.CouponService;
+import com.example.connect.domain.couponuser.dto.CouponUserListResDto;
 import com.example.connect.domain.point.service.PointService;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.UpdateUserReqDto;
@@ -9,6 +11,7 @@ import com.example.connect.domain.user.dto.UserSimpleResDto;
 import com.example.connect.domain.user.service.UserService;
 import com.example.connect.global.common.dto.CommonResDto;
 import com.example.connect.global.config.auth.UserDetailsImpl;
+import com.example.connect.global.enums.CouponUserStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -33,6 +37,7 @@ public class UserController {
 
     private final UserService userService;
     private final PointService pointService;
+    private final CouponService couponService;
 
     @GetMapping("/my")
     public ResponseEntity<CommonResDto<UserResDto>> findMe(Authentication authentication) {
@@ -90,5 +95,20 @@ public class UserController {
         UserSimpleResDto result = userService.findById(id);
 
         return new ResponseEntity<>(new CommonResDto<>("유저 조회 완료", result), HttpStatus.OK);
+    }
+
+    @GetMapping("/my/coupons")
+    public ResponseEntity<CommonResDto<CouponUserListResDto>> findCouponById(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "ALL") CouponUserStatus status,
+            Authentication authentication
+    ) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RedisUserDto me = userDetails.getUser();
+
+        CouponUserListResDto result = couponService.getUserCoupon(page, size, me.getId(), status);
+
+        return new ResponseEntity<>(new CommonResDto<>("쿠폰 조회 완료.", result), HttpStatus.OK);
     }
 }

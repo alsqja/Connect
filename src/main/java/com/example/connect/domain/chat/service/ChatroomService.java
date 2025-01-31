@@ -1,6 +1,7 @@
 package com.example.connect.domain.chat.service;
 
-import com.example.connect.domain.chat.dto.ChatroomResponseDto;
+import com.example.connect.domain.chat.dto.ChatroomResDto;
+import com.example.connect.domain.chat.dto.CreateChatroomResDto;
 import com.example.connect.domain.chat.entity.Chatroom;
 import com.example.connect.domain.chat.entity.UserChatroom;
 import com.example.connect.domain.chat.entity.enums.RoomStatus;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,12 +23,15 @@ public class ChatroomService {
 
     private final ChatRepository chatRepository;
     private final ChatroomRepository chatroomRepository;
+    private final UserChatroomService userChatroomService;
     private final UserChatroomRepository userChatroomRepository;
     private final MatchingRepository matchingRepository;
 
-
+    /**
+     *  채팅방 생성
+     */
     @Transactional
-    public Long create(Long matchingId) {
+    public CreateChatroomResDto create(Long userId, Long matchingId) {
 
         Matching findMatching = matchingRepository.findByIdOrElseThrow(matchingId);
 
@@ -36,18 +39,25 @@ public class ChatroomService {
 
         Chatroom saveChatroom = chatroomRepository.save(chatroom);
 
-        return saveChatroom.getId();
+        // TODO: 매칭이 성사 되는 두 유저 모두 userChatroom이 생성되어야 한다. -> 해당 과정이 이뤄지는지 검증 필요
+            // 1. 매칭 성사 이후의 채팅방 API 호출을  클라이언트에서 처리해야함
+            // 2. 이후 서버 로직 확인 가능함
+        userChatroomService.save(userId, saveChatroom.getId());
+
+        return new CreateChatroomResDto(saveChatroom.getId());
     }
 
+    /**
+     * 전체 채팅방 조회
+     */
     @Transactional(readOnly = true)
-    public List<ChatroomResponseDto> getChatroomList(Long userId) {
-        return chatroomRepository
-                .findAllByUserId(userId)
-                .stream()
-                .map(Chatroom::toDto)
-                .collect(Collectors.toList());
+    public List<ChatroomResDto> getChatroomList(Long userId) {
+        return chatroomRepository.findAllChatroomByUserId(userId);
     }
 
+    /**
+     * 채팅 삭제
+     */
     @Transactional
     public void delete(Long userId, Long roomId) {
 

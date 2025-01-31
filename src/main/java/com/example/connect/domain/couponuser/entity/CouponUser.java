@@ -71,8 +71,4 @@ public class CouponUser extends BaseEntity {
     public void isUse() {
         this.status = CouponUserStatus.USED;
     }
-
-    public void isDelete() {
-        this.isDeleted = true;
-    }
 }
