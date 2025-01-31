@@ -17,6 +17,9 @@ public class ScheduleOnlyResDto implements BaseDtoType {
     private final String title;
     private final String details;
     private final int count;
+    private final String address;
+    private final double latitude;
+    private final double longitude;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
@@ -26,6 +29,9 @@ public class ScheduleOnlyResDto implements BaseDtoType {
         this.title = schedule.getTitle();
         this.details = schedule.getDetails();
         this.count = schedule.getCount();
+        this.address = schedule.getAddress();
+        this.latitude = schedule.getLatitude();
+        this.longitude = schedule.getLongitude();
         this.createdAt = schedule.getCreatedAt();
         this.updatedAt = schedule.getUpdatedAt();
     }

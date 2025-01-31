@@ -12,7 +12,6 @@ import com.example.connect.domain.schedule.repository.ScheduleRepository;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.global.aop.annotation.CheckMembership;
-import com.example.connect.global.common.Const;
 import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.MatchStatus;
 import com.example.connect.global.enums.MembershipType;
@@ -59,7 +58,7 @@ public class MatchingService {
                 end,
                 schedule.getLatitude(),
                 schedule.getLongitude(),
-                Const.DEFAULT_MATCHING_DISTANCE,
+                dto.getDistance(),
                 schedule.getDate()
         );
 

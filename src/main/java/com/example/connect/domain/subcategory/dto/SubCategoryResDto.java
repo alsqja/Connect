@@ -12,5 +12,6 @@ public class SubCategoryResDto implements BaseDtoType {
     private final String name;
     private final String imageUrl;
     private final Long categoryId;
+    private final String categoryName;
     private final Long registeredCount;
 }
