@@ -14,6 +14,7 @@ import com.example.connect.domain.schedule.entity.Schedule;
 import com.example.connect.domain.schedule.repository.ScheduleRepository;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.UserRepository;
+import com.example.connect.global.enums.CouponFilter;
 import com.example.connect.global.enums.CouponUserStatus;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
@@ -39,9 +40,9 @@ public class CouponService {
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
 
-    public CouponListResDto getCouponList(int page, int size) {
+    public CouponListResDto getCouponList(int page, int size, CouponFilter filter) {
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<CouponResDto> coupons = couponRepository.findByOrderByCreatedAtDesc(pageable);
+        Page<CouponResDto> coupons = couponRepository.findByOrderByCreatedAtDesc(filter, pageable);
 
         CouponListResDto resDto = new CouponListResDto(
                 page, size, coupons.getTotalElements(), coupons.getTotalPages(), coupons.getContent()
