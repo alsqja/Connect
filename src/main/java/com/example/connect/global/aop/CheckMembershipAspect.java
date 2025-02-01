@@ -97,7 +97,8 @@ public class CheckMembershipAspect {
                 dto.getName(),
                 dto.getBirth(),
                 dto.getGender(),
-                Const.DEFAULT_PROFILE
+                Const.DEFAULT_PROFILE,
+                dto.getRateAvg()
         );
     }
 

@@ -80,15 +80,11 @@ public class UserService {
 
         int sum = 0;
 
-        for (int i = 0; i < reviews.size(); i++) {
-        sum += reviews.get(i).getRate();
+        for (Review review : reviews) {
+            sum += review.getRate();
         }
         double rateAvg = (double) sum / reviews.size();
 
-        UserSimpleResDto userSimpleResDto = new UserSimpleResDto(user);
-
-        userSimpleResDto.updateRateAvg(rateAvg);
-
-        return userSimpleResDto;
+        return new UserSimpleResDto(user, rateAvg);
     }
 }
