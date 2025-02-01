@@ -9,4 +9,5 @@ public class Const {
     public static final int DEFAULT_MINUS_AGE = 5;
     public static final int DEFAULT_PLUS_AGE = 10;
     public static final double DEFAULT_MATCHING_DISTANCE = 5;
+    public static final int DEFAULT_FEED_SIZE = 3;
 }

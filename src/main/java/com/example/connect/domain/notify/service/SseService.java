@@ -52,7 +52,7 @@ public class SseService {
         return emitter;
     }
 
-    private void sendUnreadNotifications(Long userId, SseEmitter emitter) {
+    public void sendUnreadNotifications(Long userId, SseEmitter emitter) {
 
         try {
             List<Notify> unreadList = notifyRepository.findAllByReceiverIdAndIsReadFalse(userId);
