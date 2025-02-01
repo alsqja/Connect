@@ -2,6 +2,8 @@ package com.example.connect.domain.user.service;
 
 import com.example.connect.domain.membership.repository.MembershipRepository;
 import com.example.connect.domain.point.repository.PointRepository;
+import com.example.connect.domain.review.entity.Review;
+import com.example.connect.domain.review.repository.ReviewRepository;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.UpdateUserServiceDto;
 import com.example.connect.domain.user.dto.UserSimpleResDto;
@@ -16,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -25,6 +29,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RedisTokenRepository redisTokenRepository;
     private final PointRepository pointRepository;
+    private final ReviewRepository reviewRepository;
 
     @Transactional
     public RedisUserDto updateMe(UpdateUserServiceDto serviceDto) {
@@ -71,6 +76,19 @@ public class UserService {
 
         User user = userRepository.findByIdOrElseThrow(id);
 
-        return new UserSimpleResDto(user);
+        List<Review> reviews = reviewRepository.findByToUser(user);
+
+        int sum = 0;
+
+        for (int i = 0; i < reviews.size(); i++) {
+        sum += reviews.get(i).getRate();
+        }
+        double rateAvg = (double) sum / reviews.size();
+
+        UserSimpleResDto userSimpleResDto = new UserSimpleResDto(user);
+
+        userSimpleResDto.updateRateAvg(rateAvg);
+
+        return userSimpleResDto;
     }
 }

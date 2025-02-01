@@ -15,6 +15,7 @@ public class UserSimpleResDto implements BaseDtoType {
     private final String birth;
     private final Gender gender;
     private final String profileUrl;
+    private double rateAvg;
 
     public UserSimpleResDto(User user) {
         this.id = user.getId();
@@ -22,5 +23,9 @@ public class UserSimpleResDto implements BaseDtoType {
         this.birth = user.getBirth();
         this.gender = user.getGender();
         this.profileUrl = user.getProfileUrl();
+    }
+
+    public void updateRateAvg(double rateAvg) {
+        this.rateAvg = rateAvg;
     }
 }
