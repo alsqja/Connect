@@ -8,6 +8,7 @@ import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,4 +50,15 @@ public interface MatchingRepository extends JpaRepository<Matching, Long> {
                 WHERE m.id = :matchingId
             """)
     Optional<Matching> findByIdWithUser(@Param("matchingId") Long matchingId);
+
+    @Query("""
+            SELECT m FROM Matching m
+                JOIN FETCH m.toSchedule ts
+                JOIN FETCH ts.user
+                JOIN FETCH m.fromSchedule fs
+                JOIN FETCH fs.user
+                WHERE ts.date = :date
+                AND m.status = "ACCEPTED"
+            """)
+    List<Matching> findYesterdayMatching(LocalDate date);
 }

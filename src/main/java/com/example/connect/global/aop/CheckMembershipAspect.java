@@ -131,7 +131,7 @@ public class CheckMembershipAspect {
 
         List<UserImageResDto> data = dto.getData();
 
-        if (data.size() < 3) {
+        if (data.size() < Const.DEFAULT_FEED_SIZE) {
             return dto;
         }
 
@@ -140,7 +140,7 @@ public class CheckMembershipAspect {
                 dto.getSize(),
                 dto.getTotalElements(),
                 dto.getTotalPages(),
-                dto.getData().subList(0, 3)
+                dto.getData().subList(0, Const.DEFAULT_FEED_SIZE)
         );
     }
 
