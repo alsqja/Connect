@@ -15,17 +15,14 @@ public class UserSimpleResDto implements BaseDtoType {
     private final String birth;
     private final Gender gender;
     private final String profileUrl;
-    private double rateAvg;
+    private final double rateAvg;
 
-    public UserSimpleResDto(User user) {
+    public UserSimpleResDto(User user, double rateAvg) {
         this.id = user.getId();
         this.name = user.getName();
         this.birth = user.getBirth();
         this.gender = user.getGender();
         this.profileUrl = user.getProfileUrl();
-    }
-
-    public void updateRateAvg(double rateAvg) {
         this.rateAvg = rateAvg;
     }
 }
