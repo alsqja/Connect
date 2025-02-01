@@ -12,6 +12,7 @@ import com.example.connect.domain.schedule.repository.ScheduleRepository;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.global.aop.annotation.CheckMembership;
+import com.example.connect.global.aop.annotation.SendNotify;
 import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.MatchStatus;
 import com.example.connect.global.enums.MembershipType;
@@ -102,6 +103,7 @@ public class MatchingService {
     }
 
     @Transactional
+    @SendNotify
     public MatchingResDto updateMatchingStatus(Long id, MatchStatus status) {
 
         Matching matching = matchingRepository.findByIdOrElseThrow(id);
