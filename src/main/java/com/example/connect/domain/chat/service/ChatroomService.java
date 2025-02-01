@@ -8,14 +8,13 @@ import com.example.connect.domain.chat.entity.enums.RoomStatus;
 import com.example.connect.domain.chat.repository.ChatRepository;
 import com.example.connect.domain.chat.repository.ChatroomRepository;
 import com.example.connect.domain.chat.repository.UserChatroomRepository;
-import com.example.connect.domain.match.repository.MatchingRepository;
 import com.example.connect.domain.match.entity.Matching;
+import com.example.connect.domain.match.repository.MatchingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ public class ChatroomService {
     private final MatchingRepository matchingRepository;
 
     /**
-     *  채팅방 생성
+     * 채팅방 생성
      */
     @Transactional
     public CreateChatroomResDto create(Long userId, Long matchingId) {
@@ -40,9 +39,10 @@ public class ChatroomService {
         Chatroom saveChatroom = chatroomRepository.save(chatroom);
 
         // TODO: 매칭이 성사 되는 두 유저 모두 userChatroom이 생성되어야 한다. -> 해당 과정이 이뤄지는지 검증 필요
-            // 1. 매칭 성사 이후의 채팅방 API 호출을  클라이언트에서 처리해야함
-            // 2. 이후 서버 로직 확인 가능함
+        // 1. 매칭 성사 이후의 채팅방 API 호출을  클라이언트에서 처리해야함
+        // 2. 이후 서버 로직 확인 가능함
         userChatroomService.save(userId, saveChatroom.getId());
+        userChatroomService.save(findMatching.getFromSchedule().getUser().getId(), saveChatroom.getId());
 
         return new CreateChatroomResDto(saveChatroom.getId());
     }
