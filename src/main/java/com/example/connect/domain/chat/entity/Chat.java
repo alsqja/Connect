@@ -17,7 +17,7 @@ public class Chat {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_chatroom_id", nullable = false)
+    @JoinColumn(name = "user_chatroom_id", nullable = true)
     private UserChatroom userChatroom;
 
     @Column(name = "chatroom_id", nullable = false)
@@ -29,14 +29,10 @@ public class Chat {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public Chat(UserChatroom userChatroom, Long chatroomId, String content) {
+    public Chat(UserChatroom userChatroom, Long chatroomId, String content, LocalDateTime createdAt) {
         this.userChatroom = userChatroom;
         this.chatroomId = chatroomId;
         this.content = content;
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = createdAt;
     }
 }

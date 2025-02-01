@@ -25,5 +25,11 @@ public class SchedulerConfig {
 
         pointService.expiredPoint(pointUseList);
         couponService.expireCoupon();
+        couponService.createBirthCouponUser();
+    }
+
+    @Scheduled(cron = "0 0 0 1 1 *")
+    public void creteBirthCoupon() {
+        couponService.createBirthCoupon();
     }
 }
