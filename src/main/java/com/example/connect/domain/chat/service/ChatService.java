@@ -24,7 +24,7 @@ public class ChatService {
     @Transactional
     public void save(Long roomId, ChatReqDto message, LocalDateTime current) {
 
-        UserChatroom findUserChatroom = userChatroomRepository.findByUserIdAndChatroomIdOrElseThrow(message.getSenderId(), roomId);
+        UserChatroom findUserChatroom = userChatroomRepository.findByUserIdAndChatroomIdAndIsDeleteFalseOrElseThrow(message.getSenderId(), roomId);
 
         Chat chat = new Chat(findUserChatroom, roomId, message.getMessage(), current);
 

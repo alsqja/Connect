@@ -28,7 +28,7 @@ public class UserChatroomService {
     public List<ChatResDto> getChatHistory(Long userId, Long chatroomId) {
 
         // 유저 인증
-        userChatroomRepository.findByUserIdAndChatroomIdOrElseThrow(userId, chatroomId);
+        userChatroomRepository.findByUserIdAndChatroomIdAndIsDeleteFalseOrElseThrow(userId, chatroomId);
 
 
         // TODO: 페이징 처리 고려, 프론트에서 스크롤 이벤트로 다음 페이지 받아오기

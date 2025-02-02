@@ -61,8 +61,8 @@ public class ChatroomService {
     @Transactional
     public void leaveChatroom(Long userId, Long roomId) {
         // 1. 유저가 채팅방을 떠남 (isDelete = true 로 변경)
-        UserChatroom userChatroom = userChatroomRepository.findByUserIdAndChatroomIdOrElseThrow(userId, roomId);
-        userChatroom.markAsDeleted();  // 메서드명 변경 (가독성 향상)
+        UserChatroom userChatroom = userChatroomRepository.findByUserIdAndChatroomIdAndIsDeleteFalseOrElseThrow(userId, roomId);
+        userChatroom.markAsDeleted();
 
         // 2. 남아있는 유저가 있는지 확인
         boolean hasActiveUsers = userChatroomRepository.existsByChatroomIdAndIsDeleteFalse(roomId);
