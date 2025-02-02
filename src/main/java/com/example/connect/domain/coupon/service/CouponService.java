@@ -114,17 +114,15 @@ public class CouponService {
             throw new BadRequestException(ErrorCode.USED_COUPON);
         }
 
-        Coupon coupon = couponRepository.findByIdOrElseThrow(couponUser.getUser().getId());
+        Coupon coupon = couponRepository.findByIdOrElseThrow(couponUser.getCoupon().getId());
 
         schedule.decreaseCount(coupon.getAmount());
         couponUser.isUse();
 
-        CouponUserUseResDto couponUserUseResDto = new CouponUserUseResDto(
+        return new CouponUserUseResDto(
                 coupon.getAmount(),
                 5 - schedule.getCount()
         );
-
-        return couponUserUseResDto;
     }
 
     public CouponUserListResDto getUserCoupon(int page, int size, Long userId, CouponUserStatus status) {
