@@ -29,7 +29,7 @@ public class WebConfig {
     private final AuthenticationProvider authenticationProvider;
     private final AuthenticationEntryPoint authEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
-    private static final String[] WHITE_LIST = {"/api/auth/login/**", "/api/auth/signup", "/error", "/api/auth/refresh", "/api/file-url", "/ws/**", "/api/auth/**",  "/pub/**", "/sub/**", "/api/sse/**"};
+    private static final String[] WHITE_LIST = {"/api/auth/login/**", "/api/auth/signup", "/error", "/api/auth/refresh", "/api/file-url", "/ws/**", "/api/auth/**", "/pub/**", "/sub/**", "/api/sse/**"};
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -39,6 +39,7 @@ public class WebConfig {
                         auth.requestMatchers(WHITE_LIST).permitAll()
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE, DispatcherType.ERROR).permitAll()
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling(handler -> handler
