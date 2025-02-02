@@ -3,6 +3,9 @@ package com.example.connect.global.config;
 import com.example.connect.domain.coupon.service.CouponService;
 import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.match.repository.MatchingRepository;
+import com.example.connect.domain.membership.entity.Membership;
+import com.example.connect.domain.membership.repository.MembershipRepository;
+import com.example.connect.domain.membership.service.MembershipService;
 import com.example.connect.domain.notify.entity.Notify;
 import com.example.connect.domain.notify.repository.NotifyRepository;
 import com.example.connect.domain.point.service.PointService;
@@ -27,6 +30,8 @@ public class SchedulerConfig {
     private final CouponService couponService;
     private final MatchingRepository matchingRepository;
     private final NotifyRepository notifyRepository;
+    private final MembershipRepository membershipRepository;
+    private final MembershipService membershipService;
 
     @Scheduled(cron = "0 0 0 * * *")
     public void removeExpiration() {
@@ -36,6 +41,15 @@ public class SchedulerConfig {
         pointService.expiredPoint(pointUseList);
         couponService.expireCoupon();
         couponService.createBirthCouponUser();
+    }
+
+    @Scheduled(cron = "0 0 1 * * *")
+    public void autoPaymentMembership() {
+        List<Membership> memberships = membershipRepository.findByExpiredDateBeforeAndIsActiveTrue(LocalDate.now());
+
+        for (Membership membership : memberships) {
+            membershipService.autoPaymentMemberships(membership);
+        }
     }
 
     @Scheduled(cron = "0 0 0 1 1 *")

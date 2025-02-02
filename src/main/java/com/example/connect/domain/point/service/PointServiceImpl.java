@@ -1,11 +1,18 @@
 package com.example.connect.domain.point.service;
 
+import com.example.connect.domain.payment.dto.PaymentReqDto;
+import com.example.connect.domain.payment.dto.PaymentResDto;
+import com.example.connect.domain.payment.entity.Payment;
+import com.example.connect.domain.payment.repository.PaymentRepository;
+import com.example.connect.domain.payment.service.PaymentService;
 import com.example.connect.domain.point.entity.Point;
 import com.example.connect.domain.point.repository.PointRepository;
 import com.example.connect.domain.pointuse.dto.PointUseListResDto;
 import com.example.connect.domain.pointuse.dto.PointUseResDto;
 import com.example.connect.domain.pointuse.entity.PointUse;
 import com.example.connect.domain.pointuse.repository.PointUseRepository;
+import com.example.connect.domain.user.entity.User;
+import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.enums.PointUseType;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
@@ -17,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 
 @Service
@@ -24,6 +32,9 @@ import java.util.List;
 public class PointServiceImpl implements PointService {
     private final PointRepository pointRepository;
     private final PointUseRepository pointUseRepository;
+    private final UserRepository userRepository;
+    private final PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
 
     private BigDecimal nullToZero(BigDecimal value) {
         if (value == null) {
@@ -201,5 +212,36 @@ public class PointServiceImpl implements PointService {
         } else {
             return BigDecimal.ZERO;
         }
+    }
+
+    @Override
+    @Transactional
+    public PaymentResDto createPaymentPoint(
+            PaymentReqDto paymentReqDto,
+            Long userId
+    ) {
+        User user = userRepository.findByIdOrElseThrow(userId);
+        DecimalFormat df = new DecimalFormat("###,###");
+
+        Payment payment = paymentService.createPaymentCheck(paymentReqDto, user);
+
+        payment = paymentRepository.save(payment);
+
+        Point point = new Point(paymentReqDto.getAmount().divide(new BigDecimal(10)), user, payment, false);
+        PointUse pointUse = new PointUse(new BigDecimal(0), point.getAmount(), "포인트 " + df.format(point.getAmount()) + "P 충전", PointUseType.CHANGE, point);
+
+        pointRepository.save(point);
+        pointUseRepository.save(pointUse);
+
+        PaymentResDto paymentResDto = new PaymentResDto(
+                payment.getPayUid(),
+                payment.getPortoneUid(),
+                payment.getAmount(),
+                payment.getDetails(),
+                payment.getType(),
+                payment.getPayStatus()
+        );
+
+        return paymentResDto;
     }
 }
