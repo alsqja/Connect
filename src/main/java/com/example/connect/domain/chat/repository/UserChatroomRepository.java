@@ -14,14 +14,14 @@ import java.util.Optional;
 
 @Repository
 public interface UserChatroomRepository extends JpaRepository<UserChatroom, Long> {
-    Optional<UserChatroom> findByUserIdAndChatroomId(Long userId, Long chatroomId);
+    Optional<UserChatroom> findByUserIdAndChatroomIdAndIsDeleteFalse(Long userId, Long chatroomId);
 
     void deleteAllByChatroomId(Long chatroomId);
 
     boolean existsByChatroomIdAndIsDeleteFalse(Long chatroomId);
 
-    default UserChatroom findByUserIdAndChatroomIdOrElseThrow(Long userId, Long chatroomId) {
-        return findByUserIdAndChatroomId(userId, chatroomId).orElseThrow(
+    default UserChatroom findByUserIdAndChatroomIdAndIsDeleteFalseOrElseThrow(Long userId, Long chatroomId) {
+        return findByUserIdAndChatroomIdAndIsDeleteFalse(userId, chatroomId).orElseThrow(
                 ()-> new ForbiddenException(ErrorCode.FORBIDDEN_PERMISSION));
     }
 
