@@ -41,7 +41,7 @@ public class MatchingService {
         Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, me.getId())
                 .orElseThrow(() -> new BadRequestException(ErrorCode.BAD_REQUEST));
 
-        if (schedule.getCount() >= 5 && !me.getMembershipType().equals(MembershipType.PREMIUM)) {
+        if (schedule.getCount() >= 5 && (me.getMembershipType() == null || !me.getMembershipType().equals(MembershipType.PREMIUM))) {
             pointService.usePoint(me.getId(), 1L, "매칭 1회: 50 포인트 사용");
         }
 
