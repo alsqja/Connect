@@ -34,7 +34,7 @@ public interface ChatroomRepository extends JpaRepository<Chatroom, Long> {
         JOIN cr.matching.toSchedule ts
         JOIN fs.user f_u
         JOIN ts.user t_u
-        WHERE uc.user.id = :userId
+        WHERE uc.user.id = :userId AND uc.isDelete = false
         ORDER BY fs.date DESC 
     """)
     List<ChatroomResDto> findAllChatroomByUserId(@Param("userId") Long userId);

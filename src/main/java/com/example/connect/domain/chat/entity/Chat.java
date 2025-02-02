@@ -17,7 +17,7 @@ public class Chat {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_chatroom_id", nullable = true)
+    @JoinColumn(name = "user_chatroom_id", nullable = false)
     private UserChatroom userChatroom;
 
     @Column(name = "chatroom_id", nullable = false)

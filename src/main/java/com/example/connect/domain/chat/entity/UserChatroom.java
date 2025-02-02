@@ -25,8 +25,15 @@ public class UserChatroom {
     @JoinColumn(name = "chatroom_id", nullable = false)
     private Chatroom chatroom;
 
+    @Column(nullable = false)
+    private Boolean isDelete = Boolean.FALSE;
+
     public UserChatroom(User user, Chatroom chatroom) {
         this.user = user;
         this.chatroom = chatroom;
+    }
+
+    public void markAsDeleted() {
+        this.isDelete = Boolean.TRUE;
     }
 }

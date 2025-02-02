@@ -16,7 +16,9 @@ import java.util.Optional;
 public interface UserChatroomRepository extends JpaRepository<UserChatroom, Long> {
     Optional<UserChatroom> findByUserIdAndChatroomId(Long userId, Long chatroomId);
 
-    boolean existsByChatroomId(Long chatroomId);
+    void deleteAllByChatroomId(Long chatroomId);
+
+    boolean existsByChatroomIdAndIsDeleteFalse(Long chatroomId);
 
     default UserChatroom findByUserIdAndChatroomIdOrElseThrow(Long userId, Long chatroomId) {
         return findByUserIdAndChatroomId(userId, chatroomId).orElseThrow(

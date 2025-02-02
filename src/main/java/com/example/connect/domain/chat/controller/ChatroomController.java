@@ -73,7 +73,6 @@ public class ChatroomController {
      * @param authentication
      * @return List of {@link ChatroomResDto} 채팅방 정보 리스트
      */
-
     @GetMapping
     public ResponseEntity<CommonListResDto<ChatroomResDto>> getChatroomList(
             Authentication authentication
@@ -101,7 +100,7 @@ public class ChatroomController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         RedisUserDto me = userDetails.getUser();
 
-        chatroomService.delete(me.getId(), roomId);
+        chatroomService.leaveChatroom(me.getId(), roomId);
 
         return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
