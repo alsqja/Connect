@@ -14,6 +14,7 @@ import com.example.connect.domain.subcategory.entity.SubCategory;
 import com.example.connect.domain.subcategory.repository.SubCategoryRepository;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.UserRepository;
+import com.example.connect.global.common.Const;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
 import com.example.connect.global.error.exception.ForbiddenException;
@@ -40,7 +41,7 @@ public class ScheduleService {
     @Transactional
     public ScheduleResDto createSchedule(ScheduleServiceDto serviceDto) {
 
-        if (serviceDto.getContents().size() > 10) {
+        if (serviceDto.getContents().size() > Const.SCHEDULE_CONTENTS_LIMIT) {
             throw new BadRequestException(ErrorCode.BAD_REQUEST);
         }
 
@@ -63,7 +64,7 @@ public class ScheduleService {
     @Transactional
     public ScheduleResDto updateSchedule(Long id, ScheduleServiceDto serviceDto) {
 
-        if (serviceDto.getContents().size() > 10) {
+        if (serviceDto.getContents().size() > Const.SCHEDULE_CONTENTS_LIMIT) {
             throw new BadRequestException(ErrorCode.BAD_REQUEST);
         }
 
@@ -114,18 +115,11 @@ public class ScheduleService {
 
     public SchedulePageResDto findAllSchedules(Long userId, LocalDate date, int page, int size) {
 
-        Pageable pageable;
-        Page<Schedule> schedulePage;
+        Pageable pageable = date == null ? PageRequest.of(page - 1, size) : PageRequest.of(0, 31);
+        LocalDate startDate = date == null ? null : LocalDate.of(date.getYear(), date.getMonth(), 1);
+        LocalDate endDate = date == null ? null : LocalDate.of(date.getYear(), date.getMonth(), 1).minusDays(1);
 
-        if (date == null) {
-            pageable = PageRequest.of(page - 1, size);
-            schedulePage = scheduleRepository.findAllPageSchedule(pageable, null, null, userId);
-        } else {
-            pageable = PageRequest.of(0, 31);
-            LocalDate startDate = LocalDate.of(date.getYear(), date.getMonth(), 1);
-            LocalDate endDate = LocalDate.of(date.getYear(), date.getMonth().plus(1), 1).minusDays(1);
-            schedulePage = scheduleRepository.findAllPageSchedule(pageable, startDate, endDate, userId);
-        }
+        Page<Schedule> schedulePage = scheduleRepository.findAllPageSchedule(pageable, startDate, endDate, userId);
 
         return new SchedulePageResDto(schedulePage);
     }

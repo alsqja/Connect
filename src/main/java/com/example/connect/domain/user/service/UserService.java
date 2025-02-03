@@ -1,7 +1,5 @@
 package com.example.connect.domain.user.service;
 
-import com.example.connect.domain.membership.repository.MembershipRepository;
-import com.example.connect.domain.point.repository.PointRepository;
 import com.example.connect.domain.review.entity.Review;
 import com.example.connect.domain.review.repository.ReviewRepository;
 import com.example.connect.domain.user.dto.RedisUserDto;
@@ -25,10 +23,8 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final MembershipRepository membershipRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisTokenRepository redisTokenRepository;
-    private final PointRepository pointRepository;
     private final ReviewRepository reviewRepository;
 
     @Transactional
@@ -53,13 +49,6 @@ public class UserService {
         redisTokenRepository.saveUser(redisUserDto);
 
         return redisUserDto;
-    }
-
-    public void checkPassword(RedisUserDto me, String password) {
-
-        if (!passwordEncoder.matches(password, me.getPassword())) {
-            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_PASSWORD);
-        }
     }
 
     @Transactional
