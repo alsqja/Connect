@@ -68,4 +68,5 @@ jobs:
               -e EMAIL_KEY="${{ secrets.EMAIL_KEY }}" \
               -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
               -e RABBITMG_HOST=${{ secrets.RABBITMG_HOST }} \
+              -e PORTONE_API_CHANNEL_KEY=${{ secrets.PORTONE_API_CHANNEL_KEY }} \
               alsqja2626/connect:latest
