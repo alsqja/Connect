@@ -34,14 +34,9 @@ public class AdminReportService {
 
     public AdminReportResDto getAllReports(int page, int size, Long toUserId) {
 
-        Pageable pageable = PageRequest.of(page -1, size);
-        Page<Report> reportDetails;
+        Pageable pageable = PageRequest.of(page - 1, size);
 
-        if (toUserId != null) {
-            reportDetails = reportRepository.findAllByToUserId(toUserId, pageable);
-        } else {
-            reportDetails = reportRepository.findAll(pageable);
-        }
+        Page<Report> reportDetails = (toUserId != null) ? reportRepository.findAllByToUserId(toUserId, pageable) : reportRepository.findAll(pageable);
 
         return new AdminReportResDto(page, size, reportDetails.getTotalElements(), reportDetails.getTotalPages(), reportDetails.getContent().stream().map(ReportResDto::new).toList());
     }

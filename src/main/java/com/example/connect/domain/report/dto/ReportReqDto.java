@@ -1,7 +1,5 @@
 package com.example.connect.domain.report.dto;
 
-import com.example.connect.domain.match.entity.Matching;
-import com.example.connect.domain.user.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
