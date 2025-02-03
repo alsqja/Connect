@@ -117,7 +117,7 @@ public class ScheduleService {
 
         Pageable pageable = date == null ? PageRequest.of(page - 1, size) : PageRequest.of(0, 31);
         LocalDate startDate = date == null ? null : LocalDate.of(date.getYear(), date.getMonth(), 1);
-        LocalDate endDate = date == null ? null : LocalDate.of(date.getYear(), date.getMonth(), 1).minusDays(1);
+        LocalDate endDate = date == null ? null : LocalDate.of(date.getYear(), date.getMonth().plus(1), 1).minusDays(1);
 
         Page<Schedule> schedulePage = scheduleRepository.findAllPageSchedule(pageable, startDate, endDate, userId);
 
