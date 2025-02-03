@@ -23,11 +23,12 @@ public class UserResDto implements BaseDtoType {
     private final Boolean isActiveMatching;
     private final MembershipType membershipType;
     private final LocalDate expiredDate;
+    private final Boolean isActiveMembership;
     private final BigDecimal point;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    public UserResDto(RedisUserDto user, BigDecimal point) {
+    public UserResDto(RedisUserDto user, BigDecimal point, Boolean isActiveMembership) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.name = user.getName();
@@ -38,6 +39,7 @@ public class UserResDto implements BaseDtoType {
         this.membershipType = user.getMembershipType();
         this.expiredDate = user.getExpiredDate();
         this.point = point;
+        this.isActiveMembership = isActiveMembership;
         this.createdAt = user.getCreatedAt();
         this.updatedAt = user.getUpdatedAt();
     }

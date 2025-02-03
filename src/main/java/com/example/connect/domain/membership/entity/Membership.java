@@ -82,8 +82,7 @@ public class Membership extends BaseEntity {
         this.payment = payment;
     }
 
-    public void isDeleted() {
-        isDeleted = true;
+    public void isActiveFalse() {
         isActive = false;
     }
 

@@ -146,45 +146,62 @@ public class MembershipService {
      */
     @Transactional
     public void autoPaymentMemberships(Membership membership) {
-        try {
-            CardReqDto card = cardService.decryptCard(cardRepository.findByMembershipId(membership.getId()));
-            String paymentUid = "pay-" + UUID.randomUUID().toString().substring(0, 16);
-            String month = LocalDate.now().format(DateTimeFormatter.ofPattern("MM"));
-            int amount;
+        if (membership.getIsActive()) {
+            try {
+                CardReqDto card = cardService.decryptCard(cardRepository.findByMembershipId(membership.getId()));
+                String paymentUid = "pay-" + UUID.randomUUID().toString().substring(0, 16);
+                String month = LocalDate.now().format(DateTimeFormatter.ofPattern("MM"));
+                int amount;
 
-            if (membership.getType().equals(MembershipType.PREMIUM)) {
-                amount = 9900;
-            } else {
-                amount = 4900;
+                if (membership.getType().equals(MembershipType.PREMIUM)) {
+                    amount = 9900;
+                } else {
+                    amount = 4900;
+                }
+
+                AutoPaymentReqDto autoPaymentReqDto = new AutoPaymentReqDto(
+                        channelKey,
+                        month + "월 구독 결제 ( " + amount + "원 결제 )",
+                        new PaidPaymentAmountDto(amount),
+                        "KRW",
+                        new AutoPaymentReqDto.Method(
+                                new AutoPaymentReqDto.CardData(card)
+                        )
+                );
+
+                AutoPaymentResDto autoPaymentResDto = paymentService.cardPayment(paymentUid, autoPaymentReqDto);
+
+                Payment payment = new Payment(
+                        paymentUid,
+                        autoPaymentResDto.getPayment().getPgTxId(),
+                        BigDecimal.valueOf(amount),
+                        PaymentType.SUBSCRIBE,
+                        PaymentStatus.PAID,
+                        month + "월 구독 결제 ( " + amount + "원 결제 )",
+                        membership.getUser()
+                );
+
+                paymentRepository.save(payment);
+                membership.update(LocalDate.now().plusMonths(1), payment);
+                membershipRepository.save(membership);
+            } catch (Exception e) {
+                membershipRepository.delete(membership);
             }
-
-            AutoPaymentReqDto autoPaymentReqDto = new AutoPaymentReqDto(
-                    channelKey,
-                    month + "월 구독 결제 ( " + amount + "원 결제 )",
-                    new PaidPaymentAmountDto(amount),
-                    "KRW",
-                    new AutoPaymentReqDto.Method(
-                            new AutoPaymentReqDto.CardData(card)
-                    )
-            );
-
-            AutoPaymentResDto autoPaymentResDto = paymentService.cardPayment(paymentUid, autoPaymentReqDto);
-
-            Payment payment = new Payment(
-                    paymentUid,
-                    autoPaymentResDto.getPayment().getPgTxId(),
-                    BigDecimal.valueOf(amount),
-                    PaymentType.SUBSCRIBE,
-                    PaymentStatus.PAID,
-                    month + "월 구독 결제 ( " + amount + "원 결제 )",
-                    membership.getUser()
-            );
-
-            paymentRepository.save(payment);
-            membership.update(LocalDate.now().plusMonths(1), payment);
-            membershipRepository.save(membership);
-        } catch (Exception e) {
+        } else {
             membershipRepository.delete(membership);
         }
+    }
+
+    @Transactional
+    public void deleteMembership(Long userId) {
+        Membership membership = membershipRepository.findByUserIdAndIsActiveTrue(userId);
+
+        membership.isActiveFalse();
+    }
+
+    public Boolean membershipActive(Long userId) {
+        Boolean isActive = membershipRepository.findIsActiveByUserId(userId);
+
+        return isActive;
     }
 }
