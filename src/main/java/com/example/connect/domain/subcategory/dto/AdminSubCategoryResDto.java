@@ -1,6 +1,5 @@
 package com.example.connect.domain.subcategory.dto;
 
-import com.example.connect.domain.category.entity.Category;
 import com.example.connect.domain.subcategory.entity.SubCategory;
 import com.example.connect.global.common.dto.BaseDtoType;
 import lombok.Getter;
