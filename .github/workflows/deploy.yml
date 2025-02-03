@@ -62,4 +62,10 @@ jobs:
               -e NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }} \
               -e NAVER_REDIRECT_URI=${{ secrets.NAVER_REDIRECT_URI }} \
               -e PORTONE_API_SECRET_V2=${{ secrets.PORTONE_API_SECRET_V2 }} \
+              -e AES256_IV=${{ secrets.AES256_IV }} \
+              -e AES256_SECRET=${{ secrets.AES256_SECRET }} \
+              -e EMAIL_ADDRESS=${{ secrets.EMAIL_ADDRESS }} \
+              -e EMAIL_KEY=${{ secrets.EMAIL_KEY }} \
+              -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
+              -e RABBITMG_HOST=${{ secrets.RABBITMG_HOST }} \
               alsqja2626/connect:latest

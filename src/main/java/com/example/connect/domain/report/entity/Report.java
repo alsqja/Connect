@@ -37,15 +37,15 @@ public class Report extends BaseEntity {
     private Boolean isDeleted;
 
     @ManyToOne
-    @JoinColumn(name = "matching_id")
+    @JoinColumn(name = "matching_id", nullable = false)
     private Matching matching;
 
     @ManyToOne
-    @JoinColumn(name = "from_id")
+    @JoinColumn(name = "from_id", nullable = false)
     private User fromUser;
 
     @ManyToOne
-    @JoinColumn(name = "to_id")
+    @JoinColumn(name = "to_id", nullable = false)
     private User toUser;
 
     @PrePersist

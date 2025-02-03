@@ -1,5 +1,7 @@
 package com.example.connect.domain.point.service;
 
+import com.example.connect.domain.payment.dto.PaymentReqDto;
+import com.example.connect.domain.payment.dto.PaymentResDto;
 import com.example.connect.domain.pointuse.dto.PointUseListResDto;
 import com.example.connect.domain.pointuse.entity.PointUse;
 
@@ -14,4 +16,6 @@ public interface PointService {
     PointUseListResDto getAllPoint(Long userId, int page, int size);
 
     BigDecimal totalRemainPoint(Long userId);
+
+    PaymentResDto createPaymentPoint(PaymentReqDto paymentReqDto, Long userId);
 }

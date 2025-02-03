@@ -14,6 +14,10 @@ public enum ErrorCode {
     BAD_INPUT(HttpStatus.BAD_REQUEST, "잘못된 입력값 입니다."),
     LACK_POINT(HttpStatus.BAD_REQUEST, "포인트가 부족합니다."),
     PAYMENT_USE_POINT(HttpStatus.BAD_REQUEST, "이미 포인트로 사용한 결제 입니다."),
+    NOT_ISSUE_COUPON(HttpStatus.BAD_REQUEST, "현재 발급중인 쿠폰이 아닙니다."),
+    ALREADY_HAVE_COUPON(HttpStatus.BAD_REQUEST, "이미 소지한 쿠폰입니다."),
+    USED_COUPON(HttpStatus.BAD_REQUEST, "이미 사용한 쿠폰입니다."),
+    ALREADY_CHANGED_MEMBERSHIP(HttpStatus.BAD_REQUEST, "이미 변경 요청한 멤버십입니다."),
 
     // 401 UNAUTHORIZED
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),

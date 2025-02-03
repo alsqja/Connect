@@ -1,10 +1,13 @@
 package com.example.connect.domain.payment.controller;
 
+import com.example.connect.domain.membership.service.MembershipService;
+import com.example.connect.domain.payment.dto.EncryptReqDto;
 import com.example.connect.domain.payment.dto.PaymentCancelReqDto;
 import com.example.connect.domain.payment.dto.PaymentListResDto;
 import com.example.connect.domain.payment.dto.PaymentReqDto;
 import com.example.connect.domain.payment.dto.PaymentResDto;
 import com.example.connect.domain.payment.service.PaymentService;
+import com.example.connect.domain.point.service.PointService;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.global.common.dto.CommonResDto;
 import com.example.connect.global.config.auth.UserDetailsImpl;
@@ -23,22 +26,40 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/payments")
 public class PaymentController {
+    private final PointService pointService;
     private final PaymentService paymentService;
+    private final MembershipService membershipService;
 
     /**
-     * 결제 저장
+     * 결제 저장 (point)
      */
-    @PostMapping
-    public ResponseEntity<CommonResDto<PaymentResDto>> createPayment(
+    @PostMapping("/points")
+    public ResponseEntity<CommonResDto<PaymentResDto>> createPaymentPoint(
             @RequestBody PaymentReqDto paymentReqDto,
             Authentication authentication
     ) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         RedisUserDto me = userDetails.getUser();
 
-        PaymentResDto paymentResDto = paymentService.createPayment(paymentReqDto, me.getId());
+        PaymentResDto paymentResDto = pointService.createPaymentPoint(paymentReqDto, me.getId());
 
-        return new ResponseEntity<>(new CommonResDto<>("결제 생성 완료.", paymentResDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(new CommonResDto<>("포인트 결제 생성 완료.", paymentResDto), HttpStatus.CREATED);
+    }
+
+    /**
+     * 결제 저장 (membership)
+     */
+    @PostMapping("/memberships")
+    public ResponseEntity<CommonResDto<PaymentResDto>> createPaymentMembership(
+            @RequestBody EncryptReqDto encryptReqDto,
+            Authentication authentication
+    ) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RedisUserDto me = userDetails.getUser();
+
+        PaymentResDto paymentResDto = membershipService.createPaymentMembership(encryptReqDto, me.getId());
+
+        return new ResponseEntity<>(new CommonResDto<>("구독 결제 생성 완료.", paymentResDto), HttpStatus.CREATED);
     }
 
     /**

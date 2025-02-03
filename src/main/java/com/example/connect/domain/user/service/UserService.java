@@ -1,12 +1,14 @@
 package com.example.connect.domain.user.service;
 
-import com.example.connect.domain.membership.repository.MembershipRepository;
-import com.example.connect.domain.point.repository.PointRepository;
+import com.example.connect.domain.review.entity.Review;
+import com.example.connect.domain.review.repository.ReviewRepository;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.UpdateUserServiceDto;
+import com.example.connect.domain.user.dto.UserSimpleResDto;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.RedisTokenRepository;
 import com.example.connect.domain.user.repository.UserRepository;
+import com.example.connect.global.aop.annotation.CheckMembership;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.UnAuthorizedException;
 import lombok.RequiredArgsConstructor;
@@ -14,15 +16,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final MembershipRepository membershipRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisTokenRepository redisTokenRepository;
-    private final PointRepository pointRepository;
+    private final ReviewRepository reviewRepository;
 
     @Transactional
     public RedisUserDto updateMe(UpdateUserServiceDto serviceDto) {
@@ -48,13 +51,6 @@ public class UserService {
         return redisUserDto;
     }
 
-    public void checkPassword(RedisUserDto me, String password) {
-
-        if (!passwordEncoder.matches(password, me.getPassword())) {
-            throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_PASSWORD);
-        }
-    }
-
     @Transactional
     public void deleteUser(RedisUserDto me) {
 
@@ -62,5 +58,22 @@ public class UserService {
         redisTokenRepository.deleteRefreshToken(me.getEmail());
 
         userRepository.deleteById(me.getId());
+    }
+
+    @CheckMembership
+    public UserSimpleResDto findById(Long id) {
+
+        User user = userRepository.findByIdOrElseThrow(id);
+
+        List<Review> reviews = reviewRepository.findByToUser(user);
+
+        int sum = 0;
+
+        for (Review review : reviews) {
+            sum += review.getRate();
+        }
+        double rateAvg = (double) sum / reviews.size();
+
+        return new UserSimpleResDto(user, rateAvg);
     }
 }
