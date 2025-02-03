@@ -1,5 +1,7 @@
 package com.example.connect.domain.chat.controller;
 
+import com.example.connect.domain.chat.ChatPublisher;
+import com.example.connect.domain.chat.dto.ChatRabbimqRestDto;
 import com.example.connect.domain.chat.dto.ChatReqDto;
 import com.example.connect.domain.chat.dto.ChatResDto;
 import com.example.connect.domain.chat.service.ChatService;
@@ -16,8 +18,8 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ChatController {
 
-    private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final ChatService chatService;
+    private final ChatPublisher chatPublisher;
 
     @MessageMapping("/chats/room/{roomId}")
     public void message(
@@ -26,10 +28,8 @@ public class ChatController {
     ) {
         LocalDateTime current = LocalDateTime.now();
         chatService.save(roomId, message, current);
+        ChatRabbimqRestDto newChatDto = new ChatRabbimqRestDto(roomId, message, current);
 
-        simpMessageSendingOperations.convertAndSend(
-                "/sub/chats/room/" + roomId,
-                new ChatResDto(roomId, message, current)
-        );
+        chatPublisher.publishChat(newChatDto);
     }
 }
