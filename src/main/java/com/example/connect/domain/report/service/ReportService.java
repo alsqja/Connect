@@ -41,7 +41,7 @@ public class ReportService {
         User toUser = userRepository.findByIdOrElseThrow(toId);
 
         if (reportRepository.existsByFromUserAndToUser(fromUser, toUser)) {
-            throw new BadRequestException(ErrorCode.BAD_REQUEST);
+            throw new BadRequestException(ErrorCode.ALREADY_REPORTED);
         }
 
         Matching matching = matchingRepository.findByIdOrElseThrow(matchingId);

@@ -18,6 +18,7 @@ public enum ErrorCode {
     ALREADY_HAVE_COUPON(HttpStatus.BAD_REQUEST, "이미 소지한 쿠폰입니다."),
     USED_COUPON(HttpStatus.BAD_REQUEST, "이미 사용한 쿠폰입니다."),
     ALREADY_CHANGED_MEMBERSHIP(HttpStatus.BAD_REQUEST, "이미 변경 요청한 멤버십입니다."),
+    ALREADY_REPORTED(HttpStatus.BAD_REQUEST, "이미 신고된 사용자입니다."),
 
     // 401 UNAUTHORIZED
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
