@@ -309,6 +309,8 @@ public class MembershipService {
 
         if (isActives.size() > 1) {
             return true;
+        } else if (isActives.isEmpty()) {
+            return null;
         } else {
             return isActives.get(0);
         }
