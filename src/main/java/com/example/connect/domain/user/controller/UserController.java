@@ -2,6 +2,7 @@ package com.example.connect.domain.user.controller;
 
 import com.example.connect.domain.coupon.service.CouponService;
 import com.example.connect.domain.couponuser.dto.CouponUserListResDto;
+import com.example.connect.domain.membership.service.MembershipService;
 import com.example.connect.domain.point.service.PointService;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.domain.user.dto.UpdateUserReqDto;
@@ -38,6 +39,7 @@ public class UserController {
     private final UserService userService;
     private final PointService pointService;
     private final CouponService couponService;
+    private final MembershipService membershipService;
 
     @GetMapping("/my")
     public ResponseEntity<CommonResDto<UserResDto>> findMe(Authentication authentication) {
@@ -46,8 +48,9 @@ public class UserController {
         RedisUserDto me = userDetails.getUser();
 
         BigDecimal totalRemainPoint = pointService.totalRemainPoint(me.getId());
+        Boolean isActiveMembership = membershipService.membershipActive(me.getId());
 
-        return new ResponseEntity<>(new CommonResDto<>("프로필 조회 완료", new UserResDto(me, totalRemainPoint)), HttpStatus.OK);
+        return new ResponseEntity<>(new CommonResDto<>("프로필 조회 완료", new UserResDto(me, totalRemainPoint, isActiveMembership)), HttpStatus.OK);
     }
 
     @PatchMapping("/my")
@@ -62,8 +65,9 @@ public class UserController {
         UpdateUserServiceDto serviceDto = dto.toServiceDto(me);
         BigDecimal totalRemainPoint = pointService.totalRemainPoint(me.getId());
         RedisUserDto redisUserDto = userService.updateMe(serviceDto);
+        Boolean isActiveMembership = membershipService.membershipActive(me.getId());
 
-        UserResDto result = new UserResDto(redisUserDto, totalRemainPoint);
+        UserResDto result = new UserResDto(redisUserDto, totalRemainPoint, isActiveMembership);
 
         return new ResponseEntity<>(new CommonResDto<>("프로필 수정 완료", result), HttpStatus.OK);
     }

@@ -45,7 +45,7 @@ public class SchedulerConfig {
 
     @Scheduled(cron = "0 0 1 * * *")
     public void autoPaymentMembership() {
-        List<Membership> memberships = membershipRepository.findByExpiredDateBeforeAndIsActiveTrue(LocalDate.now());
+        List<Membership> memberships = membershipRepository.findByExpiredDateBefore(LocalDate.now());
 
         for (Membership membership : memberships) {
             membershipService.autoPaymentMemberships(membership);
