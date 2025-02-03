@@ -21,6 +21,8 @@ public interface MembershipRepository extends JpaRepository<Membership, Long> {
 
     Membership findByUserIdAndIsActiveTrue(Long userId);
 
+    List<Membership> findByUserId(Long userId);
+
     @Query("select m.isActive from Membership m where m.user.id = :userId")
-    Boolean findIsActiveByUserId(Long userId);
+    List<Boolean> findIsActiveByUserId(Long userId);
 }

@@ -33,6 +33,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -199,9 +201,116 @@ public class MembershipService {
         membership.isActiveFalse();
     }
 
-    public Boolean membershipActive(Long userId) {
-        Boolean isActive = membershipRepository.findIsActiveByUserId(userId);
+    @Transactional
+    public void updateMembership(EncryptReqDto encryptReqDto, Long userId) {
+        String decodingString = aes256Util.decryptAES(encryptReqDto.getEncryptData());
+        PaymentAutomaticReqDto paymentAutomaticReqDto = aes256Util.objectMapping(decodingString, PaymentAutomaticReqDto.class);
+        List<Membership> memberships = membershipRepository.findByUserId(userId);
 
-        return isActive;
+        if (memberships.size() > 1) {
+            throw new BadRequestException(ErrorCode.ALREADY_CHANGED_MEMBERSHIP);
+        }
+
+        Membership membership = memberships.get(0);
+        User user = userRepository.findByIdOrElseThrow(userId);
+
+        CardReqDto cardReqDto = new CardReqDto(
+                paymentAutomaticReqDto.getCardNumber(),
+                paymentAutomaticReqDto.getExpiredYear(),
+                paymentAutomaticReqDto.getExpiredMonth(),
+                paymentAutomaticReqDto.getCardPassword(),
+                paymentAutomaticReqDto.getBirth()
+        );
+
+        if (
+                Objects.equals(paymentAutomaticReqDto.getAmount(), BigDecimal.valueOf(9900))
+                        && membership.getType().equals(MembershipType.NORMAL)
+        ) {
+            membershipRepository.delete(membership);
+
+            long usedDays = ChronoUnit.DAYS.between(membership.getExpiredDate().minusDays(30), LocalDate.now());
+            int amount;
+
+            if (usedDays >= 30) {
+                amount = 0;
+            } else {
+                amount = (int) Math.max(Math.ceil(((4900 / 30) * (30 - usedDays)) / 10) * 10, 0);
+            }
+
+            AutoPaymentReqDto autoPaymentReqDto = new AutoPaymentReqDto(
+                    channelKey,
+                    paymentAutomaticReqDto.getDetails(),
+                    new PaidPaymentAmountDto(amount),
+                    "KRW",
+                    new AutoPaymentReqDto.Method(
+                            new AutoPaymentReqDto.CardData(
+                                    cardReqDto
+                            )
+                    )
+            );
+
+            AutoPaymentResDto resDto = paymentService.cardPayment(paymentAutomaticReqDto.getPayUid(), autoPaymentReqDto);
+
+            try {
+                PaymentReqDto paymentReqDto = new PaymentReqDto(
+                        paymentAutomaticReqDto.getPayUid(),
+                        resDto.getPayment().getPgTxId(),
+                        BigDecimal.valueOf(amount),
+                        paymentAutomaticReqDto.getDetails(),
+                        paymentAutomaticReqDto.getType(),
+                        paymentAutomaticReqDto.getStatus()
+                );
+
+                Payment payment = paymentService.createPaymentCheck(paymentReqDto, user);
+                paymentRepository.save(payment);
+
+                LocalDate expiredDate = LocalDate.now().plusMonths(1);
+
+                Membership newMembership = new Membership(
+                        MembershipType.PREMIUM,
+                        expiredDate,
+                        user,
+                        payment
+                );
+
+                membershipRepository.save(newMembership);
+                cardService.createCard(cardReqDto, newMembership);
+
+                RedisUserDto redisUserDto = new RedisUserDto(user);
+
+                redisUserDto.updateMembership(MembershipType.PREMIUM, expiredDate);
+                redisTokenRepository.saveUser(redisUserDto);
+            } catch (Exception e) {
+                paymentService.cancelPaymentPortone(paymentAutomaticReqDto.getPayUid(), "내부 결제 오류로인한 결제 취소");
+
+                throw new BadRequestException(ErrorCode.BAD_REQUEST);
+            }
+        } else if (
+                Objects.equals(paymentAutomaticReqDto.getAmount(), BigDecimal.valueOf(4900))
+                        && membership.getType().equals(MembershipType.PREMIUM)
+        ) {
+            membership.isActiveFalse();
+
+            Membership newMembership = new Membership(
+                    MembershipType.NORMAL,
+                    membership.getExpiredDate(),
+                    user
+            );
+
+            membershipRepository.save(newMembership);
+            cardService.createCard(cardReqDto, newMembership);
+        } else {
+            throw new BadRequestException(ErrorCode.BAD_REQUEST);
+        }
+    }
+
+    public Boolean membershipActive(Long userId) {
+        List<Boolean> isActives = membershipRepository.findIsActiveByUserId(userId);
+
+        if (isActives.size() > 1) {
+            return true;
+        } else {
+            return isActives.get(0);
+        }
     }
 }

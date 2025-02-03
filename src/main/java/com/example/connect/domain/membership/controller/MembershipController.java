@@ -1,6 +1,7 @@
 package com.example.connect.domain.membership.controller;
 
 import com.example.connect.domain.membership.service.MembershipService;
+import com.example.connect.domain.payment.dto.EncryptReqDto;
 import com.example.connect.domain.user.dto.RedisUserDto;
 import com.example.connect.global.config.auth.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +30,18 @@ public class MembershipController {
         membershipService.deleteMembership(me.getId());
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping
+    public ResponseEntity updateMembership(
+            @RequestBody EncryptReqDto encryptReqDto,
+            Authentication authentication
+    ) {
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RedisUserDto me = userDetails.getUser();
+
+        membershipService.updateMembership(encryptReqDto, me.getId());
+
+        return null;
     }
 }

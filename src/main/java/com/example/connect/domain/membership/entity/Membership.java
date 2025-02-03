@@ -82,6 +82,12 @@ public class Membership extends BaseEntity {
         this.payment = payment;
     }
 
+    public Membership(MembershipType type, LocalDate expiredDate, User user) {
+        this.type = type;
+        this.expiredDate = expiredDate;
+        this.user = user;
+    }
+
     public void isActiveFalse() {
         isActive = false;
     }
