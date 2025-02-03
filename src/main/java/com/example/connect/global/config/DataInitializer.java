@@ -1,7 +1,5 @@
 package com.example.connect.global.config;
 
-import com.example.connect.domain.banner.entity.Banner;
-import com.example.connect.domain.banner.repository.BannerRepository;
 import com.example.connect.domain.category.entity.Category;
 import com.example.connect.domain.category.repository.CategoryRepository;
 import com.example.connect.domain.coupon.entity.Coupon;
@@ -49,7 +47,6 @@ import java.time.LocalDateTime;
 public class DataInitializer {
 
     private final UserRepository userRepository;
-    private final BannerRepository bannerRepository;
     private final CategoryRepository categoryRepository;
     private final CouponRepository couponRepository;
     private final CouponUserRepository couponUserRepository;
@@ -112,9 +109,6 @@ public class DataInitializer {
 
         Membership membership = new Membership(MembershipType.PREMIUM, LocalDate.now().plusYears(1), user1, payment1);
         membershipRepository.save(membership);
-
-        Banner banner = new Banner("ad", "ad", LocalDateTime.now().plusYears(1));
-        bannerRepository.save(banner);
 
         Category category = new Category("스포츠", "");
         Category savedCategory = categoryRepository.save(category);
