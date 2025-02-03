@@ -12,7 +12,6 @@ import com.example.connect.domain.user.dto.SignupServiceDto;
 import com.example.connect.domain.user.dto.UserTokenResDto;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.RedisEmailRepository;
-import com.example.connect.domain.user.repository.RedisTokenRepository;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.common.dto.TokenDto;
 import com.example.connect.global.enums.CouponUserStatus;
@@ -21,7 +20,6 @@ import com.example.connect.global.error.exception.BadRequestException;
 import com.example.connect.global.error.exception.UnAuthorizedException;
 import com.example.connect.global.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,9 +33,7 @@ public class AuthService {
     private final MembershipRepository membershipRepository;
 
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
-    private final RedisTokenRepository redisTokenRepository;
     private final RedisEmailRepository redisEmailRepository;
     private final CouponRepository couponRepository;
     private final CouponUserRepository couponUserRepository;
@@ -49,7 +45,7 @@ public class AuthService {
         if (!"verified".equals(emailStatus)) {
             throw new BadRequestException(ErrorCode.BAD_REQUEST);
         }
-        
+
         User user = signupServiceDto.toUser();
 
         user.updatePassword(passwordEncoder.encode(user.getPassword()));
@@ -72,13 +68,7 @@ public class AuthService {
 
         Membership membership = membershipRepository.findByUserIdAndExpiredDateAfter(user.getId(), LocalDate.now()).orElse(null);
 
-        RedisUserDto sessionUser;
-
-        if (membership == null) {
-            sessionUser = new RedisUserDto(user);
-        } else {
-            sessionUser = new RedisUserDto(user, membership);
-        }
+        RedisUserDto sessionUser = membership == null ? new RedisUserDto(user) : new RedisUserDto(user, membership);
 
         TokenDto tokens = jwtProvider.generateToken(sessionUser);
 
@@ -89,20 +79,14 @@ public class AuthService {
 
         String email = jwtProvider.getUsername(refreshToken);
 
-        User user = userRepository.findByEmailOrElseThrow(email);
-        Membership membership = membershipRepository.findByUserIdAndExpiredDateAfter(user.getId(), LocalDate.now()).orElse(null);
-
-        RedisUserDto sessionUser;
-
-        if (membership == null) {
-            sessionUser = new RedisUserDto(user);
-        } else {
-            sessionUser = new RedisUserDto(user, membership);
-        }
-
         if (!jwtProvider.validRefreshToken(refreshToken, email)) {
             throw new UnAuthorizedException(ErrorCode.EXPIRED_TOKEN);
         }
+
+        User user = userRepository.findByEmailOrElseThrow(email);
+        Membership membership = membershipRepository.findByUserIdAndExpiredDateAfter(user.getId(), LocalDate.now()).orElse(null);
+
+        RedisUserDto sessionUser = membership == null ? new RedisUserDto(user) : new RedisUserDto(user, membership);
 
         return jwtProvider.generateToken(sessionUser);
     }
