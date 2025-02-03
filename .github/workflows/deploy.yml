@@ -65,7 +65,7 @@ jobs:
               -e AES256_IV=${{ secrets.AES256_IV }} \
               -e AES256_SECRET=${{ secrets.AES256_SECRET }} \
               -e EMAIL_ADDRESS=${{ secrets.EMAIL_ADDRESS }} \
-              -e EMAIL_KEY=${{ secrets.EMAIL_KEY }} \
+              -e EMAIL_KEY="${{ secrets.EMAIL_KEY }}" \
               -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
               -e RABBITMG_HOST=${{ secrets.RABBITMG_HOST }} \
               alsqja2626/connect:latest
