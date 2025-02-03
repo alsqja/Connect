@@ -26,4 +26,4 @@ COPY --from=builder /apps/build/libs/*-SNAPSHOT.jar /apps/app.jar
 EXPOSE 8080
 
 # 애플리케이션을 실행하기 위한 엔트리포인트 정의
-ENTRYPOINT ["java", "-jar", "/apps/app.jar"]
+ENTRYPOINT ["java", "-jar", "/apps/app.jar", "--spring.profiles.active=prod"]

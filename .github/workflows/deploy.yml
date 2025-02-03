@@ -48,6 +48,7 @@ jobs:
             # 새 이미지 Pull 및 실행
             sudo docker pull alsqja2626/connect:latest
             sudo docker run -d -p 8080:8080 \
+              -e SPRING_PROFILES_ACTIVE=prod \
               -e DATABASE_HOST=${{ secrets.MYSQL_HOST }} \
               -e DATABASE_PORT=${{ secrets.DATABASE_PORT }} \
               -e DATABASE_NAME=${{ secrets.DATABASE_NAME }} \
