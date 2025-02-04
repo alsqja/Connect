@@ -2,7 +2,7 @@ name: docker multi-stage build
 
 on:
   push:
-    branches: [ main ] # 해당 branch에 push 되었을 경우
+    branches: [ main, deploy ] # 해당 branch에 push 되었을 경우
 
   # https://github.com/marketplace/actions/build-and-push-docker-images
 
