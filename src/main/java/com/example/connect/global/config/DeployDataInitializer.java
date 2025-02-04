@@ -26,6 +26,8 @@ public class DeployDataInitializer {
 
     @PostConstruct
     public void init() {
+
+        userRepository.findByEmailOrElseThrow("admin@example.com");
         User user = new User("admin@gmail.com", passwordEncoder.encode("Password1!"), "관리자", "10000814", Gender.MAN, "https://ca.slack-edge.com/T06B9PCLY1E-U07KRNHKXUM-4ddfb9e4780d-512", false, UserRole.ADMIN);
         userRepository.save(user);
 
