@@ -57,7 +57,7 @@ public class SchedulerConfig {
         couponService.createBirthCoupon();
     }
 
-    @Scheduled(cron = "0 0 6 * * *")
+    @Scheduled(cron = "0 0 12 * * *")
     public void sendReviewReminder() {
 
         List<Matching> matchings = matchingRepository.findYesterdayMatching(LocalDate.now().minusDays(1));
