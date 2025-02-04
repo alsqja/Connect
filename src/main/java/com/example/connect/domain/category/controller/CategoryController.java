@@ -3,7 +3,6 @@ package com.example.connect.domain.category.controller;
 import com.example.connect.domain.category.dto.AllCategoriesResDto;
 import com.example.connect.domain.category.service.CategoryService;
 import com.example.connect.global.common.dto.CommonListResDto;
-import com.example.connect.global.common.dto.CommonResDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
