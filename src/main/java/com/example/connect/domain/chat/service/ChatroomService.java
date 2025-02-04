@@ -75,11 +75,11 @@ public class ChatroomService {
 
     // 채팅 내역 및 채팅방 삭제
     private void deleteAllAboutChatAndChatroom(Long chatroomId) {
-        // 1. 중간 테이블 삭제
-        userChatroomRepository.deleteAllByChatroomId(chatroomId);
-
-        // 2. 채팅방의 채팅 내역 삭제
+        // 1. 채팅방의 채팅 내역 삭제
         chatRepository.deleteAllByChatroomId(chatroomId);
+
+        // 2. 중간 테이블 삭제
+        userChatroomRepository.deleteAllByChatroomId(chatroomId);
 
         // 2. 채팅방 삭제
         chatroomRepository.deleteById(chatroomId);
