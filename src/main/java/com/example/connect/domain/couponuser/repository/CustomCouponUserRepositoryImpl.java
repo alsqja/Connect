@@ -36,7 +36,7 @@ public class CustomCouponUserRepositoryImpl implements CustomCouponUserRepositor
         List<CouponUserGetResDto> results = queryFactory.select(
                         Projections.constructor(
                                 CouponUserGetResDto.class, cu.id, u.id, c.id, c.name,
-                                c.description, c.expiredDate, cu.status, c.amount, cu.createdAt, cu.updatedAt))
+                                c.description, cu.expiredDate, cu.status, c.amount, cu.createdAt, cu.updatedAt))
                 .from(cu)
                 .join(cu.coupon, c)
                 .join(cu.user, u)
