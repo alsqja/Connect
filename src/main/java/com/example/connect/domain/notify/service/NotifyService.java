@@ -22,7 +22,6 @@ public class NotifyService {
 
     public void sendNotify(User receiver, NotifyType notifyType, String content, String url) {
 
-        System.out.println(receiver.getId());
         Notify notify = new Notify(notifyType, content, receiver, url);
         notifyRepository.save(notify);
 
