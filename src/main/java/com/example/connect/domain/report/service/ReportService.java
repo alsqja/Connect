@@ -8,6 +8,7 @@ import com.example.connect.domain.report.entity.Report;
 import com.example.connect.domain.report.repository.ReportRepository;
 import com.example.connect.domain.user.entity.User;
 import com.example.connect.domain.user.repository.UserRepository;
+import com.example.connect.global.enums.MatchStatus;
 import com.example.connect.global.enums.UserStatus;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
@@ -50,6 +51,8 @@ public class ReportService {
 
         reportRepository.save(report);
 
+        matching.updateStatus(MatchStatus.REJECTED);
+
         toUser.addReportedCount();
 
         if (toUser.getReportedCount() == 5) {
@@ -74,6 +77,8 @@ public class ReportService {
 
         reportRepository.delete(report);
 
+        report.getMatching().updateStatus(MatchStatus.ACCEPTED);
+
         if (report.getToUser().getReportedCount() == 5) {
             report.getToUser().updateStatus(UserStatus.NORMAL);
         }
@@ -83,7 +88,7 @@ public class ReportService {
 
     public MyReportResDto getMyReports(int page, int size, Long userId) {
 
-        Pageable pageable = PageRequest.of(page -1, size);
+        Pageable pageable = PageRequest.of(page - 1, size);
         Page<Report> reportDetails = reportRepository.findByFromUserId(userId, pageable);
 
         return new MyReportResDto(page, size, reportDetails.getTotalElements(), reportDetails.getTotalPages(), reportDetails.getContent().stream().map(ReportResDto::new).toList());
