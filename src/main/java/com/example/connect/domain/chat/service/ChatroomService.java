@@ -2,6 +2,7 @@ package com.example.connect.domain.chat.service;
 
 import com.example.connect.domain.chat.dto.ChatroomResDto;
 import com.example.connect.domain.chat.dto.CreateChatroomResDto;
+import com.example.connect.domain.chat.dto.SimpleChatroomResDto;
 import com.example.connect.domain.chat.entity.Chatroom;
 import com.example.connect.domain.chat.entity.UserChatroom;
 import com.example.connect.domain.chat.entity.enums.RoomStatus;
@@ -10,6 +11,8 @@ import com.example.connect.domain.chat.repository.ChatroomRepository;
 import com.example.connect.domain.chat.repository.UserChatroomRepository;
 import com.example.connect.domain.match.entity.Matching;
 import com.example.connect.domain.match.repository.MatchingRepository;
+import com.example.connect.global.error.errorcode.ErrorCode;
+import com.example.connect.global.error.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,5 +86,14 @@ public class ChatroomService {
 
         // 2. 채팅방 삭제
         chatroomRepository.deleteById(chatroomId);
+    }
+
+    public SimpleChatroomResDto findByMatchingId(Long matchingId) {
+
+        Matching matching = matchingRepository.findByIdOrElseThrow(matchingId);
+
+        Chatroom chatroom = chatroomRepository.findByMatching(matching).orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND));
+
+        return new SimpleChatroomResDto(chatroom.getId(), matching.getId());
     }
 }

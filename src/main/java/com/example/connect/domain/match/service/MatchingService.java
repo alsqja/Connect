@@ -1,6 +1,7 @@
 package com.example.connect.domain.match.service;
 
 import com.example.connect.domain.match.dto.MatchingListResDto;
+import com.example.connect.domain.match.dto.MatchingPartnerResDto;
 import com.example.connect.domain.match.dto.MatchingResDto;
 import com.example.connect.domain.match.dto.MatchingWithScheduleResDto;
 import com.example.connect.domain.match.entity.Matching;
@@ -111,5 +112,14 @@ public class MatchingService {
         matching.updateStatus(status);
 
         return new MatchingResDto(matching);
+    }
+
+    public MatchingPartnerResDto findMatchingPartner(Long myId, Long matchingId) {
+
+        Matching matching = matchingRepository.findByIdOrElseThrow(matchingId);
+
+        Long partnerId = matching.getFromSchedule().getUser().getId().equals(myId) ? matching.getToSchedule().getUser().getId() : matching.getFromSchedule().getUser().getId();
+
+        return new MatchingPartnerResDto(partnerId);
     }
 }

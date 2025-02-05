@@ -7,10 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +50,19 @@ public class SseService {
             emitterRepository.remove(userId);
             emitter.completeWithError(ex);
         });
+
+
+        // 25초마다 Keep-Alive 메시지 전송 (CloudFront 연결 유지)
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                emitter.send(":\n\n"); // SSE 빈 이벤트 전송 (CloudFront 우회)
+            } catch (IOException e) {
+                emitter.complete();
+                emitterRepository.remove(userId);
+                scheduler.shutdown(); // 예외 발생 시 스레드 종료
+            }
+        }, 25, 25, TimeUnit.SECONDS); // 25초마다 실행
 
         CompletableFuture.runAsync(() -> sendUnreadNotifications(userId, emitter));
 
