@@ -10,7 +10,8 @@ public enum MatchStatus {
         return switch (this) {
             case PENDING -> newStatus == ACCEPTED || newStatus == REJECTED;
             case CREATED -> newStatus == PENDING || newStatus == REJECTED;
-            case ACCEPTED, REJECTED -> false;
+            case ACCEPTED -> newStatus == REJECTED;
+            case REJECTED -> newStatus == ACCEPTED;
         };
     }
 }

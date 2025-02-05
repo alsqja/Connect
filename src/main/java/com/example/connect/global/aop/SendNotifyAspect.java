@@ -40,7 +40,7 @@ public class SendNotifyAspect {
                 notifyService.sendNotify(
                         receiver,
                         NotifyType.MATCHING_REQUEST,
-                        "매칭 요청이 도착했습니다.",
+                        matching.getToSchedule().getDate() + " " + matching.getToSchedule().getTitle() + " 일정에 매칭 요청이 도착했습니다.",
                         "/schedule/" + matching.getToSchedule().getId()
                 );
             } else if (dto.getStatus() == MatchStatus.ACCEPTED) {
@@ -49,7 +49,7 @@ public class SendNotifyAspect {
                 notifyService.sendNotify(
                         receiver,
                         NotifyType.MATCHING_ACCEPT,
-                        "매칭 요청이 수락되었습니다.",
+                        matching.getFromSchedule().getDate() + " " + matching.getFromSchedule().getTitle() + " 일정에 매칭 요청이 수락되었습니다.",
                         "/schedule/" + matching.getFromSchedule().getId()
                 );
             }

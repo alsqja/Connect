@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -41,6 +42,10 @@ public class MatchingService {
 
         Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, me.getId())
                 .orElseThrow(() -> new BadRequestException(ErrorCode.BAD_REQUEST));
+
+        if (schedule.getDate().isBefore(LocalDate.now())) {
+            throw new BadRequestException(ErrorCode.BAD_REQUEST);
+        }
 
         if (schedule.getCount() >= 5 && (me.getMembershipType() == null || !me.getMembershipType().equals(MembershipType.PREMIUM))) {
             pointService.usePoint(me.getId(), 1L, "매칭 1회: 50 포인트 사용");
