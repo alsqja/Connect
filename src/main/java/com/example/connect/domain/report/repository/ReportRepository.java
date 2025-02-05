@@ -22,5 +22,5 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Query("select r from Report as r join fetch r.toUser join fetch r.fromUser join fetch r.matching m join fetch m.fromSchedule join fetch m.toSchedule ts join fetch ts.user where r.toUser.id = :toUserId")
     Page<Report> findAllByToUserId(Long toUserId, Pageable pageable);
 
-    Page<Report> findAllOrderByCreatedAtDesc(Pageable pageable);
+    Page<Report> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }
