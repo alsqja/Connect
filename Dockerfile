@@ -13,6 +13,14 @@ RUN gradle clean build -x test --no-daemon --parallel
 # OpenJDK 17 slim 기반 이미지 사용
 FROM openjdk:17-jdk-slim
 
+# 한국 시간대를 설정하기 위해 tzdata 설치
+RUN apt-get update && apt-get install -y tzdata \
+    && ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime \
+    && dpkg-reconfigure -f noninteractive tzdata \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+
 # 이미지에 레이블 추가
 LABEL type="application"
 
