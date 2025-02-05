@@ -13,7 +13,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -39,9 +44,6 @@ public class ChatroomController {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         RedisUserDto me = userDetails.getUser();
 
-        // TODO: 임시 데이터, 클라이언트에서 받아오기
-//        Long matchingId = 8L;
-
         CreateChatroomResDto result = chatroomService.create(me.getId(), matchingId);
 
         return new ResponseEntity<>(new CommonResDto<>("채팅방 셍성", result), HttpStatus.OK);
@@ -50,7 +52,7 @@ public class ChatroomController {
     /**
      * 채팅방 입장 및 내역 조회
      *
-     * @param roomId 채팅방 ID
+     * @param roomId         채팅방 ID
      * @param authentication 인증 정보
      * @return List of {@link ChatResDto} 채팅 내역
      */
@@ -68,7 +70,7 @@ public class ChatroomController {
     }
 
     /**
-     *  채팅방 내역 조회
+     * 채팅방 내역 조회
      *
      * @param authentication
      * @return List of {@link ChatroomResDto} 채팅방 정보 리스트
@@ -93,7 +95,7 @@ public class ChatroomController {
      * @return
      */
     @DeleteMapping("/{roomId}")
-    public ResponseEntity delete(
+    public ResponseEntity<Void> delete(
             @PathVariable Long roomId,
             Authentication authentication
     ) {
@@ -102,7 +104,7 @@ public class ChatroomController {
 
         chatroomService.leaveChatroom(me.getId(), roomId);
 
-        return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
 
