@@ -19,7 +19,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query("select p from Payment p join fetch p.user u where u.id = :userId order by p.createdAt desc")
     Page<PaymentGetResDto> findByUserData(Long userId, Pageable pageable);
 
-    @Query(value = "select date(created_at) as `date`, sum(amount), sum(sum(amount)) over (order by date(created_at)) from Payment" +
+    @Query(value = "select date(created_at) as `date`, sum(amount), sum(sum(amount)) over (order by date(created_at)) from payment" +
             " where created_at between :from and :to " +
             " group by `date` order by `date`"
             , nativeQuery = true)

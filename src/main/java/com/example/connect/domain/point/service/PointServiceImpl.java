@@ -200,18 +200,17 @@ public class PointServiceImpl implements PointService {
         Pageable pageable = PageRequest.of(0, 1);
         List<PointUse> pointUseList = pointUseRepository.findPointInUse(userId, pageable);
 
-        if (!pointUseList.isEmpty()) {
-            PointUse pointInUse = pointUseList.get(0);
-            Long sumAmount = pointRepository.sumAmount(userId);
-
-            BigDecimal usingPoint = nullToZero(pointInUse.getPointChange());
-            BigDecimal purePoint = new BigDecimal(sumAmount == null ? 0 : sumAmount);
-            BigDecimal totalRemainPoint = usingPoint.compareTo(BigDecimal.ZERO) == 0 ? purePoint : purePoint.add(usingPoint);
-
-            return totalRemainPoint;
-        } else {
+        if (pointUseList.isEmpty()) {
             return BigDecimal.ZERO;
         }
+
+        PointUse pointInUse = pointUseList.get(0);
+        Long sumAmount = pointRepository.sumAmount(userId);
+
+        BigDecimal usingPoint = pointInUse.getAmount().compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : nullToZero(pointInUse.getPointChange());
+        BigDecimal purePoint = new BigDecimal(sumAmount == null ? 0 : sumAmount);
+
+        return purePoint.add(usingPoint);
     }
 
     @Override
@@ -228,7 +227,7 @@ public class PointServiceImpl implements PointService {
         payment = paymentRepository.save(payment);
 
         Point point = new Point(paymentReqDto.getAmount().divide(new BigDecimal(10)), user, payment, false);
-        PointUse pointUse = new PointUse(new BigDecimal(0), point.getAmount(), "포인트 " + df.format(point.getAmount()) + "P 충전", PointUseType.CHANGE, point);
+        PointUse pointUse = new PointUse(new BigDecimal(0), point.getAmount(), "포인트 " + df.format(point.getAmount()) + "P 충전", PointUseType.CHARGE, point);
 
         pointRepository.save(point);
         pointUseRepository.save(pointUse);
