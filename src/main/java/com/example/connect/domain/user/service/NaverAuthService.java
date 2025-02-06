@@ -50,6 +50,7 @@ public class NaverAuthService {
     private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
     private final JwtProvider jwtProvider;
+    private final AuthService authService;
 
     @Transactional
     public UserTokenResDto handleNaverLogin(String code, String state) {
@@ -91,7 +92,11 @@ public class NaverAuthService {
                     true,
                     UserRole.USER
             );
-            return userRepository.save(newUser);
+            userRepository.save(newUser);
+
+            authService.createSignUpCoupon(newUser);
+
+            return newUser;
         });
 
         Membership membership = membershipRepository.findByUserIdAndExpiredDateAfter(user.getId(), LocalDate.now()).orElse(null);

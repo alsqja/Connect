@@ -119,6 +119,9 @@
 //        Coupon coupon = new Coupon("coupon", "couponDescription", 100, 5, LocalDate.of(2025, 2, 28), LocalDateTime.of(2025, 1, 21, 0, 0, 0));
 //        Coupon savedCoupon = couponRepository.save(coupon);
 //
+//        Coupon coupon1 = new Coupon("가입 축하 쿠폰", "couponDescription", 100, 5, LocalDate.of(2025, 2, 28), LocalDateTime.of(2025, 1, 21, 0, 0, 0));
+//        Coupon savedCoupon1 = couponRepository.save(coupon1);
+//
 //        CouponUser couponUser = new CouponUser(LocalDate.now().plusMonths(1), CouponUserStatus.UNUSED, savedUser1, savedCoupon);
 //        couponUserRepository.save(couponUser);
 //
@@ -141,39 +144,39 @@
 //        userRepository.save(user2);
 //    }
 //
-/// /    @PostConstruct
-/// /    void initQueryTestData() {
-/// /
-/// /        for (int i = 0; i < 10000; i++) {
-/// /            Category category = new Category("name" + i, "");
-/// /            categoryRepository.save(category);
-/// /
-/// /            for (int j = 0; j < 10; j++) {
-/// /                SubCategory subCategory = new SubCategory(i + "subCate" + j, "", category);
-/// /                subCategoryRepository.save(subCategory);
-/// /            }
-/// /        }
-/// /
-/// /        for (int i = 0; i < 50000; i++) {
-/// /            UserRole role = UserRole.USER;
-/// /            User user1 = new User("email" + i + "@email.com", passwordEncoder.encode("Password1!"), "name" + i, "19970814", Gender.WOMAN, "https://ca.slack-edge.com/T06B9PCLY1E-U07KRNHKXUM-4ddfb9e4780d-512", true, role);
-/// /            userRepository.save(user1);
-/// /            User user2 = new User("2email" + i + "@email.com", passwordEncoder.encode("Password1!"), "2name" + i, "19970814", Gender.MAN, "https://ca.slack-edge.com/T06B9PCLY1E-U07KRNHKXUM-4ddfb9e4780d-512", true, role);
-/// /            userRepository.save(user2);
-/// /
-/// /            Schedule schedule1 = new Schedule(LocalDate.of(2025, 1, 30), "schedule" + i, "detail" + i, "address" + i, 35.9585739544886, 126.925554591431, user1);
-/// /            scheduleRepository.save(schedule1);
-/// /            Schedule schedule2 = new Schedule(LocalDate.of(2025, 1, 30), "2schedule" + i, "2detail" + i, "2address" + i, 35.9585739544886, 126.925554591431, user2);
-/// /            scheduleRepository.save(schedule2);
-/// /
-/// /            Matching matching = new Matching(MatchStatus.PENDING, schedule1, schedule2, 1);
-/// /            matchingRepository.save(matching);
-/// /
-/// /            SubCategory subCategory = subCategoryRepository.findByIdOrElseThrow((long) i + 1);
-/// /            ScheduleSubCategory scheduleSubCategory1 = new ScheduleSubCategory("description" + i, schedule1, subCategory);
-/// /            ScheduleSubCategory scheduleSubCategory2 = new ScheduleSubCategory("description" + i, schedule2, subCategory);
-/// /            scheduleSubCategoryRepository.save(scheduleSubCategory1);
-/// /            scheduleSubCategoryRepository.save(scheduleSubCategory2);
-/// /        }
-/// /    }
+/// // /    @PostConstruct
+/// // /    void initQueryTestData() {
+/// // /
+/// // /        for (int i = 0; i < 10000; i++) {
+/// // /            Category category = new Category("name" + i, "");
+/// // /            categoryRepository.save(category);
+/// // /
+/// // /            for (int j = 0; j < 10; j++) {
+/// // /                SubCategory subCategory = new SubCategory(i + "subCate" + j, "", category);
+/// // /                subCategoryRepository.save(subCategory);
+/// // /            }
+/// // /        }
+/// // /
+/// // /        for (int i = 0; i < 50000; i++) {
+/// // /            UserRole role = UserRole.USER;
+/// // /            User user1 = new User("email" + i + "@email.com", passwordEncoder.encode("Password1!"), "name" + i, "19970814", Gender.WOMAN, "https://ca.slack-edge.com/T06B9PCLY1E-U07KRNHKXUM-4ddfb9e4780d-512", true, role);
+/// // /            userRepository.save(user1);
+/// // /            User user2 = new User("2email" + i + "@email.com", passwordEncoder.encode("Password1!"), "2name" + i, "19970814", Gender.MAN, "https://ca.slack-edge.com/T06B9PCLY1E-U07KRNHKXUM-4ddfb9e4780d-512", true, role);
+/// // /            userRepository.save(user2);
+/// // /
+/// // /            Schedule schedule1 = new Schedule(LocalDate.of(2025, 1, 30), "schedule" + i, "detail" + i, "address" + i, 35.9585739544886, 126.925554591431, user1);
+/// // /            scheduleRepository.save(schedule1);
+/// // /            Schedule schedule2 = new Schedule(LocalDate.of(2025, 1, 30), "2schedule" + i, "2detail" + i, "2address" + i, 35.9585739544886, 126.925554591431, user2);
+/// // /            scheduleRepository.save(schedule2);
+/// // /
+/// // /            Matching matching = new Matching(MatchStatus.PENDING, schedule1, schedule2, 1);
+/// // /            matchingRepository.save(matching);
+/// // /
+/// // /            SubCategory subCategory = subCategoryRepository.findByIdOrElseThrow((long) i + 1);
+/// // /            ScheduleSubCategory scheduleSubCategory1 = new ScheduleSubCategory("description" + i, schedule1, subCategory);
+/// // /            ScheduleSubCategory scheduleSubCategory2 = new ScheduleSubCategory("description" + i, schedule2, subCategory);
+/// // /            scheduleSubCategoryRepository.save(scheduleSubCategory1);
+/// // /            scheduleSubCategoryRepository.save(scheduleSubCategory2);
+/// // /        }
+/// // /    }
 //}
