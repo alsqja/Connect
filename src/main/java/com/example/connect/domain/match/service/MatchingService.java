@@ -54,8 +54,8 @@ public class MatchingService {
         User user = schedule.getUser();
         Gender gender = dto.getGender();
         String birth = user.getBirth();
-        String start = Integer.toString(Integer.parseInt(birth.substring(0, 4)) - dto.getMinusAge());
-        String end = Integer.toString(Integer.parseInt(birth.substring(0, 4)) + dto.getPlusAge());
+        String start = Integer.toString(Integer.parseInt(birth.substring(0, 4)) - dto.getPlusAge());
+        String end = Integer.toString(Integer.parseInt(birth.substring(0, 4)) + dto.getMinusAge());
 
         List<Schedule> scheduleList = scheduleRepository.findAllForMatching(
                 scheduleId,
