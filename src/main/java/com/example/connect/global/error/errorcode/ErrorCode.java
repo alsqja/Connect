@@ -31,6 +31,7 @@ public enum ErrorCode {
 
     // 403 FORBIDDEN
     FORBIDDEN_PERMISSION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
+    REJECTED_PERMISSION(HttpStatus.FORBIDDEN, "접근이 제한된 사용자 입니다."),
 
     // 404 NOT_FOUND
     NOT_FOUND(HttpStatus.NOT_FOUND, "없는 데이터 입니다.");

@@ -15,8 +15,10 @@ import com.example.connect.domain.user.repository.RedisEmailRepository;
 import com.example.connect.domain.user.repository.UserRepository;
 import com.example.connect.global.common.dto.TokenDto;
 import com.example.connect.global.enums.CouponUserStatus;
+import com.example.connect.global.enums.UserStatus;
 import com.example.connect.global.error.errorcode.ErrorCode;
 import com.example.connect.global.error.exception.BadRequestException;
+import com.example.connect.global.error.exception.ForbiddenException;
 import com.example.connect.global.error.exception.UnAuthorizedException;
 import com.example.connect.global.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +64,10 @@ public class AuthService {
 
         User user = userRepository.findByEmailOrElseThrow(email);
 
+        if (user.getStatus().equals(UserStatus.REJECTED)) {
+            throw new ForbiddenException(ErrorCode.REJECTED_PERMISSION);
+        }
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new UnAuthorizedException(ErrorCode.UNAUTHORIZED_PASSWORD);
         }
@@ -84,6 +90,11 @@ public class AuthService {
         }
 
         User user = userRepository.findByEmailOrElseThrow(email);
+
+        if (user.getStatus().equals(UserStatus.REJECTED)) {
+            throw new ForbiddenException(ErrorCode.REJECTED_PERMISSION);
+        }
+        
         Membership membership = membershipRepository.findByUserIdAndExpiredDateAfter(user.getId(), LocalDate.now()).orElse(null);
 
         RedisUserDto sessionUser = membership == null ? new RedisUserDto(user) : new RedisUserDto(user, membership);
