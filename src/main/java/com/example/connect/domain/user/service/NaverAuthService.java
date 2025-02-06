@@ -11,6 +11,9 @@ import com.example.connect.global.common.dto.TokenDto;
 import com.example.connect.global.config.auth.oauth2.NaverOAuth2UserInfo;
 import com.example.connect.global.enums.Gender;
 import com.example.connect.global.enums.UserRole;
+import com.example.connect.global.enums.UserStatus;
+import com.example.connect.global.error.errorcode.ErrorCode;
+import com.example.connect.global.error.exception.ForbiddenException;
 import com.example.connect.global.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -98,6 +101,10 @@ public class NaverAuthService {
 
             return newUser;
         });
+
+        if (user.getStatus().equals(UserStatus.REJECTED)) {
+            throw new ForbiddenException(ErrorCode.REJECTED_PERMISSION);
+        }
 
         Membership membership = membershipRepository.findByUserIdAndExpiredDateAfter(user.getId(), LocalDate.now()).orElse(null);
 

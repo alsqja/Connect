@@ -40,6 +40,7 @@ public class WebConfig {
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE, DispatcherType.ERROR).permitAll()
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling(handler -> handler
