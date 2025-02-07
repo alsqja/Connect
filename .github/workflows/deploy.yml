@@ -1,0 +1,73 @@
+name: docker multi-stage build
+
+on:
+  push:
+    branches: [ main, deploy ] # 해당 branch에 push 되었을 경우
+
+  # https://github.com/marketplace/actions/build-and-push-docker-images
+
+jobs:
+  docker-build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: alsqja2626
+          password: ${{ secrets.DOCKER_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          file: ./Dockerfile
+          push: true
+          tags: alsqja2626/connect:latest
+  # Ec2 에 배포
+  deploy-to-ec2:
+    needs: docker-build-and-push
+    runs-on: ubuntu-latest
+    # https://github.com/marketplace/actions/ssh-remote-commands
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            # 기존 컨테이너 중지 및 제거
+            CONTAINER_ID=$(sudo docker ps -q --filter "publish=8080-8080")
+            if [ ! -z "$CONTAINER_ID" ]; then
+            sudo docker stop $CONTAINER_ID
+            sudo docker rm $CONTAINER_ID
+            fi
+            
+            # 새 이미지 Pull 및 실행
+            sudo docker pull alsqja2626/connect:latest
+            sudo docker run -d -p 8080:8080 \
+              -e SPRING_PROFILES_ACTIVE=prod \
+              -e DATABASE_HOST=${{ secrets.MYSQL_HOST }} \
+              -e DATABASE_PORT=${{ secrets.DATABASE_PORT }} \
+              -e DATABASE_NAME=${{ secrets.DATABASE_NAME }} \
+              -e DATABASE_USERNAME=root \
+              -e DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
+              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
+              -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
+              -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
+              -e AWS_SECRET_KEY=${{ secrets.AWS_SECRET_KEY }} \
+              -e AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }} \
+              -e NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} \
+              -e NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }} \
+              -e NAVER_REDIRECT_URI=${{ secrets.NAVER_REDIRECT_URI }} \
+              -e PORTONE_API_SECRET_V2=${{ secrets.PORTONE_API_SECRET_V2 }} \
+              -e AES256_IV=${{ secrets.AES256_IV }} \
+              -e AES256_SECRET=${{ secrets.AES256_SECRET }} \
+              -e EMAIL_ADDRESS=${{ secrets.EMAIL_ADDRESS }} \
+              -e EMAIL_KEY="${{ secrets.EMAIL_KEY }}" \
+              -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
+              -e RABBITMG_HOST=${{ secrets.RABBITMG_HOST }} \
+              -e PORTONE_API_CHANNEL_KEY=${{ secrets.PORTONE_API_CHANNEL_KEY }} \
+              alsqja2626/connect:latest
