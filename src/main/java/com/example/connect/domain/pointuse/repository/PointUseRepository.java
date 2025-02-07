@@ -13,7 +13,7 @@ public interface PointUseRepository extends JpaRepository<PointUse, Long> {
     @Query("select pu from PointUse pu join pu.point p where p.user.id = :userId and p.isZero = false order by p.createdAt asc")
     List<PointUse> findByOldestPoint(Long userId, Pageable pageable);
 
-    @Query("select pu from PointUse pu join pu.point p where p.user.id = :userId and pu.pointChange > 0 order by pu.createdAt desc, pu.point.id desc")
+    @Query("select pu from PointUse pu join pu.point p where p.user.id = :userId and pu.pointChange > 0 and pu.point.isZero = false order by pu.createdAt desc, pu.point.id desc")
     List<PointUse> findPointInUse(Long userId, Pageable pageable);
 
     @Query("select pu from PointUse pu join pu.point p where p.createdAt < :expiredDate and p.isZero = false and pu.createdAt = (select max(ipu.createdAt) from PointUse ipu where ipu.point.id = p.id)")

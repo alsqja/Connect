@@ -125,7 +125,7 @@ public class PointServiceImpl implements PointService {
                 pointInUse.getPoint()
         );
 
-        if (isPointUpdate) {
+        if (BigDecimal.ZERO.compareTo(pointChange) == 0) {
             pointUse.getPoint().pointUpdate(true);
         }
 
