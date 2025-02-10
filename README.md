@@ -12,6 +12,7 @@
 
 [배포링크](https://www.97s-connect.com)
 [프로젝트 노션](https://furry-mochi-5e8.notion.site/1-Connect-1960ae1ed0ec80c08f12cad5450040c9?pvs=4)
+[팀 노션](https://furry-mochi-5e8.notion.site/97s-1960ae1ed0ec80ae81a9e4985b2c990e?pvs=4)
 
 ## 🍨 Team 97s
 |                                                                            |                                                                             |
