@@ -57,7 +57,9 @@ public class UserService {
         redisTokenRepository.deleteUser(me.getEmail());
         redisTokenRepository.deleteRefreshToken(me.getEmail());
 
-        userRepository.deleteById(me.getId());
+        User user = userRepository.findByIdOrElseThrow(me.getId());
+
+        userRepository.delete(user);
     }
 
     @CheckMembership
