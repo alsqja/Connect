@@ -8,14 +8,17 @@
 ## 📝 프로젝트 소개
 
 ### 🎯connect 프로젝트
-#### ~를 백엔드로 구현하는 프로젝트
+#### 하루의 일정 계획을 세우면 유사한 계획을 가진 일정을 매칭해주어 다른 사람과 함께 즐길 수 있게 해주는 서비스입니다.
+
+[배포링크](https://www.97s-connect.com)
+[프로젝트 노션](https://furry-mochi-5e8.notion.site/1-Connect-1960ae1ed0ec80c08f12cad5450040c9?pvs=4)
 
 ## 🍨 Team 97s
 |                                                                            |                                                                             |
 |:----------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------:|
 | ![](https://cdn-static.zep.us/static/assets/baked-avartar-images/12-14-15-398.png)  | ![](https://cdn-static.zep.us/static/assets/baked-avartar-images/1-18-20-677.png) |
 |                        [김민범](https://github.com/alsqja)                         |                        [이경섭](https://github.com/gyungsubLee)                         |
-|                             유저, 매칭, CI/CD, 일정                              |                                   채팅, 알림                                    |
+|                             유저, 매칭, CI/CD, 일정, 알림                              |                                   채팅                                    |
 | ![](https://cdn-static.zep.us/static/assets/baked-avartar-images/8-284-26-332.png) | ![](https://cdn-static.zep.us/static/assets/baked-avartar-images/2-199-39-91.png) |
 |                        [조현지](https://github.com/chohyuun)                         |                        [장은영](https://github.com/eunyounging)                         |
 |                             결제, 포인트, 쿠폰                           |                                 카테고리/서브 카테고리, 배너, 신고                               |
