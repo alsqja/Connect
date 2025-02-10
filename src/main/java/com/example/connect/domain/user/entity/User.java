@@ -2,6 +2,7 @@ package com.example.connect.domain.user.entity;
 
 import com.example.connect.domain.couponuser.entity.CouponUser;
 import com.example.connect.domain.membership.entity.Membership;
+import com.example.connect.domain.payment.entity.Payment;
 import com.example.connect.domain.point.entity.Point;
 import com.example.connect.domain.report.entity.Report;
 import com.example.connect.domain.schedule.entity.Schedule;
@@ -95,6 +96,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserImage> userImages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Payment> payments = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
